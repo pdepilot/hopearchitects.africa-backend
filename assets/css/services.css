@@ -1,0 +1,385 @@
+/* Extracted from services.php */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: clip; max-width: 100%; }
+    body { font-family: var(--ff-body); background: var(--white); overflow-x: clip; color: var(--dark-jungle-green); width: 100%; max-width: 100%; }
+    main { overflow-x: clip; max-width: 100%; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--prussian-blue); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+    /* =============================================
+       SERVICES PAGE STYLES - STUNNING DESIGN
+    ============================================= */
+    .container { max-width: 1200px; margin: 0 auto; padding-inline: 30px; }
+
+    /* Hero Section - Dramatic */
+    .services-hero {
+      position: relative;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(125deg, var(--prussian-blue) 0%, var(--surface-dark) 50%, #071a0f 100%);
+      overflow: hidden;
+    }
+    .services-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 80%;
+      height: 150%;
+      background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .services-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+      pointer-events: none;
+    }
+    .hero-shape {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      background: linear-gradient(135deg, transparent 25%, var(--white) 25%);
+      background-size: 40px 40px;
+      opacity: 0.03;
+    }
+    .services-hero .container { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    .hero-badge .line { width: 50px; height: 2px; background: var(--gold-gradient-horizontal); }
+    .hero-badge span { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+    .services-hero h1 {
+      font-family: var(--ff-display);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: white;
+      margin-bottom: 20px;
+      max-width: 800px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s ease 0.15s forwards;
+    }
+    .services-hero h1 .gold-accent {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-style: italic;
+    }
+    .hero-description {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      max-width: 600px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.45s forwards;
+    }
+    .hero-stat { text-align: left; }
+    .hero-stat .number { font-family: var(--ff-display); font-size: 2.2rem; font-weight: 700; color: var(--gold-light); line-height: 1; }
+    .hero-stat .label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Services Grid - Premium Cards */
+    .services-showcase {
+      padding-block: var(--section-padding);
+      background: var(--white);
+      position: relative;
+    }
+    .section-eyebrow {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .section-eyebrow .line { width: 40px; height: 1px; background: var(--gold); }
+    .section-eyebrow span { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); font-weight: 600; }
+    .section-title {
+      text-align: center;
+      font-family: var(--ff-display);
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      margin-bottom: 60px;
+      color: var(--prussian-blue);
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 35px;
+    }
+    .service-card-premium {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      box-shadow: var(--shadow-1);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .service-card-premium::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gold-gradient-horizontal);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+      z-index: 2;
+    }
+    .service-card-premium:hover::before { transform: scaleX(1); }
+    .service-card-premium:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-gold-lg);
+      border-color: rgba(212,175,55,0.2);
+    }
+    .service-icon-wrapper {
+      background: linear-gradient(135deg, rgba(212,175,55,0.05) 0%, rgba(212,175,55,0.12) 100%);
+      padding: 40px 0 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(212,175,55,0.1);
+    }
+    .service-icon {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      color: var(--gold-dark);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      transition: all 0.4s;
+      border: 1px solid rgba(212,175,55,0.2);
+    }
+    .service-card-premium:hover .service-icon {
+      background: var(--gold-gradient);
+      color: var(--prussian-blue);
+      transform: scale(1.05);
+      border-color: transparent;
+    }
+    .service-content {
+      padding: 30px 28px 40px;
+      text-align: center;
+    }
+    .service-title {
+      font-family: var(--ff-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--prussian-blue);
+      margin-bottom: 15px;
+    }
+    .service-description {
+      color: var(--cadet);
+      font-size: 14px;
+      line-height: 1.75;
+      margin-bottom: 25px;
+    }
+    .service-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .service-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--cadet);
+      padding-block: 8px;
+      border-bottom: 1px dashed rgba(0,0,0,0.05);
+    }
+    .service-features li ion-icon { color: var(--gold); font-size: 16px; flex-shrink: 0; }
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-dark);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .service-link:hover { gap: 12px; color: var(--gold); }
+
+    /* Process Section */
+    .process-section {
+      background: var(--cultured-2);
+      padding-block: var(--section-padding);
+      position: relative;
+      overflow: hidden;
+    }
+    .process-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gold-gradient-horizontal);
+    }
+    .process-steps {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .process-step {
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+      position: relative;
+      background: var(--white);
+      padding: 40px 20px;
+      border-radius: 8px;
+      transition: all 0.4s;
+      box-shadow: var(--shadow-1);
+    }
+    .process-step:hover { transform: translateY(-8px); box-shadow: var(--shadow-gold-lg); }
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: var(--gold-gradient);
+      color: var(--prussian-blue);
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .step-title { font-family: var(--ff-display); font-size: 1.2rem; margin-bottom: 10px; color: var(--prussian-blue); }
+    .step-text { font-size: 13px; color: var(--cadet); line-height: 1.6; }
+
+    /* Why Choose Us - Premium */
+    .why-choose {
+      padding-block: var(--section-padding);
+      background: linear-gradient(135deg, var(--prussian-blue) 0%, #2a1202 100%);
+      color: white;
+      position: relative;
+    }
+    .why-choose .section-eyebrow span { color: var(--gold-light); }
+    .why-choose .section-title { color: white; }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .benefit-card {
+      text-align: center;
+      padding: 35px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.12);
+      border-radius: 8px;
+      transition: all 0.4s;
+    }
+    .benefit-card:hover { transform: translateY(-8px); background: rgba(212,175,55,0.05); border-color: rgba(212,175,55,0.3); }
+    .benefit-icon { font-size: 44px; color: var(--gold); margin-bottom: 20px; }
+    .benefit-title { font-family: var(--ff-display); font-size: 1.2rem; margin-bottom: 12px; }
+    .benefit-text { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: var(--gold-gradient);
+      padding: 70px 0;
+      text-align: center;
+    }
+    .cta-banner h2 { font-family: var(--ff-display); font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--prussian-blue); margin-bottom: 15px; }
+    .cta-banner p { color: rgba(55,24,1,0.8); margin-bottom: 30px; max-width: 600px; margin-inline: auto; }
+    .cta-button {
+      background: var(--prussian-blue);
+      color: var(--gold);
+      padding: 14px 38px;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .cta-button:hover { background: var(--white); color: var(--prussian-blue); transform: translateY(-3px); }
+
+    /* Reveal Animations */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s, transform 0.8s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-up { transform: translateY(40px); }
+    .reveal-up.visible { transform: translateY(0); }
+    .reveal-left { transform: translateX(-40px); }
+    .reveal-left.visible { transform: translateX(0); }
+    .reveal-right { transform: translateX(40px); }
+    .reveal-right.visible { transform: translateX(0); }
+
+    @media (max-width: 992px) {
+      .reveal-left,
+      .reveal-right {
+        transform: translateY(32px);
+      }
+      .reveal-left.visible,
+      .reveal-right.visible {
+        transform: translateY(0);
+      }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-steps { flex-direction: column; }
+    }
+    @media (max-width: 768px) {
+      .services-hero {
+        min-height: auto;
+        padding-block: 100px 60px;
+      }
+      .service-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .container { padding-inline: 20px; }
+      .hero-stats { gap: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal,
+      .reveal-left,
+      .reveal-right,
+      .reveal-up {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }

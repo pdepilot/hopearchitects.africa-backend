@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'biverroyal/estate',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '2bbf60f025c24c1cc59d606565b12fc916f181d4',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'biverroyal/estate' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '2bbf60f025c24c1cc59d606565b12fc916f181d4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.12.0',
+            'version' => '6.12.0.0',
+            'reference' => 'd1ac35d784bf9f5e61b424901d5a014967f15b12',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/log' => array(
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => 'fe5ea303b0887d5caefd3d431c3e61ad47037001',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/log',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);
