@@ -27,7 +27,20 @@ function siteLogoPath(): string
 
 function siteLogoVideoPath(): string
 {
-    return './assets/videos/VID-20260702-WA0010.mp4';
+    $candidates = [
+        './assets/videos/VID-20260702-WA0010.mp4',
+        './assets/videos/logo.mp4',
+        './assets/videos/hope-logo.mp4',
+    ];
+
+    foreach ($candidates as $relative) {
+        $absolute = dirname(__DIR__) . '/' . ltrim(str_replace('\\', '/', $relative), './');
+        if (is_readable($absolute)) {
+            return $relative;
+        }
+    }
+
+    return '';
 }
 
 function siteLogoAlt(): string
@@ -35,15 +48,24 @@ function siteLogoAlt(): string
     return siteName();
 }
 
-/** Echo a muted looping video logo (header / footer). */
+/** Echo logo as video when available, otherwise the static brand mark. */
 function siteLogoVideo(int $height = 50, ?int $width = null): void
 {
     $height = max(32, $height);
     $widthAttr = $width !== null ? ' width="' . (int) $width . '"' : '';
-    echo '<video class="site-logo-video" src="', siteEscape(siteLogoVideoPath()), '"',
+    $videoPath = siteLogoVideoPath();
+
+    if ($videoPath !== '') {
+        echo '<video class="site-logo-video" src="', siteEscape($videoPath), '"',
+            ' height="', (int) $height, '"', $widthAttr,
+            ' autoplay muted loop playsinline preload="metadata"',
+            ' aria-label="', siteEscape(siteLogoAlt()), '"></video>';
+        return;
+    }
+
+    echo '<img class="site-logo-video site-logo-img" src="', siteEscape(siteLogoPath()), '"',
         ' height="', (int) $height, '"', $widthAttr,
-        ' autoplay muted loop playsinline preload="metadata"',
-        ' aria-label="', siteEscape(siteLogoAlt()), '"></video>';
+        ' alt="', siteEscape(siteLogoAlt()), '" loading="eager" decoding="async">';
 }
 
 /** Relative asset URL from /admin pages. */
@@ -54,16 +76,26 @@ function adminAssetHref(string $path): string
     return '../' . $normalized;
 }
 
-/** Video logo markup for admin shell (sidebar, login). */
+/** Logo markup for admin shell (sidebar, login). */
 function adminSiteLogoVideo(int $height = 48, ?int $width = 150): void
 {
     $height = max(32, $height);
     $widthAttr = $width !== null ? ' width="' . (int) $width . '"' : '';
-    $src = adminAssetHref(siteLogoVideoPath());
-    echo '<video class="site-logo-video admin-logo-video" src="', siteEscape($src), '"',
+    $videoPath = siteLogoVideoPath();
+
+    if ($videoPath !== '') {
+        $src = adminAssetHref($videoPath);
+        echo '<video class="site-logo-video admin-logo-video" src="', siteEscape($src), '"',
+            ' height="', (int) $height, '"', $widthAttr,
+            ' autoplay muted loop playsinline preload="metadata"',
+            ' aria-label="', siteEscape(siteLogoAlt()), '"></video>';
+        return;
+    }
+
+    $src = adminAssetHref(siteLogoPath());
+    echo '<img class="site-logo-video admin-logo-video site-logo-img" src="', siteEscape($src), '"',
         ' height="', (int) $height, '"', $widthAttr,
-        ' autoplay muted loop playsinline preload="metadata"',
-        ' aria-label="', siteEscape(siteLogoAlt()), '"></video>';
+        ' alt="', siteEscape(siteLogoAlt()), '" loading="eager" decoding="async">';
 }
 
 function siteContactEmail(): string

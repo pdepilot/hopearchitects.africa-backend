@@ -77,7 +77,7 @@ class MailService
         $htmlBody = self::buildInquiryNotificationTemplate($name, $email, $phone, $type, $message, $id);
         $plainBody = "New contact inquiry\n\nName: {$name}\nEmail: {$email}\nPhone: {$phone}\nType: {$type}\n\nMessage:\n{$message}";
 
-        return self::sendEmail($notifyEmail, 'Biver Royalty Admin', $subject, $htmlBody, $plainBody);
+        return self::sendEmail($notifyEmail, 'Hope Architects Admin', $subject, $htmlBody, $plainBody);
     }
 
     /**
@@ -109,12 +109,18 @@ HTML;
         return self::sendEmail($toEmail, $toName, $subject, $htmlBody, $plainBody);
     }
 
+    /**
+     * @param string|null $replyToEmail Optional Reply-To override (e.g. customer email on admin alerts)
+     * @param string|null $replyToName  Optional Reply-To display name
+     */
     public static function sendEmail(
         string $toEmail,
         string $toName,
         string $subject,
         string $htmlBody,
-        string $plainBody
+        string $plainBody,
+        ?string $replyToEmail = null,
+        ?string $replyToName = null
     ): bool {
         self::$lastError = null;
 
@@ -123,13 +129,13 @@ HTML;
         if (!empty($config['useSmtp'])) {
             if (!MailConfigService::isReady()) {
                 self::$lastError = 'SMTP is not fully configured. Set credentials in Admin → Settings → Email.';
-                return self::sendViaPhpMail($toEmail, $subject, $htmlBody, $plainBody, $config);
+                return self::sendViaPhpMail($toEmail, $subject, $htmlBody, $plainBody, $config, $replyToEmail, $replyToName);
             }
 
-            return self::sendViaSmtp($toEmail, $toName, $subject, $htmlBody, $plainBody, $config);
+            return self::sendViaSmtp($toEmail, $toName, $subject, $htmlBody, $plainBody, $config, $replyToEmail, $replyToName);
         }
 
-        return self::sendViaPhpMail($toEmail, $subject, $htmlBody, $plainBody, $config);
+        return self::sendViaPhpMail($toEmail, $subject, $htmlBody, $plainBody, $config, $replyToEmail, $replyToName);
     }
 
     /** @param array<string, mixed> $config */
@@ -139,7 +145,9 @@ HTML;
         string $subject,
         string $htmlBody,
         string $plainBody,
-        array $config
+        array $config,
+        ?string $replyToEmail = null,
+        ?string $replyToName = null
     ): bool {
         $autoload = dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -184,7 +192,8 @@ HTML;
 
             $fromEmail = trim((string) $config['fromEmail']);
             $fromName  = (string) $config['fromName'];
-            $replyTo   = trim((string) $config['replyTo']);
+            $replyTo   = trim((string) ($replyToEmail ?? $config['replyTo'] ?? ''));
+            $replyName = trim((string) ($replyToName ?? $fromName));
             $username  = trim((string) $config['username']);
 
             if ($fromEmail === '') {
@@ -195,9 +204,14 @@ HTML;
                 throw new PhpMailerException('From email is not configured.');
             }
 
+            if ($replyTo === '' || !filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+                $replyTo = $fromEmail;
+                $replyName = $fromName;
+            }
+
             $mail->setFrom($fromEmail, $fromName);
             $mail->addAddress($toEmail, $toName);
-            $mail->addReplyTo($replyTo !== '' ? $replyTo : $fromEmail, $fromName);
+            $mail->addReplyTo($replyTo, $replyName !== '' ? $replyName : $fromName);
 
             $mail->isHTML(true);
             $mail->Subject = $subject;
@@ -254,18 +268,27 @@ HTML;
         string $subject,
         string $htmlBody,
         string $plainBody,
-        array $config
+        array $config,
+        ?string $replyToEmail = null,
+        ?string $replyToName = null
     ): bool {
         $fromEmail   = (string) ($config['fromEmail'] ?? '');
         $fromName    = (string) ($config['fromName'] ?? 'Hope Architects');
-        $replyTo     = (string) ($config['replyTo'] ?? $fromEmail);
+        $replyTo     = trim((string) ($replyToEmail ?? $config['replyTo'] ?? $fromEmail));
+        if ($replyTo === '' || !filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+            $replyTo = $fromEmail;
+        }
+        $replyName   = trim((string) ($replyToName ?? $fromName));
+        if ($replyName === '') {
+            $replyName = $fromName;
+        }
         $safeSubject = self::escapeHeader($subject);
         $boundary    = 'bre_' . bin2hex(random_bytes(8));
 
         $headers = [
             'MIME-Version: 1.0',
             'From: ' . self::escapeHeader($fromName) . ' <' . $fromEmail . '>',
-            'Reply-To: ' . $replyTo,
+            'Reply-To: ' . self::escapeHeader($replyName) . ' <' . $replyTo . '>',
             'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
         ];
 
@@ -319,31 +342,25 @@ HTML;
         $eName    = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
         $eEmail   = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
         $ePhone   = htmlspecialchars($phone, ENT_QUOTES, 'UTF-8');
-        $eType    = htmlspecialchars(ucfirst($type), ENT_QUOTES, 'UTF-8');
+        $eType    = htmlspecialchars(ucwords(str_replace('-', ' ', $type)), ENT_QUOTES, 'UTF-8');
         $eMessage = nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8'));
         $adminUrl = htmlspecialchars(self::adminContactUrl($id), ENT_QUOTES, 'UTF-8');
 
-        return <<<HTML
-<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"></head>
-<body style="font-family:Arial,sans-serif;background:#f9f7f2;padding:24px;color:#2c2418;">
-  <div style="max-width:620px;margin:0 auto;background:#fff;border-radius:12px;padding:32px;border:1px solid #e9e5dc;">
-    <h2 style="color:#371801;font-family:Georgia,serif;margin:0 0 8px;">New Contact Inquiry</h2>
-    <p style="color:#6c5e4e;margin-bottom:20px;">A visitor submitted the contact form on your website.</p>
-    <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <tr><td style="padding:8px 0;color:#6c5e4e;width:120px;">Name</td><td style="padding:8px 0;"><strong>{$eName}</strong></td></tr>
-      <tr><td style="padding:8px 0;color:#6c5e4e;">Email</td><td style="padding:8px 0;"><a href="mailto:{$eEmail}">{$eEmail}</a></td></tr>
-      <tr><td style="padding:8px 0;color:#6c5e4e;">Phone</td><td style="padding:8px 0;">{$ePhone}</td></tr>
-      <tr><td style="padding:8px 0;color:#6c5e4e;">Type</td><td style="padding:8px 0;">{$eType}</td></tr>
-    </table>
-    <p style="margin:20px 0 8px;font-weight:bold;color:#371801;">Message</p>
-    <p style="background:#f9f7f2;padding:14px;border-radius:8px;line-height:1.6;">{$eMessage}</p>
-    <p style="margin-top:24px;"><a href="{$adminUrl}" style="display:inline-block;background:#D4AF37;color:#371801;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">Open in Admin</a></p>
-  </div>
-</body>
-</html>
+        $inner = <<<HTML
+<h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#0b4e56;font-size:22px;">New Contact Enquiry</h2>
+<p style="margin:0 0 18px;color:#5a6b60;">A visitor submitted the contact form on your website.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-size:14px;">
+  <tr><td style="padding:8px 0;color:#5a6b60;width:120px;">Name</td><td style="padding:8px 0;"><strong>{$eName}</strong></td></tr>
+  <tr><td style="padding:8px 0;color:#5a6b60;">Email</td><td style="padding:8px 0;"><a href="mailto:{$eEmail}" style="color:#0b4e56;">{$eEmail}</a></td></tr>
+  <tr><td style="padding:8px 0;color:#5a6b60;">Phone</td><td style="padding:8px 0;">{$ePhone}</td></tr>
+  <tr><td style="padding:8px 0;color:#5a6b60;">Type</td><td style="padding:8px 0;">{$eType}</td></tr>
+</table>
+<p style="margin:20px 0 8px;font-weight:bold;color:#0b4e56;">Message</p>
+<p style="margin:0 0 22px;background:#f3f8f8;padding:14px;border-radius:8px;line-height:1.6;border:1px solid #d5e6e8;">{$eMessage}</p>
+<p style="margin:0;"><a href="{$adminUrl}" style="display:inline-block;background:#feee90;color:#0b4e56;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">Open in Admin &amp; Reply</a></p>
 HTML;
+
+        return AutomatedEmailService::wrapBranded($inner);
     }
 
     private static function adminContactUrl(int $id): string

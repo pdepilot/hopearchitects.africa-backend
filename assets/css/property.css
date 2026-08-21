@@ -148,8 +148,10 @@
       text-transform: uppercase;
       z-index: 2;
     }
-    .card-badge.sale { background: var(--gold); color: var(--prussian-blue); }
-    .card-badge.rent { background: #10b759; color: white; }
+    .card-badge.sale,
+    .card-badge.architecture { background: var(--gold); color: var(--prussian-blue); }
+    .card-badge.rent,
+    .card-badge.interior { background: #10b759; color: white; }
     .favorite-btn {
       position: absolute;
       top: 15px;
@@ -169,6 +171,15 @@
     .favorite-btn.active { color: #f95a5a; background: white; }
     .favorite-btn:hover { transform: scale(1.1); }
     .card-content { padding: 20px; }
+    .card-category {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 8px;
+    }
     .card-price {
       font-family: var(--ff-display);
       font-size: 1.4rem;

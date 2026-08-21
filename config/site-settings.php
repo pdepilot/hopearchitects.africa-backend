@@ -6,8 +6,8 @@ return array (
   'siteName' => 'Hope Architects',
   'contactEmail' => 'info@hopearchitects.ng',
   'contactPhone' => '+234 808 430 9701',
-  'whatsapp' => '+234 806 389 6199',
-  'address' => '12 Admiralty Way, Lekki Phase 1, Lagos, Nigeria',
+  'whatsapp' => '',
+  'address' => 'No, 20, Oroke Street, Ajah, Eti-Osa L.G.A, Lagos State',
   'aboutText' => 'Hope Architects is a world-class architecture and construction firm delivering visionary design, precision engineering, and exceptional builds across Nigeria.',
   'adminPhone' => '',
   'socialFacebook' => 'https://www.facebook.com/hopearchitects',
@@ -16,5 +16,5 @@ return array (
   'socialTwitter' => '',
   'businessHours' => 'Mon – Sat: 9:00 AM – 6:00 PM',
   'siteDesigner' => 'blinkzcode',
-  'updatedAt' => '2026-07-04T00:00:00+01:00',
+  'updatedAt' => '2026-07-28T16:08:35+02:00',
 );

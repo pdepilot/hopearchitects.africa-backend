@@ -11,7 +11,9 @@ $footerJs = siteUrl('assets/js/site-footer.js');
 ?>
 <footer class="footer footer--monolith" role="contentinfo">
   <div class="footer-monolith__blueprint" aria-hidden="true"></div>
-  <div class="footer-monolith__watermark" aria-hidden="true">HOPE</div>
+  <div class="footer-monolith__watermark" aria-hidden="true">
+    <img src="<?= siteEscape(publicAssetUrl('assets/images/hope_archites.png') ?? siteUrl('assets/images/hope_archites.png')) ?>" alt="">
+  </div>
   <div class="footer-monolith__glow footer-monolith__glow--1" aria-hidden="true"></div>
   <div class="footer-monolith__glow footer-monolith__glow--2" aria-hidden="true"></div>
   <div class="footer-monolith__apex" aria-hidden="true"></div>

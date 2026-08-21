@@ -26,6 +26,22 @@ function siteRootPath(): string
     return $root = '';
 }
 
+/** Encode each URL path segment so filenames with spaces (e.g. Scene 10_1.png) load. */
+function encodeAssetUrlPath(string $path): string
+{
+    $parts = explode('/', str_replace('\\', '/', $path));
+    $encoded = [];
+    foreach ($parts as $part) {
+        if ($part === '' || $part === '.') {
+            $encoded[] = $part;
+            continue;
+        }
+        $encoded[] = rawurlencode(rawurldecode($part));
+    }
+
+    return implode('/', $encoded);
+}
+
 function publicAssetUrl(?string $relativePath): ?string
 {
     if ($relativePath === null || $relativePath === '') {
@@ -37,13 +53,21 @@ function publicAssetUrl(?string $relativePath): ?string
     }
 
     $base = siteRootPath();
-    if ($base !== '' && str_starts_with(str_replace('\\', '/', $relativePath), $base . '/')) {
-        return str_replace('\\', '/', $relativePath);
+    $normalized = str_replace('\\', '/', $relativePath);
+
+    if ($base !== '' && str_starts_with($normalized, $base . '/')) {
+        return encodeAssetUrlPath($normalized);
     }
 
-    $normalized = str_replace('\\', '/', ltrim($relativePath, '/'));
+    $normalized = ltrim($normalized, '/');
+    // Avoid double-prefixing when callers already passed a site-root absolute path.
+    if ($base !== '' && str_starts_with('/' . $normalized, $base . '/')) {
+        return encodeAssetUrlPath('/' . $normalized);
+    }
 
-    return ($base !== '' ? $base : '') . '/' . $normalized;
+    $prefix = $base !== '' ? $base : '';
+
+    return encodeAssetUrlPath($prefix . '/' . $normalized);
 }
 
 /**

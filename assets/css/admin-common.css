@@ -4,28 +4,28 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --brand-green: #2d9b3c;
-  --brand-green-dark: #1a5c28;
-  --brand-green-light: #3cb84e;
-  --prussian-blue: #1a5c28;
-  --gold: #D4AF37;
-  --gold-light: #FFD700;
-  --gold-dark: #B8860B;
-  --gold-gradient: linear-gradient(90deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
-  --surface-dark: #0f2418;
-  --sidebar-bg: #0f2418;
-  --admin-bg: hsl(192, 24%, 96%);
+  --brand-green: #0b4e56;
+  --brand-green-dark: #083840;
+  --brand-green-light: #12707a;
+  --prussian-blue: #0b4e56;
+  --gold: #feee90;
+  --gold-light: #fff6b8;
+  --gold-dark: #e0d070;
+  --gold-gradient: linear-gradient(90deg, #e0d070 0%, #feee90 50%, #fff6b8 100%);
+  --surface-dark: #0b4e56;
+  --sidebar-bg: #083840;
+  --admin-bg: hsl(186, 24%, 96%);
   --card-bg: #ffffff;
-  --text-dark: hsl(130, 40%, 10%);
-  --text-muted: hsl(200, 15%, 43%);
-  --border-light: #dce8e0;
+  --text-dark: hsl(186, 40%, 10%);
+  --text-muted: hsl(186, 15%, 43%);
+  --border-light: #d5e4e6;
   --danger: #dc3545;
   --success: #198754;
   --warning: #ffc107;
   --ff-display: 'Cormorant Garamond', serif;
   --ff-body: 'Outfit', sans-serif;
-  --shadow-sm: 0 8px 20px rgba(26, 92, 40, 0.06);
-  --shadow-md: 0 12px 30px rgba(26, 92, 40, 0.1);
+  --shadow-sm: 0 8px 20px rgba(11, 78, 86, 0.06);
+  --shadow-md: 0 12px 30px rgba(11, 78, 86, 0.1);
 }
 
 body.admin-app {
@@ -78,7 +78,7 @@ body.admin-app {
 .admin-sidebar-header,
 .sidebar-header {
   padding: 28px 24px;
-  border-bottom: 1px solid rgba(45, 155, 60, 0.35);
+  border-bottom: 1px solid rgba(18, 112, 122, 0.35);
   flex-shrink: 0;
 }
 
@@ -148,14 +148,14 @@ body.admin-app {
 .admin-nav-link.active,
 .nav-link:hover,
 .nav-link.active {
-  background: rgba(45, 155, 60, 0.18);
+  background: rgba(18, 112, 122, 0.18);
   color: var(--gold-light);
 }
 
 .admin-nav-link.active,
 .nav-link.active {
   border-left: 3px solid var(--gold);
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.18), rgba(45, 155, 60, 0.08));
+  background: linear-gradient(90deg, rgba(254, 238, 144, 0.18), rgba(18, 112, 122, 0.08));
 }
 
 .admin-sidebar-footer,
@@ -374,7 +374,7 @@ body.admin-nav-open {
     inset: auto !important;
     flex-shrink: 0;
     margin: 0;
-    background: var(--sidebar-bg, #0f2418);
+    background: var(--sidebar-bg, #0b4e56);
   }
 
 /* Admin utilities (replace inline style attributes) */

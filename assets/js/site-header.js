@@ -293,8 +293,7 @@
         (p) =>
           (p.title || '').toLowerCase().includes(q) ||
           (p.location || '').toLowerCase().includes(q) ||
-          (p.description || '').toLowerCase().includes(q) ||
-          String(p.price || '').includes(q)
+          (p.description || '').toLowerCase().includes(q)
       );
     }
 
@@ -313,23 +312,22 @@
 
     resultsEl.innerHTML = filtered
       .slice(0, 12)
-      .map((p) => {
-        const imgSrc = resolveMediaUrl(
-          (p.images && p.images[0]) || p.imageUrl ||
-          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=120&h=80&fit=crop'
-        );
-        const price =
-          p.type === 'rent'
-            ? '\u20A6' + formatNumber(p.price) + '/mo'
-            : '\u20A6' + formatNumber(p.price);
-        const badgeClass = p.type === 'rent' ? 'rent' : '';
-        const badgeLabel = p.type === 'rent' ? 'For Rent' : 'For Sale';
+      .map((p, i) => {
+        const portfolio = window.HOPE_PORTFOLIO || {};
+        const imgSrc = portfolio.propertyImage
+          ? portfolio.propertyImage(p, i)
+          : resolveMediaUrl((p.images && p.images[0]) || p.imageUrl || '');
+        const badge = portfolio.categoryBadge
+          ? portfolio.categoryBadge(p.type)
+          : { label: p.type === 'rent' ? 'Interior Design' : 'Architecture', className: p.type === 'rent' ? 'interior' : 'architecture' };
+        const badgeClass = badge.className;
+        const badgeLabel = badge.label;
         const detailUrl = propertyDetailUrl(p._id || p.id);
         return `<a href="${detailUrl}" class="search-result-item">
           <img src="${imgSrc}" alt="${p.title || ''}" class="search-result-thumb" loading="lazy">
           <div class="search-result-info">
-            <div class="search-result-title">${p.title || 'Property'}</div>
-            <div class="search-result-meta">${p.location || 'Lagos'} &bull; ${price}</div>
+            <div class="search-result-title">${p.title || 'Project'}</div>
+            <div class="search-result-meta">${p.location || 'Lagos'} &bull; ${badgeLabel}</div>
           </div>
           <span class="search-result-badge ${badgeClass}">${badgeLabel}</span>
         </a>`;
@@ -365,5 +363,6 @@
     init();
   }
 
-  window.BiverSiteHeader = { init, pageUrl, propertyDetailUrl, propertiesApiUrl };
+  window.HopeSiteHeader = { init, pageUrl, propertyDetailUrl, propertiesApiUrl };
+  window.BiverSiteHeader = window.HopeSiteHeader;
 })();

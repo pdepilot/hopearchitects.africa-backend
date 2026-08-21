@@ -29,7 +29,7 @@ try {
     $pdo->exec($sql);
 
     echo "Authentication schema installed successfully.\n";
-    echo "Admin email: admin@biverroyalty.com\n";
+    echo "Admin email: admin@hopearchitects.ng\n";
     echo "DELETE this install_auth.php file before going live.\n";
 } catch (Throwable $e) {
     http_response_code(500);

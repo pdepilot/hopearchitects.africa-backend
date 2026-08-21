@@ -1,12 +1,12 @@
 /**
- * Promotional banner + cookie consent — Biver Royalty Homes
+ * Promotional banner + cookie consent — Hope Architects
  * Flow: preloader → promo spotlight → cookie banner
  */
 (function () {
   'use strict';
 
-  const STORAGE_PROMO  = 'biver_promo_dismissed_v1';
-  const STORAGE_COOKIE = 'biver_cookie_consent_v1';
+  const STORAGE_PROMO  = 'hope_promo_dismissed_v1';
+  const STORAGE_COOKIE = 'hope_cookie_consent_v1';
 
   let cookieScheduled = false;
   let cookieReady     = false;
@@ -96,6 +96,7 @@
     if (!preloader || preloader.classList.contains('hidden')) {
       startPromo();
     } else {
+      window.addEventListener('hope:preloader-done', startPromo, { once: true });
       window.addEventListener('biver:preloader-done', startPromo, { once: true });
       setTimeout(startPromo, 4500);
     }
@@ -220,10 +221,11 @@
     initPromoBanner();
   });
 
-  window.BiverBanners = {
+  window.HopeBanners = {
     initPromoBanner,
     initCookieBanner,
     reopenCookieSettings,
     scheduleCookieBanner
   };
+  window.BiverBanners = window.HopeBanners;
 })();

@@ -87,7 +87,7 @@ try {
           <!-- Right Side - Contact Form -->
           <div class="form-container">
             <h2>Send Us a Message</h2>
-            <p class="form-subtitle">Fill out the form below and we'll get back to you within 24 hours.</p>
+            <p class="form-subtitle">Fill out the form below — you'll get an instant email confirmation, and our team can follow up personally.</p>
             
             <form id="contactForm">
               <div class="form-group">

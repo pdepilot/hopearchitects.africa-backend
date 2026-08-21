@@ -2,10 +2,17 @@
 <?php
 require_once __DIR__ . '/includes/HomepageContentService.php';
 require_once __DIR__ . '/includes/site_helpers.php';
+require_once __DIR__ . '/includes/portfolio_helpers.php';
 $homepageContent = HomepageContentService::get();
 $heroSlidesData = $homepageContent['slides'] ?? [];
 $heroStatsData = $homepageContent['stats'] ?? [];
 $homeSections = $homepageContent['sections'] ?? [];
+$homePreloader = $homepageContent['preloader'] ?? [];
+$homeHero = $homepageContent['hero'] ?? [];
+$homeAbout = $homepageContent['about'] ?? [];
+$homeWhyUs = $homepageContent['whyUs'] ?? [];
+$homeProcess = $homepageContent['process'] ?? [];
+$homeDeliver = $homepageContent['deliver'] ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,24 +50,95 @@ $homeSections = $homepageContent['sections'] ?? [];
        PRELOADER — Full-screen intro video
   ============================================= -->
   <?php
+  $preloaderEnabled = !isset($homePreloader['enabled']) || !empty($homePreloader['enabled']);
   $preloaderVideoPath = '';
-  $preloaderVideoDir = __DIR__ . '/assets/videos';
-  if (is_dir($preloaderVideoDir)) {
-    $preloaderVideoFiles = glob($preloaderVideoDir . '/*.{mp4,webm,mov}', GLOB_BRACE) ?: [];
-    if (!empty($preloaderVideoFiles)) {
-      $preloaderVideoPath = './assets/videos/' . basename($preloaderVideoFiles[0]);
+  $preloaderVideoMime = 'video/mp4';
+  $configuredPreloader = trim((string) ($homePreloader['video'] ?? ''));
+
+  // Prefer configured path when the file still exists on disk.
+  if ($configuredPreloader !== '' && portfolioLocalFileExists($configuredPreloader)) {
+    $preloaderVideoPath = $configuredPreloader;
+  } else {
+    $candidateDirs = [
+      __DIR__ . '/assets/uploads/homepage',
+      __DIR__ . '/assets/videos',
+    ];
+    $found = [];
+    foreach ($candidateDirs as $dir) {
+      if (!is_dir($dir)) {
+        continue;
+      }
+      foreach (['*.mp4', '*.webm', '*.mov'] as $pattern) {
+        foreach (glob($dir . '/' . $pattern) ?: [] as $file) {
+          $found[] = $file;
+        }
+      }
+    }
+    if ($found !== []) {
+      usort($found, static function (string $a, string $b): int {
+        $score = static function (string $path): int {
+          $base = strtolower(basename($path));
+          if (str_contains($base, 'preloader')) {
+            return 0;
+          }
+          // Prefer clean .mp4 over double extensions like video.mp4.mp4
+          if (preg_match('/\.mp4$/i', $base) && !preg_match('/\.mp4\.mp4$/i', $base)) {
+            return 1;
+          }
+          return 2;
+        };
+        $sa = $score($a);
+        $sb = $score($b);
+        if ($sa !== $sb) {
+          return $sa <=> $sb;
+        }
+        return filemtime($b) <=> filemtime($a);
+      });
+      $preloaderVideoPath = str_replace('\\', '/', substr($found[0], strlen(__DIR__) + 1));
+    } elseif (is_file(__DIR__ . '/assets/video.mp4')) {
+      $preloaderVideoPath = 'assets/video.mp4';
     }
   }
+
+  $preloaderVideoUrl = '';
+  if ($preloaderVideoPath !== '') {
+    $absVideo = __DIR__ . '/' . portfolioNormalizeRelativePath($preloaderVideoPath);
+    $bust = is_file($absVideo) ? (string) filemtime($absVideo) : (string) time();
+    $preloaderVideoUrl = portfolioResolveMediaUrl($preloaderVideoPath, 0);
+    $preloaderVideoUrl .= (str_contains($preloaderVideoUrl, '?') ? '&' : '?') . 'v=' . rawurlencode($bust);
+    $ext = strtolower(pathinfo(portfolioNormalizeRelativePath($preloaderVideoPath), PATHINFO_EXTENSION));
+    $preloaderVideoMime = match ($ext) {
+      'webm' => 'video/webm',
+      'mov' => 'video/quicktime',
+      default => 'video/mp4',
+    };
+  }
+  $preloaderAria = (string) ($homePreloader['ariaLabel'] ?? 'Loading Hope Architects');
   ?>
-  <div id="preloader" role="dialog" aria-modal="true" aria-label="Loading Hope Architects" aria-busy="true">
-    <?php if ($preloaderVideoPath !== ''): ?>
-    <video class="preloader-video" id="preloaderVideo" autoplay muted playsinline preload="auto" aria-hidden="true">
-      <source src="<?= siteEscape($preloaderVideoPath) ?>" type="video/mp4">
+  <?php if ($preloaderEnabled): ?>
+  <div id="preloader" role="dialog" aria-modal="true" aria-label="<?= siteEscape($preloaderAria) ?>" aria-busy="true">
+    <?php if ($preloaderVideoUrl !== ''): ?>
+    <video
+      class="preloader-video"
+      id="preloaderVideo"
+      src="<?= siteEscape($preloaderVideoUrl) ?>"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    >
+      <source src="<?= siteEscape($preloaderVideoUrl) ?>" type="<?= siteEscape($preloaderVideoMime) ?>">
     </video>
     <?php endif; ?>
     <div class="preloader-video-overlay" aria-hidden="true"></div>
     <div class="preloader-curtain" aria-hidden="true"></div>
+    <button type="button" class="preloader-skip" id="preloaderSkip" aria-label="Skip intro">
+      <span>Skip</span>
+      <span class="preloader-skip__arrow" aria-hidden="true"></span>
+    </button>
   </div>
+  <?php endif; ?>
 
   <?php require __DIR__ . '/assets/includes/site-chrome.php'; ?>
 
@@ -75,9 +153,9 @@ $homeSections = $homepageContent['sections'] ?? [];
       <section class="hero hero--luxury" id="home" aria-label="Hero section">
         <div class="hero-media" id="heroMedia" aria-hidden="true">
           <div class="hero-bg-slideshow" id="heroBgSlideshow">
-            <div class="bg-slide active bg-slide--1"<?php if (!empty($heroSlidesData[0]['bgImage'])): ?> style="background-image:url('<?= siteEscape($heroSlidesData[0]['bgImage']) ?>')"<?php endif; ?>></div>
-            <?php foreach (array_slice($heroSlidesData, 1) as $slide): ?>
-            <div class="bg-slide" data-bg="<?= siteEscape($slide['bgImage'] ?? '') ?>"<?php if (!empty($slide['video'])): ?> data-video="<?= siteEscape($slide['video']) ?>"<?php endif; ?>></div>
+            <div class="bg-slide active bg-slide--1"<?php if (!empty($heroSlidesData[0]['bgImage'])): ?> style="background-image:url('<?= siteEscape(portfolioResolveMediaUrl((string) $heroSlidesData[0]['bgImage'], 0)) ?>')"<?php endif; ?>></div>
+            <?php foreach (array_slice($heroSlidesData, 1) as $i => $slide): ?>
+            <div class="bg-slide" data-bg="<?= siteEscape(portfolioResolveMediaUrl((string) ($slide['bgImage'] ?? ''), $i + 1)) ?>"<?php if (!empty($slide['video'])): ?> data-video="<?= siteEscape($slide['video']) ?>"<?php endif; ?>></div>
             <?php endforeach; ?>
           </div>
           <video class="hero-bg-video" id="heroBgVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -91,7 +169,7 @@ $homeSections = $homepageContent['sections'] ?? [];
           <div class="hero-content" id="heroContent">
             <div class="hero-location" id="heroLocation">
               <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-              <span id="heroLocationText">Lagos, Nigeria</span>
+              <span id="heroLocationText"><?= siteEscape((string) ($homeHero['location'] ?? 'Lagos, Nigeria')) ?></span>
             </div>
 
             <p class="hero-eyebrow" id="heroEyebrow">
@@ -108,14 +186,14 @@ $homeSections = $homepageContent['sections'] ?? [];
             <p class="hero-tagline" id="heroTagline"><?= siteEscape($heroSlidesData[0]['tagline'] ?? 'World-class architectural design and construction — shaping iconic spaces across Lagos and Nigeria.') ?></p>
 
             <div class="hero-actions" id="heroActions">
-              <a href="<?= pageHref('property') ?>" class="hero-btn-primary">
+              <a href="<?= pageHref((string) ($homeHero['primaryCtaHref'] ?? 'property')) ?>" class="hero-btn-primary">
                 <span class="hero-btn-shine" aria-hidden="true"></span>
                 <ion-icon name="home-outline"></ion-icon>
-                <span>Explore Projects</span>
+                <span><?= siteEscape((string) ($homeHero['primaryCtaLabel'] ?? 'Explore Projects')) ?></span>
               </a>
-              <a href="<?= pageHref('contact') ?>" class="hero-btn-secondary">
+              <a href="<?= pageHref((string) ($homeHero['secondaryCtaHref'] ?? 'contact')) ?>" class="hero-btn-secondary">
                 <ion-icon name="call-outline"></ion-icon>
-                <span>Request Consultation</span>
+                <span><?= siteEscape((string) ($homeHero['secondaryCtaLabel'] ?? 'Request Consultation')) ?></span>
               </a>
             </div>
           </div>
@@ -162,36 +240,35 @@ $homeSections = $homepageContent['sections'] ?? [];
         <div class="about-studio">
           <div class="about-studio__intro reveal">
             <span class="section-eyebrow">01 — Studio</span>
-            <p class="section-subtitle"><?= siteEscape((string) ($homeSections['about']['subtitle'] ?? 'About Us')) ?></p>
-            <h2 class="h2 section-title about-studio__title"><?= siteEscape((string) ($homeSections['about']['title'] ?? 'Architecture Built on Vision & Precision')) ?></h2>
-            <p class="about-text about-studio__lead"><?= siteEscape((string) ($homeSections['about']['text'] ?? '')) ?></p>
+            <p class="section-subtitle"><?= siteEscape((string) ($homeAbout['subtitle'] ?? 'About Us')) ?></p>
+            <h2 class="h2 section-title about-studio__title"><?= siteEscape((string) ($homeAbout['title'] ?? 'Architecture Built on Vision & Precision')) ?></h2>
+            <p class="about-text about-studio__lead"><?= siteEscape((string) ($homeAbout['text'] ?? '')) ?></p>
             <ul class="about-studio__pillars">
-              <li><ion-icon name="color-palette-outline"></ion-icon> Design &amp; Master Planning</li>
-              <li><ion-icon name="construct-outline"></ion-icon> Construction Management</li>
-              <li><ion-icon name="layers-outline"></ion-icon> Structural Engineering</li>
-              <li><ion-icon name="shield-checkmark-outline"></ion-icon> Quality Delivery</li>
+              <?php foreach (($homeAbout['pillars'] ?? []) as $pillar): ?>
+              <li><ion-icon name="<?= siteEscape((string) ($pillar['icon'] ?? 'home-outline')) ?>"></ion-icon> <?= siteEscape((string) ($pillar['label'] ?? '')) ?></li>
+              <?php endforeach; ?>
             </ul>
             <blockquote class="about-studio__quote reveal reveal-delay-2">
-              Where vision meets precision — turning ambitious concepts into landmark buildings within your scope and budget.
+              <?= siteEscape((string) ($homeAbout['quote'] ?? '')) ?>
             </blockquote>
-            <a href="<?= pageHref('about') ?>" class="btn about-studio__cta reveal reveal-delay-3">Meet Our Team</a>
+            <a href="<?= pageHref('about') ?>" class="btn about-studio__cta reveal reveal-delay-3"><?= siteEscape((string) ($homeAbout['ctaLabel'] ?? 'Meet Our Team')) ?></a>
           </div>
           <div class="about-studio__visual reveal reveal-left">
             <figure class="about-studio__frame about-studio__frame--main">
-              <img src="<?= siteEscape('./assets/images/picture1.jpg') ?>" alt="Modern architectural interior" loading="lazy" width="800" height="1000">
+              <img src="<?= siteEscape(portfolioResolveMediaUrl((string) ($homeAbout['imageMain'] ?? ''), 9)) ?>" alt="Modern architectural interior" loading="lazy" width="800" height="1000" data-portfolio-fallback="9">
             </figure>
             <figure class="about-studio__frame about-studio__frame--float">
-              <img src="<?= siteEscape('./assets/images/download.jpg') ?>" alt="Luxury building design" loading="lazy" width="600" height="600">
+              <img src="<?= siteEscape(portfolioResolveMediaUrl((string) ($homeAbout['imageFloat'] ?? ''), 10)) ?>" alt="Luxury building design" loading="lazy" width="600" height="600" data-portfolio-fallback="10">
             </figure>
             <div class="about-studio__stat-ring" aria-hidden="true">
-              <span class="about-studio__stat-num">15+</span>
-              <span class="about-studio__stat-label">Years Building</span>
+              <span class="about-studio__stat-num"><?= siteEscape((string) ($homeAbout['ringNum'] ?? '15+')) ?></span>
+              <span class="about-studio__stat-label"><?= siteEscape((string) ($homeAbout['ringLabel'] ?? 'Years Building')) ?></span>
             </div>
           </div>
           <aside class="about-studio__metrics reveal reveal-delay-2" aria-label="Studio highlights">
-            <div class="about-studio__metric"><strong>200+</strong><span>Projects</span></div>
-            <div class="about-studio__metric"><strong>50+</strong><span>Experts</span></div>
-            <div class="about-studio__metric"><strong>100%</strong><span>Commitment</span></div>
+            <?php foreach (($homeAbout['metrics'] ?? []) as $metric): ?>
+            <div class="about-studio__metric"><strong><?= siteEscape((string) ($metric['num'] ?? '')) ?></strong><span><?= siteEscape((string) ($metric['label'] ?? '')) ?></span></div>
+            <?php endforeach; ?>
           </aside>
         </div>
       </section>
@@ -307,12 +384,12 @@ $homeSections = $homepageContent['sections'] ?? [];
         <div class="why-asymmetric">
           <div class="why-asymmetric__visual reveal reveal-left">
             <figure class="why-asymmetric__portrait">
-              <img src="./assets/images/why-us-leadership.png" alt="Hope Architects leadership — professional team representative" class="why-us-img-main why-asymmetric__photo" loading="lazy">
+              <img src="<?= siteEscape(portfolioResolveMediaUrl((string) ($homeWhyUs['image'] ?? ''), 8)) ?>" alt="Hope Architects interior design" class="why-us-img-main why-asymmetric__photo" loading="lazy" data-portfolio-fallback="8">
               <span class="why-asymmetric__portrait-accent" aria-hidden="true"></span>
             </figure>
             <div class="why-us-badge why-asymmetric__badge">
-              <div class="num">10+</div>
-              <div class="txt">Years of Excellence</div>
+              <div class="num"><?= siteEscape((string) ($homeWhyUs['badgeNum'] ?? '10+')) ?></div>
+              <div class="txt"><?= siteEscape((string) ($homeWhyUs['badgeTxt'] ?? 'Years of Excellence')) ?></div>
             </div>
             <div class="why-asymmetric__float why-asymmetric__float--1">
               <ion-icon name="shield-checkmark-outline"></ion-icon>
@@ -325,40 +402,21 @@ $homeSections = $homepageContent['sections'] ?? [];
           </div>
           <div class="why-asymmetric__content">
             <span class="section-eyebrow reveal">04 — Why Hope</span>
-            <p class="section-subtitle reveal section-subtitle--left">Why Choose Us</p>
-            <h2 class="h2 section-title reveal reveal-delay-1 section-title--left"><?= $homeSections['whyUs']['title'] ?? 'We Turn Vision Into<br><em>Landmark Architecture</em>' ?></h2>
-            <p class="why-us-text reveal reveal-delay-2"><?= siteEscape((string) ($homeSections['whyUs']['text'] ?? 'With over a decade of experience across Nigeria, Hope Architects stands apart through design excellence, structural integrity, and a relentless commitment to delivering on promise.')) ?></p>
+            <p class="section-subtitle reveal section-subtitle--left"><?= siteEscape((string) ($homeWhyUs['subtitle'] ?? 'Why Choose Us')) ?></p>
+            <h2 class="h2 section-title reveal reveal-delay-1 section-title--left"><?= $homeWhyUs['title'] ?? 'We Turn Vision Into<br><em>Landmark Architecture</em>' ?></h2>
+            <p class="why-us-text reveal reveal-delay-2"><?= siteEscape((string) ($homeWhyUs['text'] ?? '')) ?></p>
             <div class="why-grid why-asymmetric__grid reveal reveal-delay-3">
+              <?php foreach (($homeWhyUs['items'] ?? []) as $whyItem): ?>
               <div class="why-item">
-                <div class="why-item-icon"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+                <div class="why-item-icon"><ion-icon name="<?= siteEscape((string) ($whyItem['icon'] ?? 'home-outline')) ?>"></ion-icon></div>
                 <div>
-                  <p class="why-item-title">Structural Integrity</p>
-                  <p class="why-item-text">Every build meets rigorous engineering and safety standards.</p>
+                  <p class="why-item-title"><?= siteEscape((string) ($whyItem['title'] ?? '')) ?></p>
+                  <p class="why-item-text"><?= siteEscape((string) ($whyItem['text'] ?? '')) ?></p>
                 </div>
               </div>
-              <div class="why-item">
-                <div class="why-item-icon"><ion-icon name="ribbon-outline"></ion-icon></div>
-                <div>
-                  <p class="why-item-title">Award-Winning Design</p>
-                  <p class="why-item-text">Recognized excellence in architecture and construction.</p>
-                </div>
-              </div>
-              <div class="why-item">
-                <div class="why-item-icon"><ion-icon name="people-outline"></ion-icon></div>
-                <div>
-                  <p class="why-item-title">Expert Team</p>
-                  <p class="why-item-text">Architects, engineers, and builders under one roof.</p>
-                </div>
-              </div>
-              <div class="why-item">
-                <div class="why-item-icon"><ion-icon name="headset-outline"></ion-icon></div>
-                <div>
-                  <p class="why-item-title">Dedicated Support</p>
-                  <p class="why-item-text">Transparent communication from concept to handover.</p>
-                </div>
-              </div>
+              <?php endforeach; ?>
             </div>
-            <a href="<?= pageHref('about') ?>" class="btn reveal reveal-delay-4">Learn More About Us</a>
+            <a href="<?= pageHref('about') ?>" class="btn reveal reveal-delay-4"><?= siteEscape((string) ($homeWhyUs['ctaLabel'] ?? 'Learn More About Us')) ?></a>
           </div>
         </div>
       </section>
@@ -370,34 +428,18 @@ $homeSections = $homepageContent['sections'] ?? [];
         <div class="process-timeline">
           <header class="process-timeline__header reveal">
             <span class="section-eyebrow section-eyebrow--light">05 — Method</span>
-            <p class="section-subtitle"><?= siteEscape((string) ($homeSections['process']['subtitle'] ?? 'Our Process')) ?></p>
-            <h2 class="h2 section-title"><?= siteEscape((string) ($homeSections['process']['title'] ?? 'Your Project in 4 Clear Phases')) ?></h2>
+            <p class="section-subtitle"><?= siteEscape((string) ($homeProcess['subtitle'] ?? 'Our Process')) ?></p>
+            <h2 class="h2 section-title"><?= siteEscape((string) ($homeProcess['title'] ?? 'Your Project in 4 Clear Phases')) ?></h2>
           </header>
           <ol class="process-timeline__track">
-            <li class="process-item process-timeline__step reveal reveal-delay-1">
-              <span class="process-timeline__num">01</span>
-              <div class="process-icon"><ion-icon name="chatbubbles-outline"></ion-icon></div>
-              <h3 class="process-title">Consultation</h3>
-              <p class="process-text">We listen to your vision, assess the site, and define scope, budget, and timeline.</p>
+            <?php foreach (($homeProcess['steps'] ?? []) as $stepIndex => $step): ?>
+            <li class="process-item process-timeline__step reveal reveal-delay-<?= min(4, (int) $stepIndex + 1) ?>">
+              <span class="process-timeline__num"><?= str_pad((string) ((int) $stepIndex + 1), 2, '0', STR_PAD_LEFT) ?></span>
+              <div class="process-icon"><ion-icon name="<?= siteEscape((string) ($step['icon'] ?? 'home-outline')) ?>"></ion-icon></div>
+              <h3 class="process-title"><?= siteEscape((string) ($step['title'] ?? '')) ?></h3>
+              <p class="process-text"><?= siteEscape((string) ($step['text'] ?? '')) ?></p>
             </li>
-            <li class="process-item process-timeline__step reveal reveal-delay-2">
-              <span class="process-timeline__num">02</span>
-              <div class="process-icon"><ion-icon name="color-palette-outline"></ion-icon></div>
-              <h3 class="process-title">Design</h3>
-              <p class="process-text">Concept sketches evolve into detailed architectural plans and 3D visualizations.</p>
-            </li>
-            <li class="process-item process-timeline__step reveal reveal-delay-3">
-              <span class="process-timeline__num">03</span>
-              <div class="process-icon"><ion-icon name="document-text-outline"></ion-icon></div>
-              <h3 class="process-title">Approvals</h3>
-              <p class="process-text">We coordinate permits, structural reviews, and regulatory compliance.</p>
-            </li>
-            <li class="process-item process-timeline__step reveal reveal-delay-4">
-              <span class="process-timeline__num">04</span>
-              <div class="process-icon"><ion-icon name="construct-outline"></ion-icon></div>
-              <h3 class="process-title">Build &amp; Handover</h3>
-              <p class="process-text">Construction managed to the highest standard — delivered on time, ready to occupy.</p>
-            </li>
+            <?php endforeach; ?>
           </ol>
         </div>
       </section>
@@ -411,153 +453,31 @@ $homeSections = $homepageContent['sections'] ?? [];
           <div class="deliver-showcase__layout">
             <aside class="deliver-showcase__intro reveal">
               <span class="section-eyebrow">06 — Capabilities</span>
-              <p class="section-subtitle">What We Deliver</p>
-              <h2 class="h2 section-title deliver-showcase__title">Built for<br>Every Scale</h2>
-              <p class="deliver-showcase__lead">From intimate renovations to landmark developments — full-spectrum architecture and construction under one roof.</p>
-              <a href="<?= pageHref('services') ?>" class="btn deliver-showcase__cta">Explore All Services</a>
+              <p class="section-subtitle"><?= siteEscape((string) ($homeDeliver['subtitle'] ?? 'What We Deliver')) ?></p>
+              <h2 class="h2 section-title deliver-showcase__title"><?= $homeDeliver['title'] ?? 'Built for<br>Every Scale' ?></h2>
+              <p class="deliver-showcase__lead"><?= siteEscape((string) ($homeDeliver['lead'] ?? '')) ?></p>
+              <a href="<?= pageHref('services') ?>" class="btn deliver-showcase__cta"><?= siteEscape((string) ($homeDeliver['ctaLabel'] ?? 'Explore All Services')) ?></a>
               <div class="deliver-showcase__stat" aria-hidden="true">
-                <strong>8+</strong>
-                <span>Core disciplines</span>
+                <strong><?= siteEscape((string) ($homeDeliver['statNum'] ?? '8+')) ?></strong>
+                <span><?= siteEscape((string) ($homeDeliver['statLabel'] ?? 'Core disciplines')) ?></span>
               </div>
             </aside>
 
             <ul class="deliver-showcase__grid">
-              <li class="reveal reveal-delay-1">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">01</span>
-                  <span class="deliver-tile__icon"><ion-icon name="home-outline"></ion-icon></span>
+              <?php foreach (($homeDeliver['tiles'] ?? []) as $tileIndex => $tile): ?>
+              <li class="reveal reveal-delay-<?= min(4, ((int) $tileIndex % 4) + 1) ?>">
+                <a href="<?= pageHref(!empty($tile['isCta']) ? 'contact' : 'services') ?>" class="deliver-tile<?= !empty($tile['isCta']) ? ' deliver-tile--cta' : '' ?>">
+                  <span class="deliver-tile__num"><?= str_pad((string) ((int) $tileIndex + 1), 2, '0', STR_PAD_LEFT) ?></span>
+                  <span class="deliver-tile__icon"><ion-icon name="<?= siteEscape((string) ($tile['icon'] ?? 'home-outline')) ?>"></ion-icon></span>
                   <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Residential</h3>
-                    <p class="deliver-tile__desc">Custom homes and estates designed for how you live.</p>
+                    <h3 class="deliver-tile__title"><?= siteEscape((string) ($tile['title'] ?? '')) ?></h3>
+                    <p class="deliver-tile__desc"><?= siteEscape((string) ($tile['text'] ?? '')) ?></p>
                   </div>
                   <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
                 </a>
               </li>
-              <li class="reveal reveal-delay-2">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">02</span>
-                  <span class="deliver-tile__icon"><ion-icon name="business-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Commercial</h3>
-                    <p class="deliver-tile__desc">Offices and mixed-use spaces that inspire teams.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-3">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">03</span>
-                  <span class="deliver-tile__icon"><ion-icon name="leaf-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Sustainable Design</h3>
-                    <p class="deliver-tile__desc">Green building and energy-efficient materials.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-4">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">04</span>
-                  <span class="deliver-tile__icon"><ion-icon name="cube-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">3D Visualization</h3>
-                    <p class="deliver-tile__desc">Photorealistic renders before ground is broken.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-1">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">05</span>
-                  <span class="deliver-tile__icon"><ion-icon name="git-network-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Structural Engineering</h3>
-                    <p class="deliver-tile__desc">Safe, durable, code-compliant structures.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-2">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">06</span>
-                  <span class="deliver-tile__icon"><ion-icon name="map-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Site Planning</h3>
-                    <p class="deliver-tile__desc">Land use, zoning, and master plan development.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-3">
-                <a href="<?= pageHref('services') ?>" class="deliver-tile">
-                  <span class="deliver-tile__num">07</span>
-                  <span class="deliver-tile__icon"><ion-icon name="hammer-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Renovation</h3>
-                    <p class="deliver-tile__desc">Transform existing structures with modern upgrades.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
-              <li class="reveal reveal-delay-4">
-                <a href="<?= pageHref('contact') ?>" class="deliver-tile deliver-tile--cta">
-                  <span class="deliver-tile__num">08</span>
-                  <span class="deliver-tile__icon"><ion-icon name="call-outline"></ion-icon></span>
-                  <div class="deliver-tile__body">
-                    <h3 class="deliver-tile__title">Start a Project</h3>
-                    <p class="deliver-tile__desc">Let's discuss your vision — book a consultation today.</p>
-                  </div>
-                  <span class="deliver-tile__arrow"><ion-icon name="arrow-forward-outline"></ion-icon></span>
-                </a>
-              </li>
+              <?php endforeach; ?>
             </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- =============================================
-           TESTIMONIALS — Editorial
-      ============================================= -->
-      <section class="testimonial testimonial--editorial" id="testimonial" aria-label="Client testimonials">
-        <div class="testimonials-editorial">
-          <header class="testimonials-editorial__header reveal">
-            <span class="section-eyebrow">07 — Voices</span>
-            <p class="section-subtitle">Testimonials</p>
-            <h2 class="h2 section-title">What Our Clients Say</h2>
-          </header>
-
-          <div id="testimonialsSkeleton" class="testimonials-skeleton">
-            <div class="skeleton-grid">
-              <div class="skeleton-testimonial"></div>
-              <div class="skeleton-testimonial"></div>
-              <div class="skeleton-testimonial"></div>
-            </div>
-          </div>
-          <div id="testimonialsError" class="testimonials-error u-hidden" role="alert">
-            <ion-icon name="alert-circle-outline"></ion-icon>
-            <h3>Failed to load testimonials</h3>
-            <p>Unable to fetch client testimonials. Please try again.</p>
-            <button onclick="loadTestimonials()" class="btn u-mt-20">Try Again</button>
-          </div>
-          <div id="testimonialsEmpty" class="testimonials-empty u-hidden">
-            <ion-icon name="chatbubbles-outline"></ion-icon>
-            <h3>No Testimonials Yet</h3>
-            <p>Check back soon for client experiences!</p>
-          </div>
-
-          <div id="testimonialsSlider" class="testimonial-slider testimonials-editorial__slider u-hidden">
-            <div class="testimonial-track">
-              <ul id="testimonialsList" class="testimonial-list"></ul>
-            </div>
-            <div class="slider-nav testimonials-editorial__nav">
-              <button class="slider-prev" id="testimonialPrev" disabled aria-label="Previous">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-              </button>
-              <button class="slider-next" id="testimonialNext" aria-label="Next">
-                <ion-icon name="chevron-forward-outline"></ion-icon>
-              </button>
-            </div>
-            <div class="slider-dots testimonials-editorial__dots" id="testimonialDots" role="tablist"></div>
           </div>
         </div>
       </section>
@@ -574,8 +494,8 @@ $homeSections = $homepageContent['sections'] ?? [];
           <header class="cities-showcase__header reveal">
             <div class="cities-showcase__header-copy">
               <span class="section-eyebrow section-eyebrow--light">08 — Reach</span>
-              <p class="section-subtitle">Local Expertise</p>
-              <h2 class="h2 section-title cities-showcase__title">Building Across<br><em>Lagos</em></h2>
+              <p class="section-subtitle"><?= siteEscape((string) ($homeSections['areas']['subtitle'] ?? 'Local Expertise')) ?></p>
+              <h2 class="h2 section-title cities-showcase__title"><?= $homeSections['areas']['title'] ?? 'Building Across<br><em>Lagos</em>' ?></h2>
               <p class="areas-intro cities-showcase__intro reveal reveal-delay-1" id="areasIntro">From Victoria Island skylines to Lekki estates — we design and deliver landmark architecture across Nigeria's most dynamic city.</p>
             </div>
             <div class="cities-showcase__hubs reveal reveal-delay-2">
@@ -705,34 +625,39 @@ $homeSections = $homepageContent['sections'] ?? [];
       const preloader = document.getElementById('preloader');
       const video     = document.getElementById('preloaderVideo');
 
-      if (!preloader) return;
-
       function notifySiteReady() {
         window.dispatchEvent(new CustomEvent('hope:preloader-done'));
         window.dispatchEvent(new CustomEvent('biver:preloader-done'));
       }
 
-      let fallbackTimer = null;
+      if (!preloader) {
+        notifySiteReady();
+        return;
+      }
 
-      function scheduleFallback() {
+      let fallbackTimer = null;
+      let dismissed = false;
+
+      function scheduleFallback(ms) {
         clearTimeout(fallbackTimer);
-        const durationMs = Number.isFinite(video.duration) && video.duration > 0
-          ? (video.duration * 1000) + 400
-          : 8000;
-        fallbackTimer = setTimeout(dismissPreloader, durationMs);
+        fallbackTimer = setTimeout(dismissPreloader, ms);
       }
 
       function dismissPreloader() {
-        if (preloader.classList.contains('hidden')) return;
+        if (dismissed || preloader.classList.contains('hidden')) return;
+        dismissed = true;
         if (fallbackTimer) clearTimeout(fallbackTimer);
         preloader.classList.add('exiting');
         setTimeout(() => {
           preloader.classList.add('hidden');
           document.body.style.overflow = '';
           if (video) {
-            video.pause();
-            video.removeAttribute('src');
-            video.load();
+            try {
+              video.pause();
+              video.removeAttribute('src');
+              video.querySelectorAll('source').forEach((s) => s.removeAttribute('src'));
+              video.load();
+            } catch (_) { /* ignore */ }
           }
           notifySiteReady();
         }, 700);
@@ -740,27 +665,58 @@ $homeSections = $homepageContent['sections'] ?? [];
 
       document.body.style.overflow = 'hidden';
 
+      const skipBtn = document.getElementById('preloaderSkip');
+      if (skipBtn) {
+        skipBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          dismissPreloader();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') dismissPreloader();
+      }, { once: true });
+
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduced || !video) {
-        setTimeout(dismissPreloader, prefersReduced ? 300 : 800);
+        scheduleFallback(prefersReduced ? 300 : 1200);
         return;
       }
 
-      fallbackTimer = setTimeout(dismissPreloader, 10000);
+      // Hard cap so a broken video never blocks the site.
+      scheduleFallback(20000);
+
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
 
       video.addEventListener('ended', dismissPreloader, { once: true });
-      video.addEventListener('error', dismissPreloader, { once: true });
-      video.addEventListener('loadedmetadata', scheduleFallback, { once: true });
+      video.addEventListener('error', () => scheduleFallback(600), { once: true });
+      video.addEventListener('loadedmetadata', () => {
+        const durationMs = Number.isFinite(video.duration) && video.duration > 0
+          ? (video.duration * 1000) + 400
+          : 8000;
+        scheduleFallback(durationMs);
+      }, { once: true });
+      video.addEventListener('playing', () => {
+        // Keep playing; duration-based dismiss handles the rest.
+      }, { once: true });
 
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => dismissPreloader());
-      }
-
-      window.addEventListener('load', () => {
-        if (video.paused) {
-          video.play().catch(() => dismissPreloader());
+      const tryPlay = () => {
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          // Do not dismiss immediately — browser may allow play after load.
+          playPromise.catch(() => {
+            setTimeout(() => {
+              video.play().catch(() => { /* keep waiting for timeout/error */ });
+            }, 250);
+          });
         }
+      };
+
+      tryPlay();
+      window.addEventListener('load', () => {
+        if (!dismissed && video.paused) tryPlay();
       }, { once: true });
     })();
 
@@ -770,7 +726,6 @@ $homeSections = $homepageContent['sections'] ?? [];
     ============================================= */
     const API_BASE_URL = (window.HOPE_SITE || window.BIVER_SITE)?.apiBase || '';
     const PROPERTIES_API = window.HOPE_SITE?.propertiesApi || window.BIVER_SITE?.propertiesApi || "api/properties.php";
-    const TESTIMONIALS_API = window.HOPE_SITE?.testimonialsApi || window.BIVER_SITE?.testimonialsApi || "api/testimonials.php";
     const LOCATIONS_API = window.HOPE_SITE?.locationsApi || window.BIVER_SITE?.locationsApi || "api/locations.php";
 
     function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
@@ -816,13 +771,6 @@ $homeSections = $homepageContent['sections'] ?? [];
       async getCart() { return await this.get('/cart'); },
       async addToCart(propertyId) { return await this.post(`/cart/${propertyId}`); },
       async removeFromCart(propertyId) { return await this.delete(`/cart/${propertyId}`); },
-      async getTestimonials() {
-        const response = await fetchWithTimeout(TESTIMONIALS_API);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        if (data.success === false) throw new Error(data.message || 'Failed to load testimonials');
-        return data;
-      },
     };
 
     const utils = {
@@ -1000,21 +948,23 @@ $homeSections = $homepageContent['sections'] ?? [];
     function createPropertyCard(property, index) {
       const li = document.createElement('li');
       const cardIndex = String((index || 0) + 1).padStart(2, '0');
-      const priceDisplay = property.type === 'rent'
-        ? `₦${utils.formatNumber(property.price)}/Month`
-        : `₦${utils.formatNumber(property.price)}`;
-      const imageUrl = property.imageUrl || (property.images && property.images.length > 0
-        ? property.images[0]
-        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop');
+      const portfolio = window.HOPE_PORTFOLIO || {};
+      const imageUrl = portfolio.propertyImage
+        ? portfolio.propertyImage(property, index || 0)
+        : (property.imageUrl || (property.images && property.images.length > 0 ? property.images[0] : ''));
+      const badge = portfolio.categoryBadge
+        ? portfolio.categoryBadge(property.type)
+        : { label: property.type === 'rent' ? 'Interior Design' : 'Architecture', className: property.type === 'rent' ? 'interior' : 'architecture' };
+      const badgeClass = badge.className === 'interior' ? 'green' : 'orange';
+      const badgeText = badge.label;
       const hasVideo  = property.videoUrl || (property.videos && property.videos.length > 0);
       const videoUrl  = property.videoUrl || (hasVideo ? property.videos[0] : null);
-      const badgeClass = property.type === 'rent' ? 'green' : 'orange';
-      const badgeText  = property.type === 'rent' ? 'For Rent' : 'For Sale';
       const isNew      = property.createdAt && (new Date() - new Date(property.createdAt)) < 7 * 24 * 60 * 60 * 1000;
       const isFavorite = isPropertyFavorite(property._id);
       const isInCart   = isPropertyInCart(property._id);
 
       const resolveMediaUrl = (url) => {
+        if (portfolio.resolveMediaUrl) return portfolio.resolveMediaUrl(url, index || 0);
         if (!url) return '';
         if (url.startsWith('http') || url.startsWith('/')) return url;
         if (url.startsWith('assets/')) return './' + url;
@@ -1027,7 +977,7 @@ $homeSections = $homepageContent['sections'] ?? [];
       let mediaHtml = hasVideo
         ? `<video src="${finalVideo}" poster="${finalImg}" controls preload="metadata" playsinline aria-label="Video tour of ${property.title}"></video>
            <div class="video-badge"><ion-icon name="videocam"></ion-icon><span>Video Tour</span></div>`
-        : `<img src="${finalImg}" alt="${property.title}" class="w-100" loading="lazy">`;
+        : `<img src="${finalImg}" alt="${property.title}" class="w-100" loading="lazy" data-portfolio-fallback="${index || 0}">`;
 
       const siteCfg = window.HOPE_SITE || window.BIVER_SITE || {};
       const detailUrl = siteCfg.propertyDetail
@@ -1059,7 +1009,7 @@ $homeSections = $homepageContent['sections'] ?? [];
                 ${property.area ? `<li class="card-item"><ion-icon name="resize-outline"></ion-icon><strong>${utils.formatNumber(property.area)}</strong><span>ft²</span></li>` : ''}
               </ul>
               <div class="project-card__bar card-footer">
-                <div class="project-card__price card-price"><strong>${priceDisplay}</strong></div>
+                <span class="project-card__category">${badgeText}</span>
                 <a href="${detailUrl}" class="project-card__cta">View Project <ion-icon name="arrow-forward-outline"></ion-icon></a>
                 <div class="project-card__actions card-footer-actions">
                   <button class="card-footer-actions-btn ${isFavorite ? 'favorited' : ''}"
@@ -1077,6 +1027,9 @@ $homeSections = $homepageContent['sections'] ?? [];
             </figcaption>
           </figure>
         </article>`;
+      if (portfolio.bindImageFallback) {
+        portfolio.bindImageFallback(li, index || 0);
+      }
       return li;
     }
 
@@ -1144,122 +1097,6 @@ $homeSections = $homepageContent['sections'] ?? [];
     }
 
     /* =============================================
-       TESTIMONIALS MODULE
-    ============================================= */
-    let testimonials = [];
-    let currentTestimonialSlide = 0;
-    let testimonialsPerSlide = 3;
-
-    async function loadTestimonials() {
-      const skeleton = document.getElementById('testimonialsSkeleton');
-      const error    = document.getElementById('testimonialsError');
-      const empty    = document.getElementById('testimonialsEmpty');
-      const slider   = document.getElementById('testimonialsSlider');
-      try {
-        showEl(skeleton);
-        hideEl(error);
-        hideEl(empty);
-        hideEl(slider);
-        const data = await api.getTestimonials();
-        const items = data.data || [];
-        if (items.length > 0) {
-          testimonials = items;
-          displayTestimonials(testimonials);
-        } else {
-          hideEl(skeleton);
-          showEl(empty);
-        }
-      } catch (e) {
-        console.warn('Testimonials load failed:', e.message);
-        hideEl(skeleton);
-        showEl(error);
-      }
-    }
-
-    function displayTestimonials(testimonials) {
-      const skeleton = document.getElementById('testimonialsSkeleton');
-      const slider   = document.getElementById('testimonialsSlider');
-      const listEl   = document.getElementById('testimonialsList');
-      hideEl(skeleton);
-      listEl.innerHTML = '';
-      testimonials.forEach(t => listEl.appendChild(createTestimonialCard(t)));
-      showEl(slider);
-      generateTestimonialDots();
-      updateTestimonialSlider();
-
-      const prev = document.getElementById('testimonialPrev');
-      const next = document.getElementById('testimonialNext');
-      prev.onclick = () => {
-        if (currentTestimonialSlide > 0) { currentTestimonialSlide--; updateTestimonialSlider(); }
-      };
-      next.onclick = () => {
-        const max = Math.ceil(testimonials.length / testimonialsPerSlide) - 1;
-        if (currentTestimonialSlide < max) { currentTestimonialSlide++; updateTestimonialSlider(); }
-      };
-    }
-
-    function createTestimonialCard(testimonial) {
-      const li = document.createElement('li');
-      li.className = 'testimonial-item';
-      const initials = testimonial.initials || utils.getInitials(testimonial.name);
-      const rating = Math.max(1, Math.min(5, Number(testimonial.rating) || 5));
-      const starsHtml = Array.from({ length: 5 }, (_, i) =>
-        `<ion-icon name="${i < rating ? 'star' : 'star-outline'}"></ion-icon>`
-      ).join('');
-      const imageSrc = testimonial.image || '';
-      li.innerHTML = `
-        <div class="testimonial-card">
-          <div class="testimonial-quote-icon"><ion-icon name="chatbubble-ellipses-outline"></ion-icon></div>
-          <div class="testimonial-avatar ${!imageSrc ? 'no-image' : ''}">
-            ${imageSrc
-              ? `<img src="${imageSrc.startsWith('http') ? imageSrc : './' + imageSrc.replace(/^\.?\//, '')}" alt="${testimonial.name}" loading="lazy">`
-              : `<span>${initials}</span>`}
-          </div>
-          <div class="testimonial-stars">${starsHtml}</div>
-          <div class="testimonial-content">
-            <p class="testimonial-text">${testimonial.message}</p>
-          </div>
-          <div class="testimonial-author">
-            <h4>${testimonial.name}</h4>
-            <p>${testimonial.roleLabel || 'Happy Client'}</p>
-          </div>
-        </div>`;
-      return li;
-    }
-
-    function generateTestimonialDots() {
-      const dotsEl = document.getElementById('testimonialDots');
-      const total  = Math.ceil(testimonials.length / testimonialsPerSlide);
-      dotsEl.innerHTML = '';
-      for (let i = 0; i < total; i++) {
-        const dot = document.createElement('button');
-        dot.className = `slider-dot ${i === 0 ? 'active' : ''}`;
-        dot.setAttribute('aria-label', `Slide ${i + 1}`);
-        dot.onclick = () => { currentTestimonialSlide = i; updateTestimonialSlider(); };
-        dotsEl.appendChild(dot);
-      }
-    }
-
-    function updateTestimonialSlider() {
-      const listEl = document.getElementById('testimonialsList');
-      const prev   = document.getElementById('testimonialPrev');
-      const next   = document.getElementById('testimonialNext');
-      const total  = Math.ceil(testimonials.length / testimonialsPerSlide);
-      listEl.style.transform = `translateX(-${currentTestimonialSlide * 100}%)`;
-      prev.disabled = currentTestimonialSlide === 0;
-      next.disabled = currentTestimonialSlide === total - 1;
-      document.querySelectorAll('.slider-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === currentTestimonialSlide);
-      });
-    }
-
-    function updateTestimonialsPerSlide() {
-      testimonialsPerSlide   = window.innerWidth >= 992 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-      currentTestimonialSlide = 0;
-      if (testimonials.length > 0) { generateTestimonialDots(); updateTestimonialSlider(); }
-    }
-
-    /* =============================================
        SERVICE AREAS MODULE
     ============================================= */
     async function loadServiceAreas() {
@@ -1316,7 +1153,9 @@ $homeSections = $homepageContent['sections'] ?? [];
             <li class="reveal reveal-delay-${delay}">
               <article class="city-card city-card--${city}">
                 <div class="city-card__media">
-                  <img src="${area.imageUrl}" alt="${area.title} — ${cityLabel}" width="800" height="560" loading="lazy">
+                  <img src="${(window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.resolveMediaUrl)
+                    ? window.HOPE_PORTFOLIO.resolveMediaUrl(area.imageUrl, index + 20)
+                    : (area.imageUrl || '')}" alt="${area.title} — ${cityLabel}" width="800" height="560" loading="lazy">
                   <div class="city-card__media-shade" aria-hidden="true"></div>
                   <span class="city-card__city">${cityLabel}</span>
                   ${area.tag ? `<span class="city-card__tag">${area.tag}</span>` : ''}
@@ -1352,15 +1191,14 @@ $homeSections = $homepageContent['sections'] ?? [];
 
       initScrollReveal();
 
-      // Responsive testimonials
-      updateTestimonialsPerSlide();
-      window.addEventListener('resize', updateTestimonialsPerSlide);
+      if (window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.bindImageFallback) {
+        window.HOPE_PORTFOLIO.bindImageFallback(document);
+      }
 
       // Data loading (do not block page render on slow external auth API)
       checkUserAuthentication();
       await Promise.all([
         loadFeaturedProperties(),
-        loadTestimonials(),
         loadServiceAreas()
       ]);
     });

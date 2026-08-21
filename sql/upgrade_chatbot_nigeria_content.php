@@ -57,7 +57,7 @@ try {
     $faqs = [
         [
             'What is a Certificate of Occupancy (C of O)?',
-            'A Certificate of Occupancy (C of O) is a state-issued document confirming that the government has granted you the right to occupy and use land for a specified purpose (usually residential or commercial). It is one of the strongest forms of land title in Nigeria. Before buying, confirm whether the property has a valid C of O or is on a path to obtaining one. Biver Royalty Homes assists buyers with title verification.',
+            'A Certificate of Occupancy (C of O) is a state-issued document confirming that the government has granted you the right to occupy and use land for a specified purpose (usually residential or commercial). It is one of the strongest forms of land title in Nigeria. Before buying, confirm whether the property has a valid C of O or is on a path to obtaining one. Hope Architects assists buyers with title verification.',
             ['c of o', 'certificate of occupancy', 'occupancy certificate', 'title document'],
             'legal',
             92,
@@ -120,7 +120,7 @@ try {
         ],
         [
             'Can diaspora Nigerians buy property from abroad?',
-            'Yes. Many clients in the **UK, US, Canada, and Europe** buy land or homes in Nigeria. Use trusted agents, never pay without verification, request video walkthroughs, and complete documentation through a lawyer. Biver Royalty Homes supports diaspora buyers with transparent updates and documented transactions.',
+            'Yes. Many clients in the **UK, US, Canada, and Europe** buy land or homes in Nigeria. Use trusted agents, never pay without verification, request video walkthroughs, and complete documentation through a lawyer. Hope Architects supports diaspora buyers with transparent updates and documented transactions.',
             ['diaspora', 'abroad', 'overseas nigerian', 'from uk', 'from usa', 'in the diaspora'],
             'purchase',
             90,
@@ -141,7 +141,7 @@ try {
         ],
         [
             'How do I avoid land fraud in Nigeria?',
-            'Key steps: (1) Verify seller identity, (2) Confirm survey and title documents, (3) Search at land registry where possible, (4) Visit the site, (5) Pay through traceable channels in tranches tied to milestones, (6) Use a lawyer. Avoid pressure to pay cash without paperwork. Biver Royalty Homes prioritises verified listings.',
+            'Key steps: (1) Verify seller identity, (2) Confirm survey and title documents, (3) Search at land registry where possible, (4) Visit the site, (5) Pay through traceable channels in tranches tied to milestones, (6) Use a lawyer. Avoid pressure to pay cash without paperwork. Hope Architects prioritises verified listings.',
             ['land fraud', 'scam', 'omo onile', 'omonile', 'fake documents', '419 land'],
             'legal',
             91,
@@ -197,7 +197,7 @@ try {
         ],
         [
             'Can I get a receipt and contract when I pay for property?',
-            'Yes — you should always receive a **written contract or offer letter**, payment receipts, and later the deed and title documents. Never pay without a paper trail. Biver Royalty Homes documents transactions professionally for buyer protection.',
+            'Yes — you should always receive a **written contract or offer letter**, payment receipts, and later the deed and title documents. Never pay without a paper trail. Hope Architects documents transactions professionally for buyer protection.',
             ['receipt', 'contract', 'payment proof', 'agreement'],
             'legal',
             85,
@@ -240,7 +240,7 @@ try {
     $kb = [
         [
             'Nigerian Property Title Documents Explained',
-            "Common documents in Nigerian real estate:\n\n• **C of O (Certificate of Occupancy)** — state grant to use land\n• **Deed of Assignment** — transfer from seller to buyer\n• **Survey Plan** — boundary description\n• **Governor's Consent** — approval of transfer\n• **Gazette / Excision** — proof land is free from acquisition\n\nAlways engage a property lawyer. Biver Royalty Homes supports verification before you pay.",
+            "Common documents in Nigerian real estate:\n\n• **C of O (Certificate of Occupancy)** — state grant to use land\n• **Deed of Assignment** — transfer from seller to buyer\n• **Survey Plan** — boundary description\n• **Governor's Consent** — approval of transfer\n• **Gazette / Excision** — proof land is free from acquisition\n\nAlways engage a property lawyer. Hope Architects supports verification before you pay.",
             ['title documents', 'land papers', 'legal documents nigeria', 'paperwork'],
             'legal',
             92,
@@ -282,7 +282,7 @@ try {
         ],
         [
             'Diaspora Guide — Buying Property from Overseas',
-            "If you live abroad:\n• Use video inspections and independent lawyers in Nigeria\n• Avoid paying 'agents' without company address and contract\n• Request scanned title/survey before deposit\n• Milestone payments tied to documentation\n• Plan for Governor's Consent and final handover trip\n\nBiver Royalty Homes works with diaspora clients regularly — all amounts quoted in **₦**.",
+            "If you live abroad:\n• Use video inspections and independent lawyers in Nigeria\n• Avoid paying 'agents' without company address and contract\n• Request scanned title/survey before deposit\n• Milestone payments tied to documentation\n• Plan for Governor's Consent and final handover trip\n\nHope Architects works with diaspora clients regularly — all amounts quoted in **₦**.",
             ['diaspora guide', 'buy from abroad', 'overseas buyer'],
             'purchase',
             91,
@@ -373,7 +373,7 @@ try {
         ],
         [
             'Real Estate Agent Commission in Nigeria',
-            'Agent commission is commonly **5–10%** of sale or rent (negotiable), paid as agreed in an engagement letter. Transparent agents disclose fees upfront. Biver Royalty Homes explains commission and marketing scope before listing your property.',
+            'Agent commission is commonly **5–10%** of sale or rent (negotiable), paid as agreed in an engagement letter. Transparent agents disclose fees upfront. Hope Architects explains commission and marketing scope before listing your property.',
             ['agent commission', 'agency fee', 'broker fee', 'commission rate'],
             'sell',
             82,

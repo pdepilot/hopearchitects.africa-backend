@@ -138,14 +138,9 @@ function handleUpdateSubmission(): void
     $ownerName = trim((string) ($_POST['ownerName'] ?? ''));
     $ownerPhone = trim((string) ($_POST['ownerPhone'] ?? ''));
     $listingPurpose = trim((string) ($_POST['listingPurpose'] ?? ''));
-    $price = PropertyUploadService::parsePrice((string) ($_POST['price'] ?? '0'));
 
     if ($title === '' || $location === '' || $address === '' || $description === '' || $ownerName === '' || $ownerPhone === '') {
         jsonError('Please complete all required fields.');
-    }
-
-    if ($price <= 0) {
-        jsonError('Please enter a valid price.');
     }
 
     $keepImagesRaw = $_POST['keepImages'] ?? '[]';
@@ -171,7 +166,7 @@ function handleUpdateSubmission(): void
 
     $updated = PropertyRepository::update($id, [
         'title'            => $title,
-        'price'            => $price,
+        'price'            => 0,
         'type'             => $listingType,
         'location'         => $location,
         'bedrooms'         => max(0, (int) ($_POST['bedrooms'] ?? $property['bedrooms'] ?? 0)),

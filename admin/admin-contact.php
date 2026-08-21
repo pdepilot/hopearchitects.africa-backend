@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/admin_guard.php';
 
 $activeNav = 'contacts';
-$pageTitle = 'Inquiries | Biver Royalty Homes Admin';
+$pageTitle = 'Inquiries | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $pageStylesheet = '../assets/css/admin-contact.css';
 
@@ -177,7 +177,18 @@ $pageStylesheet = '../assets/css/admin-contact.css';
 
     container.innerHTML = contacts.map(c => {
       const unread = c.status === 'new';
-      const typeLabel = (c.inquiryType || c.inquiry_type || 'general').replace(/^\w/, m => m.toUpperCase());
+      const rawType = (c.inquiryType || c.inquiry_type || 'general');
+      const typeLabels = {
+        general: 'General Inquiry',
+        'new-build': 'New Build Project',
+        renovation: 'Renovation / Remodel',
+        consultation: 'Design Consultation',
+        partnership: 'Partnership',
+        buying: 'Buying',
+        renting: 'Renting',
+        selling: 'Selling'
+      };
+      const typeLabel = typeLabels[rawType] || rawType.replace(/-/g, ' ').replace(/^\w/, m => m.toUpperCase());
       return `
         <article class="contact-card ${unread ? 'unread' : ''}" data-id="${c.id}">
           ${statusBadge(c.status)}
@@ -232,7 +243,7 @@ $pageStylesheet = '../assets/css/admin-contact.css';
       const replies = data.replies || [];
 
       document.getElementById('replyInquiryId').value = id;
-      document.getElementById('replySubject').value = 'Re: Your inquiry — Biver Royalty Homes';
+      document.getElementById('replySubject').value = 'Re: Your inquiry — Hope Architects';
       document.getElementById('replyMessage').value = '';
 
       let repliesHtml = '';

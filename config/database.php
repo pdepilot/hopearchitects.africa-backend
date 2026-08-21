@@ -1,6 +1,6 @@
 <?php
 /**
- * PDO database connection for Biver Royal Estate.
+ * PDO database connection for Hope Architects.
  *
  * Credentials load in this order:
  * 1. config/database.local.php (per-machine secrets — not committed to git)

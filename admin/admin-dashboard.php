@@ -8,8 +8,8 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="Biver Royalty Homes Admin Dashboard – Manage properties, users, testimonials, and site content.">
-  <title>Admin Dashboard | Biver Royalty Homes</title>
+  <meta name="description" content="Hope Architects Admin Dashboard – Manage properties, users, testimonials, and site content.">
+  <title>Admin Dashboard | Hope Architects</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -94,14 +94,14 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
         </div>
 
         <div class="panel">
-          <div class="panel-header"><h2>Recent Properties</h2><a href="admin-property.php" class="btn-outline">Manage Properties</a></div>
-          <table><thead><tr><th>Title</th><th>Price</th><th>Type</th><th>Status</th></tr></thead><tbody>
-            ${recentProps.length ? recentProps.map((p) => `<tr><td>${esc(p.title)}</td><td>${formatMoney(p.price)}</td><td>${esc(p.type)}</td><td>${esc(p.approvalStatus || 'pending')}</td></tr>`).join('') : '<tr><td colspan="4">No properties yet.</td></tr>'}
+          <div class="panel-header"><h2>Recent Projects</h2><a href="admin-projects.php" class="btn-outline">Manage Projects</a></div>
+          <table><thead><tr><th>Title</th><th>Discipline</th><th>Status</th></tr></thead><tbody>
+            ${recentProps.length ? recentProps.map((p) => `<tr><td>${esc(p.title)}</td><td>${p.type === 'rent' ? 'Interior Design' : 'Architecture'}</td><td>${esc(p.approvalStatus || 'pending')}</td></tr>`).join('') : '<tr><td colspan="3">No projects yet.</td></tr>'}
           </tbody></table>
         </div>
 
         <div class="panel">
-          <div class="panel-header"><h2>Pending List-Your-Property Submissions</h2><a href="admin-list-your-property.php" class="btn-outline">Review Submissions</a></div>
+          <div class="panel-header"><h2>Pending Project Briefs</h2><a href="admin-list-your-property.php" class="btn-outline">Review Briefs</a></div>
           <table><thead><tr><th>Title</th><th>Owner</th><th>Location</th><th>Status</th></tr></thead><tbody>
             ${recentSubs.length ? recentSubs.map((s) => `<tr><td>${esc(s.title)}</td><td>${esc(s.ownerName || s.owner?.name || '—')}</td><td>${esc(s.location || '—')}</td><td>${esc(s.approvalStatus || 'pending')}</td></tr>`).join('') : '<tr><td colspan="4">No pending submissions.</td></tr>'}
           </tbody></table>
@@ -132,7 +132,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
             datasets: [{
               label: 'Properties added',
               data: counts.length ? counts : [0],
-              borderColor: '#D4AF37',
+              borderColor: '#feee90',
               backgroundColor: 'rgba(212,175,55,0.12)',
               tension: 0.35,
               fill: true

@@ -1,0 +1,20 @@
+# Local secrets — never commit
+config/mail.local.php
+config/database.local.php
+.env
+.env.*
+
+# Dependencies / IDE
+/vendor/
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Oversized local recordings
+assets/videos/Recording*.mp4
+
+# PHP / OS junk
+*.log
+.phpunit.result.cache

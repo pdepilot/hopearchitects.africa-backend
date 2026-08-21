@@ -22,5 +22,9 @@ if (!AuthSecurity::isAuthenticated()) {
 }
 
 if (empty($_SESSION['admin_permissions']) && !empty($_SESSION['admin_id'])) {
-    AdminPermissions::loadSessionPermissions((int) $_SESSION['admin_id']);
+    try {
+        AdminPermissions::loadSessionPermissions((int) $_SESSION['admin_id']);
+    } catch (Throwable $e) {
+        // Keep existing session role defaults if DB is temporarily unavailable.
+    }
 }

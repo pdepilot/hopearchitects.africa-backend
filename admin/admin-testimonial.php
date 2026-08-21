@@ -223,7 +223,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     toast = document.createElement('div');
     toast.className = 'toast-msg';
     toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
-    toast.style.borderLeftColor = isError ? '#e74c3c' : '#D4AF37';
+    toast.style.borderLeftColor = isError ? '#e74c3c' : '#feee90';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
   }

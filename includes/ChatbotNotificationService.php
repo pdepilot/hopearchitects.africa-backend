@@ -20,7 +20,7 @@ class ChatbotNotificationService
             return false;
         }
 
-        $subject = '[Biver Royalty Homes] New chatbot support request';
+        $subject = '[Hope Architects] New chatbot support request';
         $body = '<h2>New support request from chatbot</h2>'
             . '<p><strong>Name:</strong> ' . htmlspecialchars((string) ($lead['visitor_name'] ?? $lead['name'] ?? ''), ENT_QUOTES, 'UTF-8') . '</p>'
             . '<p><strong>Phone:</strong> ' . htmlspecialchars((string) ($lead['visitor_phone'] ?? $lead['phone'] ?? ''), ENT_QUOTES, 'UTF-8') . '</p>'
@@ -44,7 +44,7 @@ class ChatbotNotificationService
             return false;
         }
 
-        $subject = '[Biver Royalty Homes] Conversation assigned';
+        $subject = '[Hope Architects] Conversation assigned';
         $body = '<p>Conversation <strong>' . htmlspecialchars($conversationLabel, ENT_QUOTES, 'UTF-8')
             . '</strong> was assigned to <strong>' . htmlspecialchars($assignedTo, ENT_QUOTES, 'UTF-8') . '</strong>.</p>';
 

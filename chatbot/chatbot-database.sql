@@ -1,5 +1,5 @@
 -- ============================================================
--- Biver Royalty Homes — AI Chat Assistant Database Schema
+-- Hope Architects — AI Chat Assistant Database Schema
 -- Run against database: biverroyal_estate
 -- ============================================================
 
@@ -253,7 +253,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================
 
 INSERT INTO `agents` (`name`, `email`, `status`, `is_active`) VALUES
-('Property Consultant', 'consultant@biverroyaltyhomes.com', 'online', 1);
+('Property Consultant', 'info@hopearchitects.ng', 'online', 1);
 
 INSERT INTO `chatbot_intents` (`intent_key`, `name`, `description`, `keywords`, `priority`, `confidence_threshold`) VALUES
 ('greetings', 'Greetings', 'Welcome and hello messages', '["hello","hi","hey","good morning","good afternoon","good evening","how are you","greetings","hola"]', 100, 0.30),

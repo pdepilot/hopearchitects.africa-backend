@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config/database.php';
 require_once __DIR__ . '/site_paths.php';
+require_once __DIR__ . '/portfolio_helpers.php';
 
 class PropertyRepository
 {
@@ -491,10 +492,23 @@ class PropertyRepository
         $videoUrl = $row['video_url'] ?? null;
         $gallery = self::decodeGallery($row['gallery_urls'] ?? null);
         $storedImages = array_values(array_filter(array_merge($imageUrl ? [$imageUrl] : [], $gallery)));
-        $images = publicAssetUrls($storedImages);
-        $imagePublic = publicAssetUrl($imageUrl);
+
+        $resolvedImages = [];
+        foreach ($storedImages as $i => $stored) {
+            $resolvedImages[] = portfolioResolveMediaUrl(is_string($stored) ? $stored : null, (int) ($row['id'] ?? 0) + $i);
+        }
+        if ($resolvedImages === []) {
+            $resolvedImages[] = portfolioImagePublicUrl((int) ($row['id'] ?? 0));
+        }
+
+        $imagePublic = $resolvedImages[0];
         $videoPublic = publicAssetUrl($videoUrl);
         $videos = $videoPublic ? [$videoPublic] : [];
+        $galleryPublic = array_map(
+            static fn ($path, $i) => portfolioResolveMediaUrl(is_string($path) ? $path : null, (int) ($row['id'] ?? 0) + 100 + (int) $i),
+            $gallery,
+            array_keys($gallery)
+        );
 
         return [
             'id'               => (int) $row['id'],
@@ -508,8 +522,8 @@ class PropertyRepository
             'area'             => (int) ($row['area'] ?? 0),
             'imageUrl'         => $imagePublic,
             'videoUrl'         => $videoPublic,
-            'galleryUrls'      => publicAssetUrls($gallery),
-            'images'           => $images,
+            'galleryUrls'      => array_values($galleryPublic),
+            'images'           => $resolvedImages,
             'videos'           => $videos,
             'storedImages'     => $storedImages,
             'storedVideo'      => $videoUrl,

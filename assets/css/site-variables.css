@@ -1,28 +1,28 @@
-/* Shared design tokens — keep in sync with index.css :root */
+/* Shared design tokens — Hope Architects palette */
 :root {
-  --brand-green: #2d9b3c;
-  --brand-green-dark: #1a5c28;
-  --brand-green-light: #3cb84e;
-  --prussian-blue: #1a5c28;
+  --brand-green: #0b4e56;
+  --brand-green-dark: #083840;
+  --brand-green-light: #12707a;
+  --prussian-blue: #0b4e56;
   --topbar-bg: var(--prussian-blue);
-  --gold: #D4AF37;
-  --gold-light: #FFD700;
-  --gold-dark: #B8860B;
-  --gold-gradient: linear-gradient(90deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
+  --gold: #feee90;
+  --gold-light: #fff6b8;
+  --gold-dark: #e0d070;
+  --gold-gradient: linear-gradient(90deg, #e0d070 0%, #feee90 50%, #fff6b8 100%);
   --gold-gradient-horizontal: var(--gold-gradient);
-  --raisin-black-1: hsl(130, 55%, 12%);
-  --raisin-black-2: hsl(130, 45%, 22%);
+  --raisin-black-1: hsl(186, 75%, 12%);
+  --raisin-black-2: hsl(186, 55%, 22%);
   --cultured-1: hsl(0, 0%, 93%);
-  --cultured-2: hsl(192, 24%, 96%);
-  --cadet: hsl(200, 15%, 43%);
+  --cultured-2: hsl(186, 24%, 96%);
+  --cadet: hsl(186, 15%, 43%);
   --white: #ffffff;
   --black: #000000;
-  --dark-jungle-green: hsl(130, 40%, 10%);
-  --misty-rose: hsl(7, 56%, 91%);
-  --seashell: hsl(8, 100%, 97%);
-  --opal: hsl(180, 20%, 62%);
-  --alice-blue: hsl(210, 100%, 97%);
-  --orange-soda: #D4AF37;
+  --dark-jungle-green: hsl(186, 60%, 10%);
+  --misty-rose: hsl(48, 56%, 91%);
+  --seashell: hsl(48, 100%, 97%);
+  --opal: hsl(186, 20%, 62%);
+  --alice-blue: hsl(186, 40%, 97%);
+  --orange-soda: #feee90;
 
   --ff-display: 'Cormorant Garamond', serif;
   --ff-body: 'Outfit', sans-serif;
@@ -43,14 +43,14 @@
   --transition: 0.3s ease;
   --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   --section-padding: 100px;
-  --shadow-1: 0 5px 20px 0 hsla(219, 56%, 21%, 0.1);
-  --shadow-2: 0 16px 32px rgba(26, 92, 40, 0.12);
-  --shadow-gold: 0 8px 32px rgba(212, 175, 55, 0.25);
-  --shadow-gold-lg: 0 20px 40px rgba(212, 175, 55, 0.15);
+  --shadow-1: 0 5px 20px 0 hsla(186, 56%, 21%, 0.1);
+  --shadow-2: 0 16px 32px rgba(11, 78, 86, 0.12);
+  --shadow-gold: 0 8px 32px rgba(254, 238, 144, 0.25);
+  --shadow-gold-lg: 0 20px 40px rgba(254, 238, 144, 0.15);
 
   /* Shared layout tokens (footer + sections) */
   --section-inline: clamp(20px, 5vw, 80px);
   --section-gap: clamp(60px, 10vw, 120px);
-  --surface-dark: #0f2418;
-  --surface-mid: #1a5c28;
+  --surface-dark: #0b4e56;
+  --surface-mid: #0d5c66;
 }

@@ -3,9 +3,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/site_paths.php';
 require_once __DIR__ . '/site_helpers.php';
+require_once __DIR__ . '/portfolio_helpers.php';
 
 $siteBase = siteRootPath();
 $propertiesApi = siteUrl('api/properties.php');
+$portfolioPublicUrls = array_map(
+    static fn (string $path): string => publicAssetUrl($path) ?? './' . $path,
+    portfolioImageCatalog()
+);
 ?>
 <script>
 window.HOPE_SITE = {
@@ -17,6 +22,7 @@ window.HOPE_SITE = {
   contactTel: <?= json_encode(siteContactPhoneTel(), JSON_UNESCAPED_UNICODE) ?>,
   whatsappDigits: <?= json_encode(siteWhatsAppDigits(), JSON_UNESCAPED_UNICODE) ?>,
   whatsappPhone: <?= json_encode(siteWhatsAppPhone(), JSON_UNESCAPED_UNICODE) ?>,
+  portfolioImages: <?= json_encode($portfolioPublicUrls, JSON_UNESCAPED_SLASHES) ?>,
   page(name, params) {
     const base = this.base || '';
     let slug = String(name).replace(/^\//, '').replace(/\.php$/i, '');
@@ -37,3 +43,4 @@ window.HOPE_SITE = {
 };
 window.BIVER_SITE = window.HOPE_SITE;
 </script>
+<script src="<?= siteEscape(siteUrl('assets/js/portfolio-display.js')) ?>" defer></script>

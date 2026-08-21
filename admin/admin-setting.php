@@ -175,7 +175,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
         <form id="siteSettingsForm">
           <div class="form-group">
             <label>Site Name</label>
-            <input type="text" id="siteName" placeholder="Biver Royalty Homes">
+            <input type="text" id="siteName" placeholder="Hope Architects">
           </div>
           <div class="form-group">
             <label>Contact Email (public)</label>
@@ -234,7 +234,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
   const MAIL_API = 'api/mail.php';
 
   const providerDefaults = {
-    gmail:    { host: 'smtp.gmail.com', port: 587, encryption: 'tls', username: 'biverroyaltyhomes01@gmail.com' },
+    gmail:    { host: 'smtp.gmail.com', port: 587, encryption: 'tls', username: 'info@hopearchitects.ng' },
     sendgrid: { host: 'smtp.sendgrid.net', port: 587, encryption: 'tls', username: 'apikey' },
     brevo:    { host: 'smtp-relay.brevo.com', port: 587, encryption: 'tls', username: '' },
     custom:   { host: '', port: 587, encryption: 'tls', username: '' }
@@ -373,7 +373,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     toast = document.createElement('div');
     toast.className = 'toast-msg';
     toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
-    toast.style.borderLeftColor = isError ? '#e74c3c' : '#D4AF37';
+    toast.style.borderLeftColor = isError ? '#e74c3c' : '#feee90';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
   }
@@ -469,7 +469,12 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
 
   document.getElementById('clearCacheBtn')?.addEventListener('click', () => {
     localStorage.removeItem('dashboardCache');
+    sessionStorage.removeItem('hope_promo_dismissed_v1');
     sessionStorage.removeItem('biver_promo_dismissed_v1');
+    localStorage.removeItem('hope_promo_dismissed_v1');
+    localStorage.removeItem('biver_promo_dismissed_v1');
+    localStorage.removeItem('hope_cookie_consent_v1');
+    localStorage.removeItem('biver_cookie_consent_v1');
     showToast('Local cache cleared — refresh homepage to see promo banner again if dismissed');
   });
 
@@ -482,7 +487,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `biver_royalty_export_${Date.now()}.json`;
+      a.download = `hope_architects_export_${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

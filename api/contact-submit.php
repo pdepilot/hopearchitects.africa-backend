@@ -28,7 +28,7 @@ $phone   = trim((string) ($payload['phone'] ?? ''));
 $type    = trim((string) ($payload['inquiryType'] ?? $payload['inquiry_type'] ?? 'general'));
 $message = trim((string) ($payload['message'] ?? ''));
 
-$allowedTypes = ['general', 'buying', 'renting', 'selling', 'partnership'];
+$allowedTypes = ['general', 'new-build', 'renovation', 'consultation', 'partnership', 'buying', 'renting', 'selling'];
 if (!in_array($type, $allowedTypes, true)) {
     $type = 'general';
 }
@@ -79,7 +79,7 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Thank you! Your message has been received. We will get back to you within 24 hours.',
+        'message' => 'Thank you! Your message has been received. A confirmation email is on its way, and our studio will follow up shortly.',
         'id'      => $id,
     ]);
 } catch (Throwable $e) {

@@ -615,7 +615,7 @@
     const blob = new Blob([lines.join('\n\n')], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `biver-chat-${state.sessionUuid.slice(0, 8)}.txt`;
+    a.download = `hope-chat-${state.sessionUuid.slice(0, 8)}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
   }

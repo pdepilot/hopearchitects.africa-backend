@@ -6,19 +6,19 @@
     }
 
     :root {
-      --brand-green: #2d9b3c;
-      --brand-green-dark: #1a5c28;
-      --prussian-blue: #1a5c28;
-      --gold: #D4AF37;
-      --gold-light: #FFD700;
-      --gold-dark: #B8860B;
-      --gold-gradient: linear-gradient(90deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
-      --dark-bg: #0f2418;
-      --sidebar-bg: #0f2418;
+      --brand-green: #0b4e56;
+      --brand-green-dark: #083840;
+      --prussian-blue: #0b4e56;
+      --gold: #feee90;
+      --gold-light: #fff6b8;
+      --gold-dark: #e0d070;
+      --gold-gradient: linear-gradient(90deg, #e0d070 0%, #feee90 50%, #fff6b8 100%);
+      --dark-bg: #083840;
+      --sidebar-bg: #083840;
       --card-bg: #ffffff;
-      --text-dark: hsl(130, 40%, 10%);
-      --text-muted: hsl(200, 15%, 43%);
-      --border-light: #dce8e0;
+      --text-dark: hsl(186, 40%, 10%);
+      --text-muted: hsl(186, 15%, 43%);
+      --border-light: #d5e4e6;
       --danger: #dc3545;
       --success: #198754;
       --warning: #ffc107;

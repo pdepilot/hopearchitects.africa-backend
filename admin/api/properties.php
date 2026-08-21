@@ -10,6 +10,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once dirname(__DIR__, 2) . '/includes/admin_api_guard.php';
 require_once dirname(__DIR__, 2) . '/includes/PropertyRepository.php';
+require_once dirname(__DIR__, 2) . '/includes/PropertyUploadService.php';
 require_once dirname(__DIR__, 2) . '/includes/AutomatedEmailService.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -32,6 +33,10 @@ try {
     }
 
     if ($method === 'POST') {
+        if (isMultipartRequest()) {
+            handleMultipartPost();
+        }
+
         $body = parseJsonBody();
         $title = trim((string) ($body['title'] ?? ''));
         $location = trim((string) ($body['location'] ?? ''));
@@ -128,6 +133,85 @@ try {
 }
 
 /**
+ * @return never
+ */
+function handleMultipartPost(): void
+{
+    $action = (string) ($_POST['action'] ?? 'create');
+    if ($action === 'update') {
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            jsonError('Invalid project ID.');
+        }
+
+        $oldProject = PropertyRepository::getById($id);
+        if ($oldProject === null) {
+            jsonError('Project not found.', 404);
+        }
+
+        $updates = normalizeMultipartPayload($_POST);
+
+        if (!empty($_FILES['propertyImages']) && hasUploadedFiles($_FILES['propertyImages'])) {
+            $media = PropertyUploadService::updateSubmissionMedia(
+                $id,
+                [],
+                $_FILES,
+                false,
+                null
+            );
+            $updates['imageUrl'] = $media['imageUrl'];
+            $updates['galleryUrls'] = $media['galleryUrls'];
+            $updates['videoUrl'] = $media['videoUrl'];
+        }
+
+        $project = PropertyRepository::update($id, $updates);
+        if ($project === null) {
+            jsonError('Project not found.', 404);
+        }
+
+        if (isset($updates['approvalStatus'])) {
+            $oldStatus = (string) ($oldProject['approvalStatus'] ?? '');
+            $newStatus = (string) $updates['approvalStatus'];
+            if ($newStatus !== $oldStatus) {
+                AutomatedEmailService::onPropertyStatusChange(
+                    $project,
+                    $oldStatus,
+                    $newStatus,
+                    (int) ($_SESSION['admin_id'] ?? 0),
+                    (string) ($project['adminNotes'] ?? '')
+                );
+            }
+        }
+
+        jsonOk(['property' => $project, 'message' => 'Project updated.']);
+    }
+
+    $title = trim((string) ($_POST['title'] ?? ''));
+    $location = trim((string) ($_POST['location'] ?? ''));
+    if ($title === '' || $location === '') {
+        jsonError('Title and location are required.');
+    }
+    if (empty($_FILES['propertyImages']) || !hasUploadedFiles($_FILES['propertyImages'])) {
+        jsonError('Please upload a project image.');
+    }
+
+    $project = PropertyRepository::create(normalizeMultipartPayload($_POST));
+    $projectId = (int) ($project['id'] ?? 0);
+    if ($projectId <= 0) {
+        jsonError('Could not create project.');
+    }
+
+    $media = PropertyUploadService::storeSubmissionMedia($projectId, $_FILES);
+    $project = PropertyRepository::update($projectId, [
+        'imageUrl' => $media['imageUrl'],
+        'galleryUrls' => $media['extraImages'],
+        'videoUrl' => $media['videoUrl'],
+    ]) ?? $project;
+
+    jsonOk(['property' => $project, 'message' => 'Project created.']);
+}
+
+/**
  * @return array<string, mixed>
  */
 function parseJsonBody(): array
@@ -154,6 +238,56 @@ function normalizePayload(array $body, string $title, string $location): array
         'bathrooms'      => (int) ($body['bathrooms'] ?? 2),
         'area'           => (int) ($body['area'] ?? 0),
     ];
+}
+
+/**
+ * @param array<string, mixed> $body
+ * @return array<string, mixed>
+ */
+function normalizeMultipartPayload(array $body): array
+{
+    $title = trim((string) ($body['title'] ?? ''));
+    $location = trim((string) ($body['location'] ?? ''));
+    $payload = [
+        'title'          => $title,
+        'location'       => $location,
+        'price'          => (int) ($body['price'] ?? 0),
+        'type'           => (string) ($body['type'] ?? 'sale'),
+        'description'    => trim((string) ($body['description'] ?? '')) ?: null,
+        'approvalStatus' => (string) ($body['approvalStatus'] ?? 'approved'),
+        'bedrooms'       => (int) ($body['bedrooms'] ?? 2),
+        'bathrooms'      => (int) ($body['bathrooms'] ?? 2),
+        'area'           => (int) ($body['area'] ?? 0),
+    ];
+
+    if (array_key_exists('imageUrl', $body)) {
+        $payload['imageUrl'] = trim((string) $body['imageUrl']) ?: null;
+    }
+
+    return $payload;
+}
+
+function isMultipartRequest(): bool
+{
+    $contentType = (string) ($_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '');
+    return str_contains(strtolower($contentType), 'multipart/form-data');
+}
+
+/**
+ * @param array<string, mixed> $file
+ */
+function hasUploadedFiles(array $file): bool
+{
+    if (is_array($file['name'] ?? null)) {
+        foreach ($file['name'] as $idx => $name) {
+            if (($file['error'][$idx] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE && $name !== '') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    return (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) && (($file['name'] ?? '') !== '');
 }
 
 function jsonOk(array $data): void

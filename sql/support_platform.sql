@@ -1,4 +1,4 @@
--- Biver Royalty Homes — Support platform (conversations, messages, CRM leads)
+-- Hope Architects — Support platform (conversations, messages, CRM leads)
 -- Run via sql/install_support_platform.php
 
 SET NAMES utf8mb4;

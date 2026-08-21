@@ -6,9 +6,9 @@ require_once dirname(__DIR__) . '/includes/site_paths.php';
 $isSellPropertyPage = !empty($_SELL_PROPERTY_PAGE);
 $activeNav = 'listings';
 $pageTitle = $isSellPropertyPage
-    ? 'Sell Your Property Submissions | Biver Royalty Homes Admin'
-    : 'List Your Property Submissions | Biver Royalty Homes Admin';
-$pageHeading = $isSellPropertyPage ? 'Sell Your Property' : 'List Your Property';
+    ? 'Project Briefs | Hope Architects Admin'
+    : 'Project Brief Submissions | Hope Architects Admin';
+$pageHeading = $isSellPropertyPage ? 'Project Briefs' : 'Project Briefs';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $siteBase = siteRootPath();
 $pageStylesheet = '../assets/css/admin-list-your-property.css';
@@ -227,30 +227,34 @@ $pageStylesheet = '../assets/css/admin-list-your-property.css';
           ${item.storedVideo && editRemoveVideo ? `<span class="admin-remove-video-note">Current video will be removed on save.</span><button type="button" class="admin-btn-outline" id="undoRemoveVideoBtn">Keep video</button>` : ''}
         </div>
 
-        <div class="edit-section-title">Property details</div>
+        <div class="edit-section-title">Project details</div>
         <div class="edit-grid">
           <div class="edit-field full"><label for="editTitle">Title</label><input id="editTitle" required value="${escapeHtml(item.title || '')}"></div>
-          <div class="edit-field"><label for="editPrice">Price (NGN)</label><input id="editPrice" required value="${escapeHtml(String(item.price || ''))}"></div>
-          <div class="edit-field"><label for="editListingPurpose">Listing purpose</label>
+          <div class="edit-field"><label for="editListingPurpose">Discipline</label>
             <select id="editListingPurpose">
-              ${['sale','rent','shortlet','lease'].map((v) => `<option value="${v}" ${ (item.listingPurpose || item.type) === v ? 'selected' : ''}>${v}</option>`).join('')}
+              ${[
+                ['sale', 'Architecture'],
+                ['rent', 'Interior Design'],
+                ['shortlet', 'Renovation / Fit-out'],
+                ['lease', 'Commercial Design']
+              ].map(([v, label]) => `<option value="${v}" ${ (item.listingPurpose || item.type) === v ? 'selected' : ''}>${label}</option>`).join('')}
             </select>
           </div>
-          <div class="edit-field"><label for="editPropertyCategory">Category</label><input id="editPropertyCategory" value="${escapeHtml(item.propertyCategory || '')}"></div>
+          <div class="edit-field"><label for="editPropertyCategory">Project type</label><input id="editPropertyCategory" value="${escapeHtml(item.propertyCategory || '')}"></div>
           <div class="edit-field"><label for="editLocation">Location</label><input id="editLocation" required value="${escapeHtml(item.location || '')}"></div>
-          <div class="edit-field"><label for="editPropertyAddress">Address</label><input id="editPropertyAddress" required value="${escapeHtml(item.propertyAddress || '')}"></div>
-          <div class="edit-field"><label for="editBedrooms">Bedrooms</label><input id="editBedrooms" type="number" min="0" value="${escapeHtml(String(item.bedrooms ?? 0))}"></div>
-          <div class="edit-field"><label for="editBathrooms">Bathrooms</label><input id="editBathrooms" type="number" min="0" value="${escapeHtml(String(item.bathrooms ?? 0))}"></div>
+          <div class="edit-field"><label for="editPropertyAddress">Site address</label><input id="editPropertyAddress" required value="${escapeHtml(item.propertyAddress || '')}"></div>
+          <div class="edit-field"><label for="editBedrooms">Spaces</label><input id="editBedrooms" type="number" min="0" value="${escapeHtml(String(item.bedrooms ?? 0))}"></div>
+          <div class="edit-field"><label for="editBathrooms">Wet areas</label><input id="editBathrooms" type="number" min="0" value="${escapeHtml(String(item.bathrooms ?? 0))}"></div>
           <div class="edit-field"><label for="editPropertySize">Size</label><input id="editPropertySize" value="${escapeHtml(item.propertySize || '')}"></div>
           <div class="edit-field"><label for="editArea">Area (sqm)</label><input id="editArea" type="number" min="0" value="${escapeHtml(String(item.area ?? 0))}"></div>
-          <div class="edit-field"><label for="editOwnershipStatus">Ownership</label><input id="editOwnershipStatus" value="${escapeHtml(item.ownershipStatus || '')}"></div>
-          <div class="edit-field full"><label for="editPropertyFeatures">Features</label><input id="editPropertyFeatures" value="${escapeHtml(item.propertyFeatures || '')}"></div>
-          <div class="edit-field full"><label for="editDescription">Description</label><textarea id="editDescription" required>${escapeHtml(item.description || '')}</textarea></div>
+          <div class="edit-field"><label for="editOwnershipStatus">Client role</label><input id="editOwnershipStatus" value="${escapeHtml(item.ownershipStatus || '')}"></div>
+          <div class="edit-field full"><label for="editPropertyFeatures">Desired features</label><input id="editPropertyFeatures" value="${escapeHtml(item.propertyFeatures || '')}"></div>
+          <div class="edit-field full"><label for="editDescription">Project brief</label><textarea id="editDescription" required>${escapeHtml(item.description || '')}</textarea></div>
         </div>
 
-        <div class="edit-section-title">Owner contact</div>
+        <div class="edit-section-title">Client contact</div>
         <div class="edit-grid">
-          <div class="edit-field"><label for="editOwnerName">Owner name</label><input id="editOwnerName" required value="${escapeHtml(item.ownerName || '')}"></div>
+          <div class="edit-field"><label for="editOwnerName">Client name</label><input id="editOwnerName" required value="${escapeHtml(item.ownerName || '')}"></div>
           <div class="edit-field"><label for="editOwnerPhone">Phone</label><input id="editOwnerPhone" required value="${escapeHtml(item.ownerPhone || '')}"></div>
           <div class="edit-field"><label for="editOwnerEmail">Email</label><input id="editOwnerEmail" type="email" value="${escapeHtml(item.ownerEmail || '')}"></div>
           <div class="edit-field"><label for="editContactMethod">Preferred contact</label>
@@ -338,9 +342,8 @@ $pageStylesheet = '../assets/css/admin-list-your-property.css';
           </div>
           <div class="submission-body">
             <h4>${escapeHtml(item.title)}</h4>
-            <div class="meta">${escapeHtml(item.location || '')}</div>
+            <div class="meta">${escapeHtml(item.location || '')} · ${item.type === 'rent' ? 'Interior Design' : 'Architecture'}</div>
             <div class="owner">${escapeHtml(item.ownerName || 'Owner')} · ${escapeHtml(item.ownerPhone || '')}</div>
-            <div class="price">${formatPrice(item.price, item.type)}</div>
             <div class="card-actions">
               <button type="button" class="view" data-view="${item.id}">Review</button>
               ${status !== 'approved' ? `<button type="button" class="approve" data-approve="${item.id}">Approve</button>` : ''}
@@ -404,7 +407,7 @@ $pageStylesheet = '../assets/css/admin-list-your-property.css';
     formData.append('action', 'update');
     formData.append('id', String(current.id));
     formData.append('title', fieldValue('editTitle'));
-    formData.append('price', fieldValue('editPrice'));
+    formData.append('price', '0');
     formData.append('listingPurpose', fieldValue('editListingPurpose'));
     formData.append('propertyCategory', fieldValue('editPropertyCategory'));
     formData.append('location', fieldValue('editLocation'));

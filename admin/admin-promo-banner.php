@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
 require_once dirname(__DIR__) . '/includes/site_paths.php';
 
 $activeNav = 'promo';
-$pageTitle = 'Promo Banner | Biver Royalty Homes Admin';
+$pageTitle = 'Promo Banner | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $siteBase = siteRootPath();
 $pageStylesheet = '../assets/css/admin-promo-banner.css';
@@ -81,7 +81,8 @@ $pageStylesheet = '../assets/css/admin-promo-banner.css';
                 <label for="linkPage">Click destination</label>
                 <select id="linkPage" name="linkPage">
                   <option value="property">Properties page</option>
-                  <option value="list-your-property">List Your Property</option>
+                  <option value="start-a-project">Start a Project</option>
+                  <option value="list-your-property">Start a Project (legacy URL)</option>
                   <option value="contact">Contact</option>
                   <option value="services">Services</option>
                 </select>

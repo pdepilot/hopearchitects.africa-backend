@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/includes/AdminPermissions.php';
 AdminPermissions::require(AdminPermissions::PERM_CHATBOT);
 
 $activeNav = 'chatbot-content';
-$pageTitle = 'Chatbot Knowledge | Biver Royalty Homes Admin';
+$pageTitle = 'Chatbot Knowledge | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $pageStylesheet = '../assets/css/admin-content.css';
 ?>

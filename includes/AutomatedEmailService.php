@@ -32,32 +32,27 @@ final class AutomatedEmailService
             self::EVENT_CONTACT_RECEIVED => [
                 'name'        => 'Contact Enquiry Received',
                 'description' => 'Auto-response when visitor submits contact form',
-                'subject'     => 'We Have Received Your Enquiry',
+                'subject'     => 'We have received your enquiry — Hope Architects',
                 'body_html'   => '<p>Hello {{customer_name}},</p>
-<p>Thank you for contacting <strong>Hope Architects</strong>.</p>
-<p>We have successfully received your enquiry regarding:</p>
-<p><strong>"{{enquiry_subject}}"</strong></p>
-<p>Our team has been notified and one of our representatives will review your message and get back to you as soon as possible.</p>
-<p><strong>Reference Number:</strong> {{ticket_id}}<br>
-<strong>Submission Date:</strong> {{submission_date}}</p>
-<p>We appreciate your interest in Hope Architects and look forward to assisting you.</p>
-<p>Best Regards,<br><strong>Hope Architects</strong></p>',
+{{enquiry_body}}
+<p>Warm regards,<br><strong>Hope Architects Team</strong></p>',
             ],
             self::EVENT_CONTACT_ADMIN => [
                 'name'        => 'Contact Enquiry Admin Notification',
                 'description' => 'Notifies administrators of new contact enquiries',
-                'subject'     => 'New Contact Enquiry — {{customer_name}}',
-                'body_html'   => '<p>A new contact enquiry was submitted on the website.</p>
+                'subject'     => 'New Contact Enquiry — {{customer_name}} ({{enquiry_subject}})',
+                'body_html'   => '<p>A new contact enquiry was submitted on the Hope Architects website.</p>
 <table style="width:100%;font-size:14px;border-collapse:collapse;">
-<tr><td style="padding:6px 0;color:#6c5e4e;width:130px;">Customer Name</td><td><strong>{{customer_name}}</strong></td></tr>
-<tr><td style="padding:6px 0;color:#6c5e4e;">Email</td><td>{{customer_email}}</td></tr>
-<tr><td style="padding:6px 0;color:#6c5e4e;">Phone</td><td>{{customer_phone}}</td></tr>
-<tr><td style="padding:6px 0;color:#6c5e4e;">Subject</td><td>{{enquiry_subject}}</td></tr>
-<tr><td style="padding:6px 0;color:#6c5e4e;">Submitted</td><td>{{submission_date}}</td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;width:130px;">Customer Name</td><td><strong>{{customer_name}}</strong></td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;">Email</td><td>{{customer_email}}</td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;">Phone</td><td>{{customer_phone}}</td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;">Enquiry</td><td>{{enquiry_subject}}</td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;">Submitted</td><td>{{submission_date}}</td></tr>
+<tr><td style="padding:6px 0;color:#5a6b60;">Reference</td><td>{{ticket_id}}</td></tr>
 </table>
 <p><strong>Message:</strong></p>
-<p style="background:#f9f7f2;padding:14px;border-radius:8px;">{{message}}</p>
-<p><strong>Reference:</strong> {{ticket_id}}</p>',
+<p style="background:#f3f8f8;padding:14px;border-radius:8px;border:1px solid #d5e6e8;">{{message}}</p>
+<p style="margin-top:16px;">Reply from Hostinger webmail (Reply-To is set to the customer), or open <strong>Admin → Inquiries</strong> to reply from the dashboard.</p>',
             ],
             self::EVENT_PROPERTY_SUBMITTED => [
                 'name'        => 'Property Submission Received',
@@ -72,7 +67,7 @@ final class AutomatedEmailService
 <strong>Submission Date:</strong> {{submission_date}}</p>
 <p>Our team will inspect and verify the submitted information and documents. Once verification is completed and approved, your property will be published on our website.</p>
 <p>Thank you for choosing Hope Architects.</p>
-<p>Best Regards,<br><strong>Mannavilla Limited</strong></p>',
+<p>Best Regards,<br><strong>Hope Architects</strong></p>',
             ],
             self::EVENT_PROPERTY_APPROVED => [
                 'name'        => 'Property Approved',
@@ -81,7 +76,7 @@ final class AutomatedEmailService
                 'body_html'   => '<p>Hello {{owner_name}},</p>
 <p>We are pleased to inform you that your property submission has been reviewed and <strong>approved</strong> by our team.</p>
 <p>Your property is now live and visible on the Hope Architects website.</p>
-<p><a href="{{property_url}}" style="display:inline-block;background:#D4AF37;color:#371801;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">View Your Property</a></p>
+<p><a href="{{property_url}}" style="display:inline-block;background:#feee90;color:#0b4e56;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">View Your Property</a></p>
 <p><strong>Property Title:</strong> {{property_title}}<br>
 <strong>Approval Date:</strong> {{approval_date}}</p>
 <p>Thank you for listing with Hope Architects. We wish you success in finding the right buyer or investor.</p>
@@ -141,7 +136,7 @@ final class AutomatedEmailService
                 'subject'     => 'Reset Your Password — Hope Architects',
                 'body_html'   => '<p>Hello {{customer_name}},</p>
 <p>We received a request to reset your password.</p>
-<p><a href="{{reset_link}}" style="display:inline-block;background:#D4AF37;color:#371801;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">Reset Password</a></p>
+<p><a href="{{reset_link}}" style="display:inline-block;background:#feee90;color:#0b4e56;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;">Reset Password</a></p>
 <p>If you did not request this, please ignore this email.</p>
 <p>Best Regards,<br><strong>Hope Architects</strong></p>',
             ],
@@ -184,7 +179,9 @@ final class AutomatedEmailService
         string $toName,
         array $vars = [],
         ?int $relatedRecordId = null,
-        int $createdBy = 0
+        int $createdBy = 0,
+        ?string $replyToEmail = null,
+        ?string $replyToName = null
     ): bool {
         EmailRepository::ensureSchema();
 
@@ -209,7 +206,7 @@ final class AutomatedEmailService
         $html    = self::wrapBranded($inner);
         $plain   = HtmlSanitizer::htmlToPlain($inner);
 
-        $ok = MailService::sendEmail($toEmail, $toName, $subject, $html, $plain);
+        $ok = MailService::sendEmail($toEmail, $toName, $subject, $html, $plain, $replyToEmail, $replyToName);
 
         EmailRepository::logEmailExtended([
             'recipient'         => $toEmail,
@@ -236,30 +233,173 @@ final class AutomatedEmailService
         $type = (string) ($inquiry['inquiry_type'] ?? 'general');
         $message = (string) ($inquiry['message'] ?? '');
         $subjectLabel = self::inquiryTypeLabel($type);
-        $ticketId = 'BRH-' . str_pad((string) $id, 6, '0', STR_PAD_LEFT);
+        $ticketId = 'HOPE-' . str_pad((string) max(0, $id), 6, '0', STR_PAD_LEFT);
         $date = date('d M Y, H:i');
 
         $vars = [
             'customer_name'    => $name,
             'enquiry_subject'  => $subjectLabel,
+            'enquiry_type'     => $subjectLabel,
             'ticket_id'        => $ticketId,
             'reference_number' => $ticketId,
             'submission_date'  => $date,
             'customer_email'   => $email,
             'customer_phone'   => $phone,
             'message'          => nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8')),
+            'enquiry_body'     => self::contactAutoReplyBodyHtml($type, $name, $ticketId, $date, $subjectLabel),
         ];
 
-        self::send(self::EVENT_CONTACT_RECEIVED, $email, $name, $vars, $id);
+        // Instant branded auto-reply tailored to the enquiry type (Hostinger SMTP via MailService).
+        self::sendContactAutoReply($email, $name, $type, $vars, $id);
 
         $config = MailConfigService::get();
         if (!empty($config['notifyOnContact'])) {
             $notifyEmail = trim((string) ($config['notifyEmail'] ?? ''));
             if ($notifyEmail !== '' && filter_var($notifyEmail, FILTER_VALIDATE_EMAIL)) {
-                self::send(self::EVENT_CONTACT_ADMIN, $notifyEmail, 'Admin', $vars, $id);
+                // Reply-To = customer so Hostinger webmail "Reply" goes straight to them.
+                self::send(
+                    self::EVENT_CONTACT_ADMIN,
+                    $notifyEmail,
+                    'Admin',
+                    $vars,
+                    $id,
+                    0,
+                    $email !== '' ? $email : null,
+                    $name
+                );
             }
         }
     }
+
+    /**
+     * Send an immediate customer confirmation email with Hope branding.
+     *
+     * @param array<string, string> $vars
+     */
+    public static function sendContactAutoReply(
+        string $toEmail,
+        string $toName,
+        string $inquiryType,
+        array $vars,
+        ?int $relatedRecordId = null
+    ): bool {
+        $toEmail = strtolower(trim($toEmail));
+        if (!filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        $subject = self::contactAutoReplySubject($inquiryType);
+        $safeName = htmlspecialchars($toName, ENT_QUOTES, 'UTF-8');
+        $body = (string) ($vars['enquiry_body'] ?? self::contactAutoReplyBodyHtml(
+            $inquiryType,
+            $toName,
+            (string) ($vars['ticket_id'] ?? ''),
+            (string) ($vars['submission_date'] ?? date('d M Y, H:i')),
+            self::inquiryTypeLabel($inquiryType)
+        ));
+
+        $inner = <<<HTML
+<p style="margin:0 0 16px;font-size:16px;">Hello {$safeName},</p>
+{$body}
+<p style="margin:24px 0 0;">Warm regards,<br><strong>Hope Architects Team</strong></p>
+HTML;
+
+        $html = self::wrapBranded($inner);
+        $plain = HtmlSanitizer::htmlToPlain($inner);
+        $ok = MailService::sendEmail($toEmail, $toName, $subject, $html, $plain);
+
+        try {
+            EmailRepository::ensureSchema();
+            EmailRepository::logEmailExtended([
+                'recipient'         => $toEmail,
+                'recipient_name'    => $toName,
+                'subject'           => $subject,
+                'message'           => $html,
+                'status'            => $ok ? 'sent' : 'failed',
+                'email_type'        => self::EVENT_CONTACT_RECEIVED,
+                'related_record_id' => $relatedRecordId,
+                'admin_id'          => null,
+                'error_msg'         => $ok ? null : (MailService::getLastError() ?? 'Send failed'),
+            ]);
+        } catch (Throwable $e) {
+            error_log('Contact auto-reply log failed: ' . $e->getMessage());
+        }
+
+        return $ok;
+    }
+
+    private static function contactAutoReplySubject(string $type): string
+    {
+        return match ($type) {
+            'new-build' => 'We received your new build enquiry — Hope Architects',
+            'renovation' => 'We received your renovation enquiry — Hope Architects',
+            'consultation' => 'Design consultation request received — Hope Architects',
+            'partnership' => 'Partnership enquiry received — Hope Architects',
+            'buying' => 'We received your buying enquiry — Hope Architects',
+            'renting' => 'We received your renting enquiry — Hope Architects',
+            'selling' => 'We received your selling enquiry — Hope Architects',
+            default => 'We have received your enquiry — Hope Architects',
+        };
+    }
+
+    private static function contactAutoReplyBodyHtml(
+        string $type,
+        string $name,
+        string $ticketId,
+        string $date,
+        string $subjectLabel
+    ): string {
+        $safeTicket = htmlspecialchars($ticketId, ENT_QUOTES, 'UTF-8');
+        $safeDate = htmlspecialchars($date, ENT_QUOTES, 'UTF-8');
+        $safeLabel = htmlspecialchars($subjectLabel, ENT_QUOTES, 'UTF-8');
+        $phone = htmlspecialchars(siteContactPhone(), ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars(siteContactEmail(), ENT_QUOTES, 'UTF-8');
+
+        $meta = <<<HTML
+<p style="margin:0 0 18px;padding:14px 16px;background:#f3f8f8;border-radius:10px;border:1px solid #d5e6e8;">
+  <strong>Enquiry:</strong> {$safeLabel}<br>
+  <strong>Reference:</strong> {$safeTicket}<br>
+  <strong>Received:</strong> {$safeDate}
+</p>
+HTML;
+
+        $specific = match ($type) {
+            'new-build' => <<<HTML
+<p style="margin:0 0 14px;">Thank you for contacting <strong>Hope Architects</strong> about a <strong>new build project</strong>.</p>
+<p style="margin:0 0 14px;">Our studio will review your brief and follow up with next steps on scope, concept direction, timeline, and how we can support design through construction.</p>
+<p style="margin:0 0 14px;">If you already have drawings, a plot location, or a target budget, feel free to reply to this email with those details — it helps us prepare a sharper response.</p>
+HTML,
+            'renovation' => <<<HTML
+<p style="margin:0 0 14px;">Thank you for contacting <strong>Hope Architects</strong> about a <strong>renovation / remodel</strong>.</p>
+<p style="margin:0 0 14px;">We will assess your existing space needs and advise on design options, structural considerations, and a practical delivery plan.</p>
+<p style="margin:0 0 14px;">Reply to this email with photos or a short description of the rooms/areas you want to transform if you have them ready.</p>
+HTML,
+            'consultation' => <<<HTML
+<p style="margin:0 0 14px;">Thank you for requesting a <strong>design consultation</strong> with <strong>Hope Architects</strong>.</p>
+<p style="margin:0 0 14px;">A member of our team will reach out to schedule a convenient time to discuss your vision, site conditions, and recommended next steps.</p>
+<p style="margin:0 0 14px;">You can also call us directly on {$phone} if you prefer to book by phone.</p>
+HTML,
+            'partnership' => <<<HTML
+<p style="margin:0 0 14px;">Thank you for your <strong>partnership</strong> enquiry to <strong>Hope Architects</strong>.</p>
+<p style="margin:0 0 14px;">Our leadership team will review your proposal and respond with the appropriate next step for collaboration.</p>
+<p style="margin:0 0 14px;">Please reply with any supporting company profile, portfolio, or proposal documents if available.</p>
+HTML,
+            'buying', 'selling', 'renting' => <<<HTML
+<p style="margin:0 0 14px;">Thank you for contacting <strong>Hope Architects</strong>.</p>
+<p style="margin:0 0 14px;">We primarily deliver architecture, interior design, and construction services. A consultant will review your message and advise on the best way we can assist with your project goals.</p>
+HTML,
+            default => <<<HTML
+<p style="margin:0 0 14px;">Thank you for contacting <strong>Hope Architects</strong>.</p>
+<p style="margin:0 0 14px;">We have received your message and one of our representatives will review it and get back to you as soon as possible.</p>
+HTML,
+        };
+
+        return $specific . $meta . <<<HTML
+<p style="margin:0 0 8px;">Need faster help? Reach us on <strong>{$phone}</strong> or <strong>{$email}</strong>.</p>
+<p style="margin:0;">Our team can also reply manually from this same conversation thread — simply respond to this email.</p>
+HTML;
+    }
+
 
     /** @param array<string, mixed> $property */
     public static function onPropertySubmitted(array $property): void
@@ -396,7 +536,7 @@ final class AutomatedEmailService
         $websiteUrl = htmlspecialchars(self::absoluteUrl(siteUrl('')), ENT_QUOTES, 'UTF-8');
         $mailtoUrl = 'mailto:' . rawurlencode(siteContactEmail());
         $telDigits = preg_replace('/[^\d+]/', '', siteContactPhone()) ?? '';
-        $telUrl = $telDigits !== '' ? 'tel:' . $telDigits : '';
+        $telUrl = $telDigits !== '' ? 'tel:' . $telDigits : '#';
 
         $socialLinks = self::brandedSocialLinksHtml();
 
@@ -409,44 +549,44 @@ final class AutomatedEmailService
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{$siteName}</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f0e8;font-family:Arial,Helvetica,sans-serif;color:#2c2418;-webkit-text-size-adjust:100%;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f0e8;">
+<body style="margin:0;padding:0;background-color:#eef6f7;font-family:Arial,Helvetica,sans-serif;color:#1a2e22;-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#eef6f7;">
     <tr>
       <td align="center" style="padding:28px 16px;">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;border-collapse:collapse;">
           <tr>
-            <td align="center" style="background-color:#371801;padding:28px 32px 24px;border-radius:14px 14px 0 0;">
+            <td align="center" style="background-color:#0b4e56;padding:28px 32px 24px;border-radius:14px 14px 0 0;">
               <a href="{$websiteUrl}" style="text-decoration:none;display:inline-block;">
                 <img src="{$logoUrl}" alt="{$siteName}" width="168" style="display:block;margin:0 auto;max-width:168px;width:168px;height:auto;border:0;outline:none;">
               </a>
-              <p style="margin:14px 0 0;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#D4AF37;font-weight:600;">Official Communication</p>
+              <p style="margin:14px 0 0;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#feee90;font-weight:600;">Architecture &amp; Interior Design</p>
             </td>
           </tr>
           <tr>
-            <td style="height:4px;background-color:#D4AF37;font-size:0;line-height:0;">&nbsp;</td>
+            <td style="height:4px;background:linear-gradient(90deg,#feee90,#fff6b8,#e0d070);font-size:0;line-height:0;">&nbsp;</td>
           </tr>
           <tr>
-            <td style="background-color:#ffffff;padding:36px 36px 32px;font-size:15px;line-height:1.75;color:#2c2418;">
+            <td style="background-color:#ffffff;padding:36px 36px 32px;font-size:15px;line-height:1.75;color:#1a2e22;">
               {$innerHtml}
             </td>
           </tr>
           <tr>
-            <td style="background-color:#faf8f4;padding:28px 32px;border-top:1px solid #e9e5dc;border-radius:0 0 14px 14px;text-align:center;">
-              <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:700;color:#371801;">{$siteName}</p>
-              <p style="margin:0 0 14px;font-size:12px;color:#8a7b6a;letter-spacing:0.5px;">Hope Architects</p>
-              <p style="margin:0 0 6px;font-size:13px;color:#6c5e4e;line-height:1.6;">{$address}</p>
-              <p style="margin:0 0 6px;font-size:13px;color:#6c5e4e;">
-                <a href="{$mailtoUrl}" style="color:#371801;text-decoration:none;font-weight:600;">{$contactEmail}</a>
+            <td style="background-color:#0b4e56;padding:28px 32px;border-radius:0 0 14px 14px;text-align:center;">
+              <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:18px;font-weight:700;color:#ffffff;">{$siteName}</p>
+              <p style="margin:0 0 14px;font-size:12px;color:#feee90;letter-spacing:1px;text-transform:uppercase;">Architecture · Construction · Interiors</p>
+              <p style="margin:0 0 8px;font-size:13px;color:rgba(255,255,255,0.72);line-height:1.6;">{$address}</p>
+              <p style="margin:0 0 8px;font-size:13px;color:rgba(255,255,255,0.82);">
+                <a href="{$mailtoUrl}" style="color:#fff6b8;text-decoration:none;font-weight:600;">{$contactEmail}</a>
                 &nbsp;&middot;&nbsp;
-                <a href="{$telUrl}" style="color:#371801;text-decoration:none;font-weight:600;">{$contactPhone}</a>
+                <a href="{$telUrl}" style="color:#fff6b8;text-decoration:none;font-weight:600;">{$contactPhone}</a>
               </p>
               <p style="margin:12px 0 0;font-size:13px;">
-                <a href="{$websiteUrl}" style="color:#B8860B;text-decoration:none;font-weight:600;">Visit our website</a>
+                <a href="{$websiteUrl}" style="color:#feee90;text-decoration:none;font-weight:600;">Visit hopearchitects.ng</a>
               </p>
               {$socialLinks}
-              <p style="margin:20px 0 0;font-size:11px;color:#9a8b7a;line-height:1.6;">
-                &copy; {$year} {$siteName}. This is an official message from our team.<br>
-                If you did not expect this email, please contact us at {$contactEmail}.
+              <p style="margin:20px 0 0;font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">
+                &copy; {$year} {$siteName}. Official studio communication.<br>
+                You can reply to this email and our team will continue the conversation.
               </p>
             </td>
           </tr>
@@ -476,7 +616,7 @@ HTML;
             }
             $safeUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
             $safeLabel = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
-            $links[] = '<a href="' . $safeUrl . '" style="color:#B8860B;text-decoration:none;margin:0 8px;font-size:12px;font-weight:600;">' . $safeLabel . '</a>';
+            $links[] = '<a href="' . $safeUrl . '" style="color:#feee90;text-decoration:none;margin:0 8px;font-size:12px;font-weight:600;">' . $safeLabel . '</a>';
         }
 
         if ($links === []) {
@@ -507,9 +647,17 @@ HTML;
         $vars['customer_name'] = $vars['customer_name'] ?? $vars['name'];
 
         foreach ($vars as $k => $v) {
-            if (!str_contains($k, 'message') && !str_contains($k, 'url') && !str_contains($k, 'link')) {
-                $vars[$k] = htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
+            // Keep HTML/body/message/url content unescaped for template injection.
+            if (
+                str_contains($k, 'message')
+                || str_contains($k, 'url')
+                || str_contains($k, 'link')
+                || str_contains($k, 'body')
+                || str_contains($k, 'html')
+            ) {
+                continue;
             }
+            $vars[$k] = htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
         }
 
         return $vars;
@@ -518,14 +666,17 @@ HTML;
     private static function inquiryTypeLabel(string $type): string
     {
         $labels = [
-            'general'     => 'General Inquiry',
-            'buying'      => 'Interested in Buying',
-            'renting'     => 'Interested in Renting',
-            'selling'     => 'Selling a Property',
-            'partnership' => 'Partnership Opportunity',
+            'general'       => 'General Inquiry',
+            'new-build'     => 'New Build Project',
+            'renovation'    => 'Renovation / Remodel',
+            'consultation'  => 'Design Consultation',
+            'partnership'   => 'Partnership Opportunity',
+            'buying'        => 'Buying Enquiry',
+            'renting'       => 'Renting Enquiry',
+            'selling'       => 'Selling Enquiry',
         ];
 
-        return $labels[$type] ?? ucfirst($type);
+        return $labels[$type] ?? ucwords(str_replace('-', ' ', $type));
     }
 
     private static function absoluteUrl(string $path): string

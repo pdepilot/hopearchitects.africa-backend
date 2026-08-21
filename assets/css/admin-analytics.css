@@ -6,15 +6,15 @@
     }
 
     :root {
-      --bg-royal: #0f2418;
-      --bg-card: rgba(15, 36, 24, 0.88);
-      --gold: #D4AF37;
-      --gold-light: #FFD700;
-      --gold-glow: rgba(45, 155, 60, 0.28);
-      --gold-dark: #B8860B;
+      --bg-royal: #0b4e56;
+      --bg-card: rgba(11, 78, 86, 0.88);
+      --gold: #feee90;
+      --gold-light: #fff6b8;
+      --gold-glow: rgba(18, 112, 122, 0.28);
+      --gold-dark: #e0d070;
       --text-light: #f0f7f2;
       --text-muted: rgba(200, 220, 210, 0.72);
-      --border-glow: rgba(45, 155, 60, 0.35);
+      --border-glow: rgba(18, 112, 122, 0.35);
       --ff-serif: 'Cormorant Garamond', serif;
       --ff-sans: 'Outfit', sans-serif;
       --shadow-elegant: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
@@ -22,7 +22,7 @@
     }
 
     body {
-      background: radial-gradient(circle at 10% 20%, #1a5c28, #0f2418);
+      background: radial-gradient(circle at 10% 20%, #0b4e56, #0b4e56);
       font-family: var(--ff-sans);
       color: var(--text-light);
       min-height: 100vh;
@@ -49,7 +49,7 @@
     /* Sidebar consistent */
     .sidebar {
       width: 280px;
-      background: rgba(15, 36, 24, 0.92);
+      background: rgba(11, 78, 86, 0.92);
       backdrop-filter: blur(12px);
       border-right: 1px solid var(--border-glow);
       padding: 2rem 1.2rem;
@@ -75,7 +75,7 @@
       justify-content: center;
       font-weight: bold;
       font-size: 1.5rem;
-      color: #0f2418;
+      color: #0b4e56;
     }
     .logo-text {
       font-family: var(--ff-serif);
@@ -96,7 +96,7 @@
     }
     .nav-item i { width: 24px; }
     .nav-item.active, .nav-item:hover {
-      background: rgba(212, 175, 55, 0.15);
+      background: rgba(254, 238, 144, 0.15);
       color: var(--gold);
       backdrop-filter: blur(8px);
     }

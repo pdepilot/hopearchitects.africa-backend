@@ -1,6 +1,6 @@
 -- =============================================================================
--- Biver Royal Estate - Admin Authentication Schema
--- Database: biverroyal_estate
+-- Hope Architects - Admin Authentication Schema
+-- Database: biverroyal_estate (legacy DB name; rename only if you migrate MySQL)
 -- Run this script once in phpMyAdmin or: mysql -u root biverroyal_estate < auth_tables.sql
 -- =============================================================================
 
@@ -106,9 +106,9 @@ CREATE TABLE IF NOT EXISTS `admin_audit_log` (
 -- -----------------------------------------------------------------------------
 INSERT INTO `admin_users` (`email`, `password_hash`, `full_name`, `is_active`)
 VALUES (
-    'admin@biverroyalty.com',
+    'admin@hopearchitects.ng',
     '$2y$10$UdBsjOMP8dm9k10cJi1gmeNmM6YkYDJCldeSHp0U8Y5eGeTJ9viwa',
-    'Biver Royalty Administrator',
+    'Hope Architects Administrator',
     1
 )
 ON DUPLICATE KEY UPDATE `email` = `email`;

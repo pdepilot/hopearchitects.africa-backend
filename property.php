@@ -37,8 +37,8 @@
       <div class="container">
         <div class="filter-form">
           <div class="filter-group"><input type="text" id="propertyFilterInput" placeholder="Search by location or title..."></div>
-          <div class="filter-group"><select id="typeFilter"><option value="">All Types</option><option value="sale">For Sale</option><option value="rent">For Rent</option></select></div>
-          <div class="filter-group"><select id="sortFilter"><option value="newest">Newest First</option><option value="price_low">Price: Low to High</option><option value="price_high">Price: High to Low</option></select></div>
+          <div class="filter-group"><select id="typeFilter"><option value="">All Disciplines</option><option value="sale">Architecture</option><option value="rent">Interior Design</option></select></div>
+          <div class="filter-group"><select id="sortFilter"><option value="newest">Newest First</option><option value="title">Title A–Z</option></select></div>
           <button class="search-btn" id="searchBtn"><ion-icon name="search-outline"></ion-icon>Search Projects</button>
         </div>
       </div>
@@ -108,19 +108,22 @@
       renderProperties();
     }
 
-    function formatPrice(price, type) {
-      if (type === 'rent') return `\u20A6${Number(price).toLocaleString()}/month`;
-      return `\u20A6${Number(price).toLocaleString()}`;
-    }
-
-    function getPropertyImage(property) {
+    function getPropertyImage(property, index) {
+      const portfolio = window.HOPE_PORTFOLIO || {};
+      if (portfolio.propertyImage) {
+        return portfolio.propertyImage(property, typeof index === 'number' ? index : 0);
+      }
       if (property.imageUrl) return resolveMediaUrl(property.imageUrl);
       if (property.images && property.images[0]) return resolveMediaUrl(property.images[0]);
-      return 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop';
+      return portfolio.imageAt ? portfolio.imageAt(0) : './assets/images/Scene 10_1.png';
     }
 
-    function resolveMediaUrl(url) {
-      if (!url) return '';
+    function resolveMediaUrl(url, fallbackIndex) {
+      const portfolio = window.HOPE_PORTFOLIO || {};
+      if (portfolio.resolveMediaUrl) {
+        return portfolio.resolveMediaUrl(url, typeof fallbackIndex === 'number' ? fallbackIndex : 0);
+      }
+      if (!url) return portfolio.imageAt ? portfolio.imageAt(0) : '';
       if (url.startsWith('http') || url.startsWith('/')) return url;
       if (url.startsWith('assets/')) return './' + url;
       return url;
@@ -133,25 +136,28 @@
       }[m]));
     }
 
-    function createPropertyCard(property) {
+    function createPropertyCard(property, cardIndex) {
       const isFavorite = favorites.includes(property._id);
-      const imageUrl = getPropertyImage(property);
-      const badgeClass = property.type === 'rent' ? 'rent' : 'sale';
-      const badgeText = property.type === 'rent' ? 'For Rent' : 'For Sale';
+      const imageUrl = getPropertyImage(property, cardIndex || 0);
+      const badge = (window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.categoryBadge)
+        ? window.HOPE_PORTFOLIO.categoryBadge(property.type)
+        : { label: property.type === 'rent' ? 'Interior Design' : 'Architecture', className: property.type === 'rent' ? 'interior' : 'architecture' };
+      const badgeClass = badge.className;
+      const badgeText = badge.label;
       const detailUrl = window.BIVER_SITE?.propertyDetail
         ? window.BIVER_SITE.propertyDetail(property._id)
         : 'property-detail?id=' + encodeURIComponent(property._id);
       return `
         <div class="property-card">
           <div class="card-banner">
-            <img src="${imageUrl}" alt="${escapeHtml(property.title)}" loading="lazy">
+            <img src="${imageUrl}" alt="${escapeHtml(property.title)}" loading="lazy" data-portfolio-fallback="${cardIndex || 0}">
             <div class="card-badge ${badgeClass}">${badgeText}</div>
             <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${property._id}', this)">
               <ion-icon name="${isFavorite ? 'heart' : 'heart-outline'}"></ion-icon>
             </button>
           </div>
           <div class="card-content">
-            <div class="card-price">${formatPrice(property.price, property.type)}</div>
+            <span class="card-category">${badgeText}</span>
             <h3 class="card-title">${escapeHtml(property.title)}</h3>
             <div class="card-location"><ion-icon name="location-outline"></ion-icon> ${escapeHtml(property.location || 'Lagos, Nigeria')}</div>
             <div class="card-features">
@@ -211,8 +217,7 @@
         return true;
       });
       
-      if (sortBy === 'price_low') filteredProps.sort((a,b) => a.price - b.price);
-      else if (sortBy === 'price_high') filteredProps.sort((a,b) => b.price - a.price);
+      if (sortBy === 'title') filteredProps.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
       else filteredProps.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       const totalPages = Math.max(1, Math.ceil(filteredProps.length / itemsPerPage));
@@ -237,7 +242,10 @@
       hideEl(skeleton);
       showEl(grid);
       grid.className = `properties-grid ${currentView === 'list' ? 'list-view' : ''}`;
-      grid.innerHTML = paginated.map(p => createPropertyCard(p)).join('');
+      grid.innerHTML = paginated.map((p, i) => createPropertyCard(p, start + i)).join('');
+      if (window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.bindImageFallback) {
+        window.HOPE_PORTFOLIO.bindImageFallback(grid);
+      }
 
       const paginationDiv = document.getElementById('pagination');
       if (totalPages <= 1) { paginationDiv.innerHTML = ''; return; }

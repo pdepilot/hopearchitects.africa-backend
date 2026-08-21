@@ -67,8 +67,8 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     <div class="recent-table">
       <h3><i class="fas fa-history"></i> Recent Properties Added</h3>
       <table id="recentPropsTable">
-        <thead><tr><th>Title</th><th>Price (₦)</th><th>Type</th><th>Date</th></tr></thead>
-        <tbody><tr><td colspan="4">Loading...</td></tr></tbody>
+        <thead><tr><th>Title</th><th>Discipline</th><th>Date</th></tr></thead>
+        <tbody><tr><td colspan="3">Loading...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -137,11 +137,11 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
         datasets: [{
           label: 'Properties Added',
           data: listingCounts,
-          borderColor: '#D4AF37',
+          borderColor: '#feee90',
           backgroundColor: 'rgba(212,175,55,0.1)',
           tension: 0.3,
           fill: true,
-          pointBackgroundColor: '#D4AF37'
+          pointBackgroundColor: '#feee90'
         }]
       },
       options: { responsive: true, maintainAspectRatio: true }
@@ -150,10 +150,10 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     typeChart = new Chart(document.getElementById('typeChart').getContext('2d'), {
       type: 'pie',
       data: {
-        labels: ['For Sale', 'For Rent'],
+        labels: ['Architecture', 'Interior Design'],
         datasets: [{
           data: [types.sale || 0, types.rent || 0],
-          backgroundColor: ['#D4AF37', '#9e7a2c'],
+          backgroundColor: ['#feee90', '#9e7a2c'],
           borderWidth: 0
         }]
       },
@@ -181,7 +181,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
         datasets: [{
           label: 'Number of Testimonials',
           data: ratings,
-          backgroundColor: '#D4AF37',
+          backgroundColor: '#feee90',
           borderRadius: 8
         }]
       },
@@ -193,14 +193,13 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     const tbody = document.querySelector('#recentPropsTable tbody');
     if (!tbody) return;
     if (!items.length) {
-      tbody.innerHTML = '<tr><td colspan="4">No properties found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3">No properties found</td></tr>';
       return;
     }
     tbody.innerHTML = items.map((p) => `
       <tr>
         <td>${escapeHtml(p.title)}</td>
-        <td>₦${Number(p.price || 0).toLocaleString()}</td>
-        <td>${p.type === 'sale' ? '🏷️ Sale' : '📄 Rent'}</td>
+        <td>${p.type === 'rent' ? 'Interior Design' : 'Architecture'}</td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'N/A'}</td>
       </tr>
     `).join('');
@@ -217,7 +216,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     toast = document.createElement('div');
     toast.className = 'toast-msg';
     toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
-    toast.style.borderLeftColor = isError ? '#e74c3c' : '#D4AF37';
+    toast.style.borderLeftColor = isError ? '#e74c3c' : '#feee90';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
   }

@@ -66,7 +66,7 @@
       width: 28px; height: 28px;
       display: grid; place-items: center;
       border-radius: 50%;
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      border: 1px solid rgba(254, 238, 144, 0.3);
       color: rgba(255,255,255,0.6);
       font-size: 13px;
       transition: all 0.3s;
@@ -111,7 +111,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding-block: 18px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      border-bottom: 1px solid rgba(254, 238, 144, 0.15);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 2px 20px rgba(0,0,0,0.06);
       position: relative;
@@ -121,7 +121,7 @@
     /* Scrolled state */
     .header.scrolled .header-bottom {
       background: var(--prussian-blue);
-      border-bottom-color: rgba(212, 175, 55, 0.3);
+      border-bottom-color: rgba(254, 238, 144, 0.3);
       padding-block: 12px;
       box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     }
@@ -185,9 +185,11 @@
       }
       .header-bottom-actions {
         margin-left: auto;
-        padding-left: 24px;
-        gap: 14px;
+        padding-left: 12px;
+        gap: 4px;
         flex-shrink: 0;
+        position: relative;
+        z-index: 1061;
       }
       body.nav-open .header-bottom {
         background: #ffffff;
@@ -259,7 +261,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 22px 0 25px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      border-bottom: 1px solid rgba(254, 238, 144, 0.2);
       margin-bottom: 10px;
       /* FIX: Ensure top bar is always opaque and visible */
       background: #ffffff;
@@ -546,14 +548,10 @@
     }
 
     /* =============================================
-       MOBILE BOTTOM BAR
-       FIX: Ensure mobile bottom bar z-index is lower than navbar
+       MOBILE HEADER ACTIONS
+       Keep search + menu in the sticky header (not a bottom bar)
     ============================================= */
     @media (max-width: 767px) {
-      /*
-       * backdrop-filter on .header-bottom creates a containing block, which traps
-       * position:fixed children inside the header bar (search ends up beside the logo).
-       */
       .header-bottom {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -563,46 +561,56 @@
         -webkit-backdrop-filter: none;
       }
       .header-bottom .container {
-        justify-content: flex-start;
+        justify-content: space-between;
+        align-items: center;
       }
       .header-bottom-actions {
-        background: var(--white);
-        position: fixed;
-        bottom: 0; left: 0;
-        width: 100%;
+        position: static;
+        width: auto;
+        margin-left: auto;
         display: flex;
-        justify-content: space-evenly;
-        padding-block: 12px 10px;
-        box-shadow: 0 -2px 30px rgba(0,0,0,0.1);
-        /* FIX: z-index must be below overlay (1050) and navbar (1100) */
-        z-index: 940;
-        border-top: 1px solid rgba(212,175,55,0.2);
-        backdrop-filter: none;
-        margin-left: 0;
-        padding-left: 0;
-        gap: 0;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        z-index: 1061;
+        flex-shrink: 0;
       }
       .header-bottom-actions-btn {
-        flex-direction: column;
-        height: auto; width: auto;
-        padding: 4px 10px;
-        border-radius: 8px;
-        /* FIX: Ensure btn icons are always on their own layer */
+        flex-direction: row;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
         position: relative;
         z-index: 1;
       }
       .header-bottom-actions-btn ion-icon {
-        /* FIX: Explicit color on mobile so scroll state doesn't affect it */
-        color: var(--prussian-blue) !important;
+        color: var(--prussian-blue);
+        font-size: 22px;
       }
       .header-bottom-actions-btn span {
-        display: block;
-        color: var(--cadet) !important;
+        display: none;
       }
-      .footer:not(.footer--monolith) { margin-bottom: 70px; }
-
-      /* FIX: On mobile, scrolled state should NOT change bottom bar icon colors */
-      .header.scrolled ~ * .header-bottom-actions-btn ion-icon { color: var(--prussian-blue); }
+      .header.scrolled .header-bottom-actions-btn ion-icon {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .header.scrolled .header-bottom-actions-btn:hover ion-icon {
+        color: var(--gold-light);
+      }
+      body.nav-open .header-bottom-actions-btn ion-icon {
+        color: var(--prussian-blue);
+      }
+      body.nav-open .header.scrolled .header-bottom-actions-btn ion-icon {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .footer:not(.footer--monolith) { margin-bottom: 0; }
+      #scrollToTop {
+        bottom: 24px;
+      }
     }
 
     /* =============================================
@@ -691,8 +699,11 @@
       justify-content: flex-start;
       padding-top: clamp(60px, 12vh, 120px);
       padding-inline: 20px;
-      /* Background: dark with subtle texture */
-      background: rgba(26, 12, 2, 0.97);
+      /* Match Hope Architects green brand surfaces (not legacy brown) */
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px),
+        linear-gradient(165deg, rgba(11, 78, 86, 0.98) 0%, rgba(11, 78, 86, 0.96) 55%, rgba(11, 78, 86, 0.99) 100%);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -719,9 +730,9 @@
       top: 20px; right: 20px;
       width: 44px; height: 44px;
       border-radius: 50%;
-      background: rgba(212,175,55,0.1);
-      border: 1px solid rgba(212,175,55,0.25);
-      color: rgba(255,255,255,0.7);
+      background: rgba(18, 112, 122, 0.15);
+      border: 1px solid rgba(254, 238, 144, 0.3);
+      color: rgba(255, 255, 255, 0.75);
       display: grid; place-items: center;
       font-size: 22px;
       cursor: pointer;
@@ -729,7 +740,7 @@
     }
     .search-modal-close:hover {
       background: var(--gold);
-      color: var(--prussian-blue);
+      color: var(--surface-dark);
       border-color: var(--gold);
     }
 
@@ -738,7 +749,7 @@
       font-weight: 700;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: var(--gold-dark);
+      color: var(--gold);
       margin-bottom: 14px;
       opacity: 0;
       transform: translateY(-10px);
@@ -752,7 +763,7 @@
       font-family: var(--ff-display);
       font-size: clamp(1.8rem, 4vw, 3rem);
       font-weight: 700;
-      color: #ffffff;
+      color: var(--white);
       margin-bottom: 36px;
       text-align: center;
       opacity: 0;
@@ -774,20 +785,20 @@
 
     #searchInput {
       width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(212,175,55,0.3);
-      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(254, 238, 144, 0.35);
+      color: var(--white);
       font-family: var(--ff-body);
       font-size: 1.05rem;
       padding: 18px 60px 18px 22px;
-      border-radius: 4px;
+      border-radius: 8px;
       outline: none;
       transition: border-color 0.25s, background 0.25s;
     }
-    #searchInput::placeholder { color: rgba(255,255,255,0.3); }
+    #searchInput::placeholder { color: rgba(255, 255, 255, 0.35); }
     #searchInput:focus {
       border-color: var(--gold);
-      background: rgba(255,255,255,0.09);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .search-input-icon {
@@ -830,7 +841,7 @@
     .search-filter-chip.active {
       background: var(--gold);
       border-color: var(--gold);
-      color: var(--prussian-blue);
+      color: var(--surface-dark);
     }
 
     /* Results area */
@@ -853,17 +864,17 @@
       align-items: center;
       gap: 16px;
       padding: 14px 16px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(212,175,55,0.08);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(18, 112, 122, 0.2);
       margin-bottom: 10px;
       cursor: pointer;
       transition: all 0.2s;
       text-decoration: none;
     }
     .search-result-item:hover {
-      background: rgba(212,175,55,0.1);
-      border-color: rgba(212,175,55,0.3);
+      background: rgba(18, 112, 122, 0.18);
+      border-color: rgba(254, 238, 144, 0.4);
       transform: translateX(4px);
     }
     .search-result-thumb {
@@ -901,7 +912,9 @@
       border-radius: 20px;
       border: 1px solid rgba(212,175,55,0.2);
     }
-    .search-result-badge.rent { background: rgba(16,183,89,0.15); color: #10b759; border-color: rgba(16,183,89,0.2); }
+    .search-result-badge.rent,
+    .search-result-badge.interior { background: rgba(16,183,89,0.15); color: #10b759; border-color: rgba(16,183,89,0.2); }
+    .search-result-badge.architecture { background: rgba(212,175,55,0.15); color: var(--gold-dark); border-color: rgba(212,175,55,0.25); }
 
     .search-no-results {
       text-align: center;

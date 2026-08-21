@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config/database.php';
 require_once __DIR__ . '/site_paths.php';
+require_once __DIR__ . '/portfolio_helpers.php';
 
 final class ServiceAreaRepository
 {
@@ -168,14 +169,7 @@ final class ServiceAreaRepository
 
     private static function publicImageUrl(string $path): string
     {
-        if ($path === '') {
-            return '';
-        }
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return publicAssetUrl($path) ?? $path;
+        return portfolioResolveMediaUrl($path, 20);
     }
 
     /** @param array<string, mixed> $input @return array<string, mixed> */

@@ -73,11 +73,31 @@ final class EmailRepository
 
         require_once __DIR__ . '/AutomatedEmailService.php';
         foreach (AutomatedEmailService::defaultEventTemplates() as $eventKey => $tpl) {
-            $check = $pdo->prepare('SELECT id FROM email_templates WHERE event_key = ? LIMIT 1');
+            $check = $pdo->prepare(
+                'SELECT id, subject, body_html FROM email_templates WHERE event_key = ? LIMIT 1'
+            );
             $check->execute([$eventKey]);
-            if ($check->fetch()) {
+            $existing = $check->fetch(PDO::FETCH_ASSOC);
+
+            if ($existing) {
+                $haystack = ((string) ($existing['subject'] ?? '')) . ' ' . ((string) ($existing['body_html'] ?? ''));
+                if (self::containsLegacyBrand($haystack)) {
+                    $upd = $pdo->prepare(
+                        'UPDATE email_templates
+                         SET name = ?, subject = ?, body_html = ?, description = ?, is_system = 1
+                         WHERE id = ?'
+                    );
+                    $upd->execute([
+                        $tpl['name'],
+                        $tpl['subject'],
+                        $tpl['body_html'],
+                        $tpl['description'] ?? '',
+                        (int) $existing['id'],
+                    ]);
+                }
                 continue;
             }
+
             $ins = $pdo->prepare(
                 'INSERT INTO email_templates (name, subject, body_html, event_key, description, is_system)
                  VALUES (?, ?, ?, ?, ?, 1)'
@@ -91,7 +111,71 @@ final class EmailRepository
             ]);
         }
 
+        self::rebrandLegacyTemplateCopy($pdo);
+
         $schemaDone = true;
+    }
+
+    private static function containsLegacyBrand(string $text): bool
+    {
+        return (bool) preg_match(
+            '/biverroyaltyhomesltd|biver\s*royalty|mannavilla/i',
+            $text
+        );
+    }
+
+    /**
+     * Replace leftover Biver Royalty Homes / Mannavilla wording in any stored templates.
+     */
+    private static function rebrandLegacyTemplateCopy(PDO $pdo): void
+    {
+        $replacements = [
+            'biverroyaltyhomesltd.com' => 'hopearchitects.ng',
+            'www.biverroyaltyhomesltd.com' => 'hopearchitects.ng',
+            'biverroyaltyhomesltd' => 'Hope Architects',
+            'Biver Royalty Homes Ltd' => 'Hope Architects',
+            'Biver Royalty Homes' => 'Hope Architects',
+            'BiverRoyalty Homes' => 'Hope Architects',
+            'Biver Royalty' => 'Hope Architects',
+            'Mannavilla Limited' => 'Hope Architects',
+            'Mannavilla' => 'Hope Architects',
+        ];
+
+        $rows = $pdo->query(
+            'SELECT id, name, subject, body_html, description FROM email_templates'
+        )->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        $upd = $pdo->prepare(
+            'UPDATE email_templates
+             SET name = :name, subject = :subject, body_html = :body, description = :description
+             WHERE id = :id'
+        );
+
+        foreach ($rows as $row) {
+            $name = (string) ($row['name'] ?? '');
+            $subject = (string) ($row['subject'] ?? '');
+            $body = (string) ($row['body_html'] ?? '');
+            $description = (string) ($row['description'] ?? '');
+
+            if (!self::containsLegacyBrand($name . ' ' . $subject . ' ' . $body . ' ' . $description)) {
+                continue;
+            }
+
+            foreach ($replacements as $from => $to) {
+                $name = str_ireplace($from, $to, $name);
+                $subject = str_ireplace($from, $to, $subject);
+                $body = str_ireplace($from, $to, $body);
+                $description = str_ireplace($from, $to, $description);
+            }
+
+            $upd->execute([
+                ':name' => $name,
+                ':subject' => $subject,
+                ':body' => $body,
+                ':description' => $description,
+                ':id' => (int) $row['id'],
+            ]);
+        }
     }
 
     /** @return list<array<string, mixed>> */

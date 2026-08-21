@@ -1,5 +1,5 @@
 /**
- * Hope Architects — shared monolith footer (clock + parallax)
+ * Hope Architects — shared monolith footer (clock + watermark align)
  */
 (function () {
   'use strict';
@@ -17,33 +17,42 @@
     if (el) el.textContent = String(new Date().getFullYear());
   }
 
-  function initFooterParallax() {
+  function positionFooterWatermark() {
     var footer = document.querySelector('.footer--monolith');
-    if (!footer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!footer) return;
 
     var watermark = footer.querySelector('.footer-monolith__watermark');
-    if (!watermark) return;
+    var social = footer.querySelector('.footer-monolith__social');
+    if (!watermark || !social) return;
 
-    var ticking = false;
-    window.addEventListener('scroll', function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        var rect = footer.getBoundingClientRect();
-        var vh = window.innerHeight;
-        if (rect.top < vh && rect.bottom > 0) {
-          var progress = 1 - rect.top / vh;
-          watermark.style.transform = 'translateX(-50%) translateY(' + (progress * 24) + 'px)';
-        }
-        ticking = false;
-      });
-    }, { passive: true });
+    var footerRect = footer.getBoundingClientRect();
+    var socialRect = social.getBoundingClientRect();
+    var top = socialRect.top - footerRect.top + (socialRect.height / 2);
+
+    watermark.style.top = top + 'px';
+    watermark.style.bottom = 'auto';
+    watermark.style.left = '50%';
+    watermark.style.transform = 'translate(-50%, -50%)';
+  }
+
+  function initFooterWatermark() {
+    positionFooterWatermark();
+    window.addEventListener('resize', positionFooterWatermark);
+    window.addEventListener('load', positionFooterWatermark);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      var footer = document.querySelector('.footer--monolith');
+      if (footer) {
+        var ro = new ResizeObserver(positionFooterWatermark);
+        ro.observe(footer);
+      }
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     initFooterYear();
     updateFooterClock();
     setInterval(updateFooterClock, 60000);
-    initFooterParallax();
+    initFooterWatermark();
   });
 })();

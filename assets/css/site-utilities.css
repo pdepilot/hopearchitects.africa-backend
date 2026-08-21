@@ -9,7 +9,7 @@
 .section-subtitle--left { --text-align: left; margin-inline: 0; }
 .section-title--left { text-align: left; margin-bottom: 16px; }
 .sidebar-logo { text-decoration: none; color: inherit; }
-.bg-slide--1 { background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&auto=format&fit=crop&q=80'); }
+.bg-slide--1 { background-image: url('../images/IMG-20260720-WA0006.jpg'); }
 
 #propertiesList:not(.u-hidden) { display: flex; }
 #propertiesError:not(.u-hidden),

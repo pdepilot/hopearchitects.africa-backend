@@ -77,12 +77,12 @@ CREATE TABLE IF NOT EXISTS `email_queue` (
 INSERT INTO `email_templates` (`name`, `subject`, `body_html`)
 SELECT * FROM (
     SELECT 'Welcome Email' AS name,
-           'Welcome to Biver Royalty Homes' AS subject,
-           '<p>Dear {{name}},</p><p>Thank you for connecting with <strong>Biver Royalty Homes</strong>. We are delighted to assist you with your real estate journey in Nigeria.</p><p>Warm regards,<br>Biver Royalty Homes Team</p>' AS body_html
+           'Welcome to Hope Architects' AS subject,
+           '<p>Dear {{name}},</p><p>Thank you for connecting with <strong>Hope Architects</strong>. We are delighted to assist you with your real estate journey in Nigeria.</p><p>Warm regards,<br>Hope Architects Team</p>' AS body_html
     UNION ALL
     SELECT 'Property Approved',
            'Your Property Listing Has Been Approved',
-           '<p>Dear {{name}},</p><p>Great news! Your property listing has been <strong>approved</strong> and is now visible on our website.</p><p>Thank you for listing with Biver Royalty Homes.</p>'
+           '<p>Dear {{name}},</p><p>Great news! Your property listing has been <strong>approved</strong> and is now visible on our website.</p><p>Thank you for listing with Hope Architects.</p>'
     UNION ALL
     SELECT 'Property Rejected',
            'Update on Your Property Listing',
@@ -93,7 +93,7 @@ SELECT * FROM (
            '<p>Dear {{name}},</p><p>To complete your listing, we need to verify ownership details for your property.</p><p>Please reply with proof of ownership or contact our team at your earliest convenience.</p>'
     UNION ALL
     SELECT 'Promotional Campaign',
-           'Exclusive Property Offers — Biver Royalty Homes',
+           'Exclusive Property Offers — Hope Architects',
            '<p>Dear {{name}},</p><p>Discover premium architecture and construction services from <strong>Hope Architects</strong>.</p><p>Visit our website to explore the latest projects in Lagos, Abuja, and across Nigeria.</p>'
 ) AS seed
 WHERE NOT EXISTS (SELECT 1 FROM `email_templates` LIMIT 1);

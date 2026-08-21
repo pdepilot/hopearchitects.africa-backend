@@ -2,12 +2,12 @@
 body { font-family: var(--ff-body); background: hsl(192, 24%, 96%); color: hsl(130, 40%, 10%); }
   .dashboard { display: flex; min-height: 100vh; }
   .main-content { flex: 1; margin-left: 280px; }
-  .topbar { background: rgba(255,255,255,0.92); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dce8e0; position: sticky; top: 0; z-index: 90; }
+  .topbar { background: rgba(255,255,255,0.92); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d5e4e6; position: sticky; top: 0; z-index: 90; }
   .page-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
-  .admin-badge { background: linear-gradient(90deg, #D4AF37, #FFD700, #B8860B); padding: 6px 16px; border-radius: 40px; color: #1a5c28; font-weight: 600; font-size: 0.85rem; }
+  .admin-badge { background: linear-gradient(90deg, #feee90, #fff6b8, #e0d070); padding: 6px 16px; border-radius: 40px; color: #0b4e56; font-weight: 600; font-size: 0.85rem; }
   .menu-toggle { display: none; background: none; border: none; font-size: 28px; cursor: pointer; }
   @media (max-width: 992px) { .main-content { margin-left: 0; } .menu-toggle { display: block; } }
-  :root { --prussian-blue: #1a5c28; --gold: #D4AF37; --gold-dark: #B8860B; --border-light: #dce8e0; --text-muted: hsl(200, 15%, 43%); --ff-display: 'Cormorant Garamond', serif; --shadow-md: 0 12px 30px rgba(0,0,0,0.08); --danger: #dc3545; --success: #198754; }
+  :root { --prussian-blue: #0b4e56; --gold: #feee90; --gold-dark: #e0d070; --border-light: #d5e4e6; --text-muted: hsl(200, 15%, 43%); --ff-display: 'Cormorant Garamond', serif; --shadow-md: 0 12px 30px rgba(0,0,0,0.08); --danger: #dc3545; --success: #198754; }
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-pill { background: white; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; text-align: center; }
   .stat-pill strong { display: block; font-size: 1.8rem; font-family: var(--ff-display); color: var(--prussian-blue); }
@@ -92,12 +92,12 @@ body { font-family: var(--ff-body); background: hsl(192, 24%, 96%); color: hsl(1
 body { font-family: var(--ff-body); background: hsl(192, 24%, 96%); color: hsl(130, 40%, 10%); }
   .dashboard { display: flex; min-height: 100vh; }
   .main-content { flex: 1; margin-left: 280px; }
-  .topbar { background: rgba(255,255,255,0.92); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dce8e0; position: sticky; top: 0; z-index: 90; }
+  .topbar { background: rgba(255,255,255,0.92); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d5e4e6; position: sticky; top: 0; z-index: 90; }
   .page-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
-  .admin-badge { background: linear-gradient(90deg, #D4AF37, #FFD700, #B8860B); padding: 6px 16px; border-radius: 40px; color: #1a5c28; font-weight: 600; font-size: 0.85rem; }
+  .admin-badge { background: linear-gradient(90deg, #feee90, #fff6b8, #e0d070); padding: 6px 16px; border-radius: 40px; color: #0b4e56; font-weight: 600; font-size: 0.85rem; }
   .menu-toggle { display: none; background: none; border: none; font-size: 28px; cursor: pointer; }
   @media (max-width: 992px) { .main-content { margin-left: 0; } .menu-toggle { display: block; } }
-  :root { --prussian-blue: #1a5c28; --gold: #D4AF37; --gold-dark: #B8860B; --border-light: #dce8e0; --text-muted: hsl(200, 15%, 43%); --ff-display: 'Cormorant Garamond', serif; --shadow-md: 0 12px 30px rgba(0,0,0,0.08); --danger: #dc3545; --success: #198754; }
+  :root { --prussian-blue: #0b4e56; --gold: #feee90; --gold-dark: #e0d070; --border-light: #d5e4e6; --text-muted: hsl(200, 15%, 43%); --ff-display: 'Cormorant Garamond', serif; --shadow-md: 0 12px 30px rgba(0,0,0,0.08); --danger: #dc3545; --success: #198754; }
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-pill { background: white; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; text-align: center; }
   .stat-pill strong { display: block; font-size: 1.8rem; font-family: var(--ff-display); color: var(--prussian-blue); }

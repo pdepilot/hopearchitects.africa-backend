@@ -39,17 +39,17 @@ return array (
       'badge' => 'The Untold Story',
       'title' => 'From a Bold Vision to Nigeria\'s Most Trusted Architecture Firm',
       'paragraph1' => 'In 2015, our founders saw a gap in Nigeria\'s built environment — not a gap in contractors, but a gap in design-led, quality construction.',
-      'paragraph2' => 'What started as a studio in Lagos has grown into a full-service architecture and construction practice trusted across the city and Nigeria.',
+      'paragraph2' => 'What started as a studio in Lagos has grown into a full-service architecture and construction practice, trusted across the city and Nigeria.',
       'quote' => 'We don\'t just draw buildings. We craft spaces that elevate how people live and work.',
-      'signature' => 'Mr. Oliva Guiffo, Founder',
-      'mainImage' => 'assets/images/team-1.png',
-      'floatingImage' => 'assets/images/picture1.jpg',
+      'signature' => 'Mr. Hope Opeyemi Ogunleye, Founder',
+      'mainImage' => 'assets/uploads/about/narrative-20260723-164007-03b1ebc5.jpg',
+      'floatingImage' => 'assets/uploads/about/narrative-20260728-155255-c44587bf.jpg',
       'caption' => 'The Journey Begins in Lagos, 2015',
     ),
     'journey' => 
     array (
-      'eyebrow' => 'Our Journey',
-      'title' => 'The Road to Redefining Architecture & Construction',
+      'eyebrow' => '',
+      'title' => '',
       'items' => 
       array (
         0 => 
@@ -86,7 +86,7 @@ return array (
     ),
     'values' => 
     array (
-      'image' => 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&auto=format&fit=crop&q=80',
+      'image' => 'assets/images/Scene 15_1.png',
       'items' => 
       array (
         0 => 
@@ -123,13 +123,13 @@ return array (
       array (
         0 => 
         array (
-          'name' => 'Oliva Guiffo',
+          'name' => 'Hope Opeyemi Ogunleye',
           'role' => 'Founder & CEO',
           'image' => 'assets/uploads/about/team-20260706-174239-89126fd4.png',
           'social' => 
           array (
-            'facebook' => 'https://facebook.com',
-            'instagram' => 'https://instagram.com',
+            'facebook' => 'https://www.facebook.com/share/19KL5dXhb4/',
+            'instagram' => 'https://www.instagram.com/hope.architects?igsh=eWVkZWltdHo4OGto&utm_source=qr',
             'twitter' => 'https://x.com',
           ),
         ),
@@ -185,7 +185,7 @@ return array (
     array (
       'badge' => 'Our Expertise',
       'title' => 'Comprehensive <span class="gold-accent">Architecture</span> &amp; Construction',
-      'description' => 'From master planning to final handover, we deliver world-class design and build services at every stage.',
+      'description' => 'From master planning to final handover, we deliver world-class design and build services at every stage correct build to "Construction".',
       'stats' => 
       array (
         0 => 
@@ -315,5 +315,5 @@ return array (
       ),
     ),
   ),
-  'updatedAt' => '2026-07-06T18:01:09+02:00',
+  'updatedAt' => '2026-07-28T23:35:27+02:00',
 );

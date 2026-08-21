@@ -2,20 +2,16 @@
 <?php
 require_once __DIR__ . '/includes/PageContentService.php';
 require_once __DIR__ . '/includes/site_helpers.php';
+require_once __DIR__ . '/includes/portfolio_helpers.php';
 $aboutPage = PageContentService::getPage('about');
 $aboutHero = $aboutPage['hero'] ?? [];
 $aboutNarrative = $aboutPage['narrative'] ?? [];
-$aboutJourney = $aboutPage['journey'] ?? [];
 $aboutValues = $aboutPage['values'] ?? [];
 $aboutTeam = $aboutPage['team'] ?? [];
 $aboutCta = $aboutPage['cta'] ?? [];
 
-$aboutImageSrc = static function (string $path): string {
-    if (preg_match('#^https?://#i', $path)) {
-        return $path;
-    }
-    $normalized = ltrim($path, './');
-    return publicAssetUrl($normalized) ?? './' . $normalized;
+$aboutImageSrc = static function (string $path, int $fallbackIndex = 0): string {
+    return portfolioResolveMediaUrl($path, $fallbackIndex);
 };
 
 /** @return list<array{key: string, url: string, icon: string, label: string, active: bool}> */
@@ -99,33 +95,11 @@ $aboutTeamSocialPlatforms = static function (array $social): array {
             <div class="signature"><?= siteEscape((string) ($aboutNarrative['signature'] ?? '')) ?></div>
           </div>
           <div class="visual-story reveal reveal-right visible">
-            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutNarrative['mainImage'] ?? 'assets/images/team-1.png'))) ?>" alt="Founder at work" class="main-image" loading="lazy" width="800" height="1000">
-            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutNarrative['floatingImage'] ?? 'assets/images/picture1.jpg'))) ?>" alt="Early days" class="floating-image" loading="lazy" width="480" height="288">
+            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutNarrative['mainImage'] ?? 'assets/images/Scene 10_1.png'), 0)) ?>" alt="Founder at work" class="main-image" loading="lazy" width="800" height="1000">
+            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutNarrative['floatingImage'] ?? 'assets/images/IMG-20260720-WA0010.jpg'), 1)) ?>" alt="Early days" class="floating-image" loading="lazy" width="480" height="288">
             <div class="image-caption"><?= siteEscape((string) ($aboutNarrative['caption'] ?? '')) ?></div>
           </div>
         </div> 
-      </div>
-    </section>
-    <!-- =============================================
-         JOURNEY - Timeline
-    ============================================= -->
-    <section class="journey">
-      <div class="container">
-        <div class="section-eyebrow reveal"><div class="line"></div><span><?= siteEscape((string) ($aboutJourney['eyebrow'] ?? 'Our Journey')) ?></span><div class="line"></div></div>
-        <h2 class="section-title reveal reveal-delay-1"><?= siteEscape((string) ($aboutJourney['title'] ?? '')) ?></h2>
-        <div class="timeline">
-          <?php foreach (($aboutJourney['items'] ?? []) as $i => $item): ?>
-          <?php $side = ($i % 2 === 0) ? 'reveal-left' : 'reveal-right'; ?>
-          <div class="timeline-item reveal <?= $side ?>">
-            <div class="timeline-year"><?= siteEscape((string) ($item['year'] ?? '')) ?></div>
-            <div class="timeline-content">
-              <div class="timeline-dot"></div>
-              <h4 class="timeline-title"><?= siteEscape((string) ($item['title'] ?? '')) ?></h4>
-              <p class="timeline-text"><?= siteEscape((string) ($item['text'] ?? '')) ?></p>
-            </div>
-          </div>
-          <?php endforeach; ?>
-        </div>
       </div>
     </section>
 
@@ -148,7 +122,7 @@ $aboutTeamSocialPlatforms = static function (array $social): array {
             <?php endforeach; ?>
           </div>
           <div class="values-image reveal reveal-right">
-            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutValues['image'] ?? ''))) ?>" alt="Building community" class="values-main-img" loading="lazy">
+            <img src="<?= siteEscape($aboutImageSrc((string) ($aboutValues['image'] ?? ''), 2)) ?>" alt="Building community" class="values-main-img" loading="lazy">
           </div>
         </div>
       </div>
@@ -165,34 +139,40 @@ $aboutTeamSocialPlatforms = static function (array $social): array {
           <?php foreach (($aboutTeam['members'] ?? []) as $i => $member): ?>
           <?php
             $delay = $i > 0 ? ' reveal-delay-' . min($i, 3) : '';
-            $platforms = $aboutTeamSocialPlatforms(is_array($member['social'] ?? null) ? $member['social'] : []);
+            $role = (string) ($member['role'] ?? '');
+            $showSocial = (bool) preg_match('/founder|\bceo\b/i', $role);
+            $platforms = $showSocial
+              ? $aboutTeamSocialPlatforms(is_array($member['social'] ?? null) ? $member['social'] : [])
+              : [];
+            $hasActiveSocial = false;
+            foreach ($platforms as $platform) {
+              if (!empty($platform['active'])) {
+                $hasActiveSocial = true;
+                break;
+              }
+            }
           ?>
-          <article class="team-card team-card--has-social reveal<?= $delay ?>" tabindex="0">
+          <article class="team-card<?= $hasActiveSocial ? ' team-card--has-social' : '' ?> reveal<?= $delay ?>" tabindex="0">
             <div class="team-card__media">
-              <img src="<?= siteEscape($aboutImageSrc((string) ($member['image'] ?? ''))) ?>" alt="<?= siteEscape((string) ($member['name'] ?? 'Team member')) ?>" class="team-image" loading="lazy">
+              <img src="<?= siteEscape($aboutImageSrc((string) ($member['image'] ?? ''), 10 + (int) $i)) ?>" alt="<?= siteEscape((string) ($member['name'] ?? 'Team member')) ?>" class="team-image" loading="lazy">
+              <?php if ($hasActiveSocial): ?>
               <div class="team-card__overlay">
                 <p class="team-card__social-label">Follow</p>
                 <div class="team-card__social" role="list" aria-label="<?= siteEscape((string) ($member['name'] ?? 'Team member') . ' social profiles') ?>">
                   <?php foreach ($platforms as $j => $platform): ?>
-                  <?php $slotClass = 'team-card__social-link team-card__social-link--' . $platform['key'] . ($platform['active'] ? '' : ' is-disabled'); ?>
-                  <?php if ($platform['active']): ?>
-                  <a href="<?= siteEscape($platform['url']) ?>" class="<?= $slotClass ?>" style="--social-i: <?= (int) $j ?>" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="<?= siteEscape((string) ($member['name'] ?? 'Team member') . ' on ' . $platform['label']) ?>">
+                  <?php if (empty($platform['active'])) continue; ?>
+                  <a href="<?= siteEscape($platform['url']) ?>" class="team-card__social-link team-card__social-link--<?= siteEscape($platform['key']) ?>" style="--social-i: <?= (int) $j ?>" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="<?= siteEscape((string) ($member['name'] ?? 'Team member') . ' on ' . $platform['label']) ?>">
                     <span class="team-card__social-ring" aria-hidden="true"></span>
                     <ion-icon name="<?= siteEscape($platform['icon']) ?>" aria-hidden="true"></ion-icon>
                   </a>
-                  <?php else: ?>
-                  <span class="<?= $slotClass ?>" style="--social-i: <?= (int) $j ?>" role="listitem" aria-hidden="true">
-                    <span class="team-card__social-ring" aria-hidden="true"></span>
-                    <ion-icon name="<?= siteEscape($platform['icon']) ?>" aria-hidden="true"></ion-icon>
-                  </span>
-                  <?php endif; ?>
                   <?php endforeach; ?>
                 </div>
               </div>
+              <?php endif; ?>
             </div>
             <div class="team-card__body">
               <h3 class="team-name"><?= siteEscape((string) ($member['name'] ?? '')) ?></h3>
-              <p class="team-role"><?= siteEscape((string) ($member['role'] ?? '')) ?></p>
+              <p class="team-role"><?= siteEscape($role) ?></p>
             </div>
           </article>
           <?php endforeach; ?>

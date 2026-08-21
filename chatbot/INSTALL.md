@@ -1,4 +1,4 @@
-# Biver Royalty Homes — AI Chat Assistant
+# Hope Architects — AI Chat Assistant
 
 Production-ready real estate chatbot with intent recognition, FAQ/knowledge base, property search (₦ budgets), in-chat human support, lead CRM, and admin live chat.
 

@@ -93,7 +93,7 @@ try {
             jsonOk([
                 'message'    => $mailSent
                     ? 'Reply sent successfully via email.'
-                    : self::mailFailureMessage(),
+                    : mailFailureMessage(),
                 'mail_sent'  => $mailSent,
                 'mail_error' => $mailSent ? null : MailService::getLastError(),
                 'reply_id'   => $result['reply_id'],
@@ -119,7 +119,7 @@ try {
             );
 
             jsonOk([
-                'message'    => $mailSent ? 'Email sent successfully.' : self::mailFailureMessage(),
+                'message'    => $mailSent ? 'Email sent successfully.' : mailFailureMessage(),
                 'mail_sent'  => $mailSent,
                 'mail_error' => $mailSent ? null : MailService::getLastError(),
             ]);

@@ -28,8 +28,8 @@ final class PageContentService
                     'paragraph2'=> 'What started as a studio in Lagos has grown into a full-service architecture and construction practice trusted across the city and Nigeria.',
                     'quote'     => 'We don\'t just draw buildings. We craft spaces that elevate how people live and work.',
                     'signature' => 'Mr. Oliva Guiffo, Founder',
-                    'mainImage' => 'assets/images/team-1.png',
-                    'floatingImage' => 'assets/images/picture1.jpg',
+                    'mainImage' => 'assets/images/Scene 10_1.png',
+                    'floatingImage' => 'assets/images/IMG-20260720-WA0010.jpg',
                     'caption'   => 'The Journey Begins in Lagos, 2015',
                 ],
                 'journey' => [
@@ -44,7 +44,7 @@ final class PageContentService
                     ],
                 ],
                 'values' => [
-                    'image' => 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&auto=format&fit=crop&q=80',
+                    'image' => 'assets/images/Scene 15_1.png',
                     'items' => [
                         ['icon' => 'people-outline', 'title' => 'People First, Always', 'text' => 'Behind every transaction is a family, a dream, a future. We never forget that.'],
                         ['icon' => 'eye-outline', 'title' => 'Radical Transparency', 'text' => 'Every document shared, every fee explained, every process visible. No secrets. Ever.'],
@@ -56,10 +56,10 @@ final class PageContentService
                     'eyebrow' => 'The Heart Behind the Brand',
                     'title'   => 'Meet the Dream Weavers',
                     'members' => [
-                        ['name' => 'Oliva Guiffo', 'role' => 'Founder & CEO', 'image' => 'assets/images/engineer1.png', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => 'https://instagram.com', 'twitter' => 'https://x.com']],
-                        ['name' => 'Amara Okafor', 'role' => 'Operations Director', 'image' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80', 'social' => ['facebook' => '', 'instagram' => 'https://instagram.com', 'twitter' => 'https://x.com']],
-                        ['name' => 'Emeka Obi', 'role' => 'Head of Sales', 'image' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => '', 'twitter' => 'https://x.com']],
-                        ['name' => 'Chioma Eze', 'role' => 'Client Relations', 'image' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => 'https://instagram.com', 'twitter' => '']],
+                        ['name' => 'Oliva Guiffo', 'role' => 'Founder & CEO', 'image' => 'assets/images/Scene 11_1.png', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => 'https://instagram.com', 'twitter' => 'https://x.com']],
+                        ['name' => 'Amara Okafor', 'role' => 'Operations Director', 'image' => 'assets/images/IMG-20260720-WA0011.jpg', 'social' => ['facebook' => '', 'instagram' => 'https://instagram.com', 'twitter' => 'https://x.com']],
+                        ['name' => 'Emeka Obi', 'role' => 'Lead Architect', 'image' => 'assets/images/IMG-20260720-WA0014.jpg', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => '', 'twitter' => 'https://x.com']],
+                        ['name' => 'Chioma Eze', 'role' => 'Interior Design Lead', 'image' => 'assets/images/IMG-20260720-WA0015.jpg', 'social' => ['facebook' => 'https://facebook.com', 'instagram' => 'https://instagram.com', 'twitter' => '']],
                     ],
                 ],
                 'cta' => [

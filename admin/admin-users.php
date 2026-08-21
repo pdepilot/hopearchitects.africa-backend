@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . '/includes/AdminPermissions.php';
 AdminPermissions::require(AdminPermissions::PERM_ADMINS);
 
 $activeNav = 'admins';
-$pageTitle = 'Admin Users | Biver Royalty Homes Admin';
+$pageTitle = 'Admin Users | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $pageStylesheet = '../assets/css/admin-users.css';
 $csrfToken = AuthSecurity::generateCsrfToken();

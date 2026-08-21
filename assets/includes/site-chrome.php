@@ -42,7 +42,7 @@ require_once dirname(__DIR__, 2) . '/includes/site_helpers.php';
           </a>
           <?php endif; ?>
         </div>
-        <a href="<?= siteEscape(pageUrl('list-your-property')) ?>" class="topbar-cta">Start a Project</a>
+        <a href="<?= siteEscape(pageUrl('start-a-project')) ?>" class="topbar-cta">Start a Project</a>
       </div>
     </div>
   </div>
@@ -62,11 +62,8 @@ require_once dirname(__DIR__, 2) . '/includes/site_helpers.php';
     </div>
     <div class="search-filters" role="group" aria-label="Filter by type">
       <button class="search-filter-chip active" data-filter="all">All</button>
-      <button class="search-filter-chip" data-filter="sale">For Sale</button>
-      <button class="search-filter-chip" data-filter="rent">For Rent</button>
-      <button class="search-filter-chip" data-filter="1">1 Bed</button>
-      <button class="search-filter-chip" data-filter="2">2 Beds</button>
-      <button class="search-filter-chip" data-filter="3">3+ Beds</button>
+      <button class="search-filter-chip" data-filter="sale">Architecture</button>
+      <button class="search-filter-chip" data-filter="rent">Interior Design</button>
     </div>
     <div class="search-results-wrap" id="searchResults" aria-live="polite" aria-label="Search results"></div>
   </div>
@@ -109,7 +106,7 @@ require_once dirname(__DIR__, 2) . '/includes/site_helpers.php';
                 <ion-icon name="mail-outline"></ion-icon>
                 <span><?= siteEscape(siteContactEmail()) ?></span>
               </a>
-              <a href="<?= siteEscape(pageUrl('list-your-property')) ?>" class="navbar-cta">Start a Project</a>
+              <a href="<?= siteEscape(pageUrl('start-a-project')) ?>" class="navbar-cta">Start a Project</a>
             </div>
           </div>
         </nav>

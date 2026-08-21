@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Start a project with Hope Architects. Submit build details, images, and plans for expert architecture and construction services in Nigeria.">
-  <meta name="keywords" content="start construction project Nigeria, architecture consultation Lagos, building project submission, Hope Architects">
+  <meta name="description" content="Start an architecture or interior design project with Hope Architects. Share your brief, site media, and vision for a design consultation in Lagos.">
+  <meta name="keywords" content="start architecture project Lagos, interior design brief, Hope Architects consultation, building design Nigeria">
   <meta name="author" content="Hope Architects">
-  <title>Start a Project | Hope Architects — Architecture & Construction</title>
+  <title>Start a Project | Hope Architects — Architecture &amp; Interior Design</title>
   <link rel="shortcut icon" href="<?= siteEscape(siteLogoPath()) ?>" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,60 +29,60 @@
     <section class="listing-hero" aria-label="Start a project hero">
       <div class="container">
         <div class="hero-content">
-          <p class="hero-eyebrow">Build with confidence</p>
-          <h1>Start Your <span>Project</span> With Hope Architects</h1>
+          <p class="hero-eyebrow">Architecture &amp; interiors</p>
+          <h1>Start Your <span>Design Project</span></h1>
           <p class="hero-copy">
-            Share your vision with our team. Submit project details, site media, and your build requirements. We review every submission before scheduling a consultation.
+            Tell us about the space you want to create. Submit a short project brief, site photos, and your goals — our studio reviews every request before scheduling a design consultation.
           </p>
           <div class="hero-actions">
             <a href="#listingForm" class="hero-btn">
-              Start Submission <ion-icon name="arrow-forward-outline"></ion-icon>
+              Submit Project Brief <ion-icon name="arrow-forward-outline"></ion-icon>
             </a>
             <a href="<?= siteTelHref() ?>" class="hero-btn-outline" aria-label="Call Hope Architects at <?= siteEscape(siteContactPhone()) ?>">
-              Speak With Our Team <ion-icon name="call-outline"></ion-icon>
+              Speak With Our Studio <ion-icon name="call-outline"></ion-icon>
             </a>
           </div>
         </div>
         <aside class="seller-card" aria-label="Project benefits">
-          <h2 class="seller-card-title">Built for serious clients</h2>
+          <h2 class="seller-card-title">Designed for serious briefs</h2>
           <ul class="seller-card-list">
-            <li><ion-icon name="shield-checkmark-outline"></ion-icon><span>Every submission is reviewed before we respond to protect client trust and project quality.</span></li>
-            <li><ion-icon name="videocam-outline"></ion-icon><span>Add site walkthrough videos and multiple image angles for a stronger project brief.</span></li>
-            <li><ion-icon name="people-outline"></ion-icon><span>Our architects and site engineers help shape your brief into a buildable plan.</span></li>
+            <li><ion-icon name="shield-checkmark-outline"></ion-icon><span>Every brief is reviewed by our team before we respond — so conversations stay focused and professional.</span></li>
+            <li><ion-icon name="videocam-outline"></ion-icon><span>Add site photos and walkthrough videos so our architects can understand context before the first call.</span></li>
+            <li><ion-icon name="people-outline"></ion-icon><span>We turn your vision into a clear design direction — architecture, interiors, or both.</span></li>
           </ul>
         </aside>
       </div>
     </section>
 
-    <section class="trust-strip" aria-label="Listing trust metrics">
+    <section class="trust-strip" aria-label="Project intake steps">
       <div class="container">
         <div class="trust-panel">
           <div class="trust-item">
             <div class="trust-number">01</div>
-            <div class="trust-label">Submit details</div>
+            <div class="trust-label">Share your brief</div>
           </div>
           <div class="trust-item">
             <div class="trust-number">02</div>
-            <div class="trust-label">Upload media</div>
+            <div class="trust-label">Upload site media</div>
           </div>
           <div class="trust-item">
             <div class="trust-number">03</div>
-            <div class="trust-label">Agent review</div>
+            <div class="trust-label">Studio review</div>
           </div>
           <div class="trust-item">
             <div class="trust-number">04</div>
-            <div class="trust-label">Qualified leads</div>
+            <div class="trust-label">Design consultation</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="listing-section" aria-label="Property listing form">
+    <section class="listing-section" aria-label="Project brief form">
       <div class="container">
         <div class="section-heading">
-          <p class="section-kicker">Property submission</p>
-          <h2>Tell Us What You Want to Sell, Rent, or Lease</h2>
-          <p>Complete the form below with accurate ownership, pricing, location, and media details. Quality images and videos help your property stand out and attract faster enquiries.</p>
+          <p class="section-kicker">Project intake</p>
+          <h2>Tell Us What You Want to Design or Build</h2>
+          <p>Share accurate location, scope, and media details. Clear photos and a thoughtful brief help us prepare a stronger consultation and concept direction.</p>
         </div>
 
         <div class="listing-grid">
@@ -91,35 +91,35 @@
             <ul class="process-list">
               <li>
                 <div class="process-step">1</div>
-                <div><strong>Submit property details</strong><span>Share location, type, price, features, and seller contact details.</span></div>
+                <div><strong>Submit your brief</strong><span>Share location, discipline, scope, preferences, and contact details.</span></div>
               </li>
               <li>
                 <div class="process-step">2</div>
-                <div><strong>Upload photos and videos</strong><span>Add clear images and walkthrough videos so buyers can understand the property quickly.</span></div>
+                <div><strong>Upload site media</strong><span>Add photos and videos of the site or existing space so our designers can assess context.</span></div>
               </li>
               <li>
                 <div class="process-step">3</div>
-                <div><strong>Verification call</strong><span>A Hope Architects team member will review your submission and contact you before moving forward.</span></div>
+                <div><strong>Studio review</strong><span>A Hope Architects team member reviews your submission and contacts you to clarify scope.</span></div>
               </li>
               <li>
                 <div class="process-step">4</div>
-                <div><strong>Market professionally</strong><span>Your property is positioned for interested clients through our listing channels.</span></div>
+                <div><strong>Consultation &amp; concept</strong><span>We schedule a design consultation and outline next steps for architecture or interiors.</span></div>
               </li>
             </ul>
             <div class="agent-note">
               <strong>Need help preparing media?</strong>
-              <p>Our team can guide you on the best photos, video angles, and documents to make your property listing stronger.</p>
+              <p>Our team can guide you on the best site photos, angles, and reference images for a stronger design brief.</p>
               <a href="<?= siteEscape(siteTelHref()) ?>"><ion-icon name="call-outline"></ion-icon> <?= siteEscape(siteContactPhone()) ?></a>
             </div>
           </aside>
 
           <section class="listing-form-card" id="listingForm">
-            <h3>List Your Property</h3>
-            <p class="form-intro">Fields marked with <span class="required">*</span> are required. After submission, your listing will be reviewed by our team before it appears on the website.</p>
+            <h3>Project Brief</h3>
+            <p class="form-intro">Fields marked with <span class="required">*</span> are required. After submission, your brief is reviewed by our studio before we schedule a consultation.</p>
 
             <form id="propertyListingForm" enctype="multipart/form-data" novalidate>
               <div class="form-section">
-                <div class="form-section-title"><ion-icon name="person-outline"></ion-icon> Owner information</div>
+                <div class="form-section-title"><ion-icon name="person-outline"></ion-icon> Client information</div>
                 <div class="form-grid">
                   <div class="form-field">
                     <label for="ownerName">Full name <span class="required">*</span></label>
@@ -130,7 +130,7 @@
                     <input type="tel" id="ownerPhone" name="ownerPhone" placeholder="+234..." required>
                   </div>
                   <div class="form-field">
-                    <label for="ownerEmail">Email address</label>
+                    <label for="ownerEmail">Email address <span class="required">*</span></label>
                     <input type="email" id="ownerEmail" name="ownerEmail" placeholder="you@example.com" required>
                   </div>
                   <div class="form-field">
@@ -145,32 +145,34 @@
               </div>
 
               <div class="form-section">
-                <div class="form-section-title"><ion-icon name="home-outline"></ion-icon> Property details</div>
+                <div class="form-section-title"><ion-icon name="construct-outline"></ion-icon> Project details</div>
                 <div class="form-grid">
                   <div class="form-field full">
-                    <label for="propertyTitle">Property title <span class="required">*</span></label>
-                    <input type="text" id="propertyTitle" name="propertyTitle" placeholder="Example: Luxury 4 Bedroom Duplex in Lekki Phase 1" required>
+                    <label for="propertyTitle">Project title <span class="required">*</span></label>
+                    <input type="text" id="propertyTitle" name="propertyTitle" placeholder="Example: Lekki Family Residence — Architecture &amp; Interiors" required>
                   </div>
                   <div class="form-field">
-                    <label for="listingType">Listing purpose <span class="required">*</span></label>
+                    <label for="listingType">Design discipline <span class="required">*</span></label>
                     <select id="listingType" name="listingType" required>
-                      <option value="">Select purpose</option>
-                      <option value="sale">For Sale</option>
-                      <option value="rent">For Rent</option>
-                      <option value="shortlet">Shortlet</option>
-                      <option value="lease">Lease</option>
+                      <option value="">Select discipline</option>
+                      <option value="sale">Architecture</option>
+                      <option value="rent">Interior Design</option>
+                      <option value="shortlet">Renovation / Fit-out</option>
+                      <option value="lease">Commercial Design</option>
                     </select>
                   </div>
                   <div class="form-field">
-                    <label for="propertyType">Property type <span class="required">*</span></label>
+                    <label for="propertyType">Project type <span class="required">*</span></label>
                     <select id="propertyType" name="propertyType" required>
                       <option value="">Select type</option>
-                      <option value="duplex">Duplex</option>
-                      <option value="bungalow">Bungalow</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="land">Land</option>
-                      <option value="commercial">Commercial property</option>
-                      <option value="estate">Estate development</option>
+                      <option value="residential">Residential home</option>
+                      <option value="duplex">Duplex / townhouse</option>
+                      <option value="apartment">Apartment / penthouse</option>
+                      <option value="commercial">Commercial / office</option>
+                      <option value="hospitality">Hospitality / retail</option>
+                      <option value="institutional">Institutional / campus</option>
+                      <option value="estate">Estate / master plan</option>
+                      <option value="renovation">Renovation only</option>
                     </select>
                   </div>
                   <div class="form-field">
@@ -178,57 +180,54 @@
                     <input type="text" id="propertyLocation" name="propertyLocation" placeholder="Example: Victoria Island, Lagos" required>
                   </div>
                   <div class="form-field">
-                    <label for="propertyPrice">Asking price <span class="required">*</span></label>
-                    <input type="text" id="propertyPrice" name="propertyPrice" placeholder="Example: NGN 85,000,000" required>
+                    <label for="bedrooms">Rooms / spaces</label>
+                    <input type="number" id="bedrooms" name="bedrooms" min="0" placeholder="e.g. 4">
                   </div>
                   <div class="form-field">
-                    <label for="bedrooms">Bedrooms</label>
-                    <input type="number" id="bedrooms" name="bedrooms" min="0" placeholder="4">
+                    <label for="bathrooms">Wet areas / bathrooms</label>
+                    <input type="number" id="bathrooms" name="bathrooms" min="0" placeholder="e.g. 5">
                   </div>
                   <div class="form-field">
-                    <label for="bathrooms">Bathrooms</label>
-                    <input type="number" id="bathrooms" name="bathrooms" min="0" placeholder="5">
+                    <label for="propertySize">Site / floor area</label>
+                    <input type="text" id="propertySize" name="propertySize" placeholder="Example: 500 sqm plot or 280 sqm built-up">
                   </div>
                   <div class="form-field">
-                    <label for="propertySize">Size / land measurement</label>
-                    <input type="text" id="propertySize" name="propertySize" placeholder="Example: 500 sqm or 1 plot">
-                  </div>
-                  <div class="form-field">
-                    <label for="ownershipStatus">Ownership status</label>
+                    <label for="ownershipStatus">Your role</label>
                     <select id="ownershipStatus" name="ownershipStatus">
-                      <option value="">Select status</option>
-                      <option value="owner">I am the owner</option>
-                      <option value="agent">I am an authorized agent</option>
-                      <option value="family">Family property</option>
-                      <option value="company">Company-owned property</option>
+                      <option value="">Select role</option>
+                      <option value="owner">Property owner</option>
+                      <option value="developer">Developer / investor</option>
+                      <option value="tenant">Tenant / occupier</option>
+                      <option value="company">Company representative</option>
+                      <option value="agent">Authorized representative</option>
                     </select>
                   </div>
                   <div class="form-field full">
-                    <label for="propertyAddress">Full property address <span class="required">*</span></label>
+                    <label for="propertyAddress">Site / building address <span class="required">*</span></label>
                     <input type="text" id="propertyAddress" name="propertyAddress" placeholder="Street, landmark, area, city, state" required>
                   </div>
                   <div class="form-field full">
-                    <label for="propertyFeatures">Key features</label>
-                    <input type="text" id="propertyFeatures" name="propertyFeatures" placeholder="Example: POP ceiling, CCTV, borehole, fitted kitchen, parking">
-                    <span class="hint">Separate features with commas.</span>
+                    <label for="propertyFeatures">Desired finishes &amp; features</label>
+                    <input type="text" id="propertyFeatures" name="propertyFeatures" placeholder="Example: open-plan living, natural light, smart systems, outdoor lounge">
+                    <span class="hint">Separate items with commas.</span>
                   </div>
                   <div class="form-field full">
-                    <label for="propertyDescription">Property description <span class="required">*</span></label>
-                    <textarea id="propertyDescription" name="propertyDescription" placeholder="Describe the property, access road, neighborhood, title documents, and current condition." required></textarea>
+                    <label for="propertyDescription">Project vision &amp; brief <span class="required">*</span></label>
+                    <textarea id="propertyDescription" name="propertyDescription" placeholder="Describe the project goals, lifestyle needs, style preferences, timeline, and any existing structures or constraints." required></textarea>
                   </div>
                 </div>
               </div>
 
               <div class="form-section">
-                <div class="form-section-title"><ion-icon name="images-outline"></ion-icon> Media upload</div>
+                <div class="form-section-title"><ion-icon name="images-outline"></ion-icon> Site &amp; reference media</div>
                 <div class="upload-grid">
                   <div>
                     <label class="upload-box" for="propertyImages" data-upload-box>
                       <input type="file" id="propertyImages" name="propertyImages[]" accept="image/*" multiple required>
                       <span class="upload-content">
                         <ion-icon name="image-outline"></ion-icon>
-                        <strong>Upload property images <span class="required">*</span></strong>
-                        <span>Upload clear exterior, interior, kitchen, bathroom, compound, and street-view photos.</span>
+                        <strong>Upload site / space photos <span class="required">*</span></strong>
+                        <span>Add clear exterior, interior, plot, access road, and context photos.</span>
                       </span>
                     </label>
                     <div class="preview-list" id="imagePreview" aria-live="polite"></div>
@@ -238,8 +237,8 @@
                       <input type="file" id="propertyVideos" name="propertyVideos[]" accept="video/*" multiple>
                       <span class="upload-content">
                         <ion-icon name="videocam-outline"></ion-icon>
-                        <strong>Upload property videos <span class="required">*</span></strong>
-                        <span>Add walkthrough videos, compound views, street access, and room-by-room clips.</span>
+                        <strong>Upload site walkthrough videos</strong>
+                        <span>Optional: add walkthrough clips of the site or existing interiors.</span>
                       </span>
                     </label>
                     <div class="preview-list" id="videoPreview" aria-live="polite"></div>
@@ -248,34 +247,34 @@
               </div>
 
               <div class="form-section">
-                <div class="form-section-title"><ion-icon name="document-text-outline"></ion-icon> Documents and notes</div>
+                <div class="form-section-title"><ion-icon name="document-text-outline"></ion-icon> Documents &amp; notes</div>
                 <div class="form-grid">
                   <div class="form-field">
-                    <label for="titleDocument">Title document type</label>
+                    <label for="titleDocument">Available site documents</label>
                     <select id="titleDocument" name="titleDocument">
-                      <option value="">Select document</option>
+                      <option value="">Select if available</option>
+                      <option value="survey">Survey plan</option>
                       <option value="c-of-o">Certificate of Occupancy</option>
-                      <option value="deed">Deed of Assignment</option>
-                      <option value="survey">Survey Plan</option>
-                      <option value="allocation">Allocation Paper</option>
+                      <option value="deed">Deed / title documents</option>
+                      <option value="drawings">Existing drawings / plans</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
                   <div class="form-field">
-                    <label for="inspectionAvailability">Inspection availability</label>
+                    <label for="inspectionAvailability">Preferred site visit times</label>
                     <input type="text" id="inspectionAvailability" name="inspectionAvailability" placeholder="Example: Weekdays after 2pm">
                   </div>
                   <div class="form-field full">
                     <label for="sellerNotes">Additional notes</label>
-                    <textarea id="sellerNotes" name="sellerNotes" placeholder="Share anything our listing team should know before contacting you."></textarea>
+                    <textarea id="sellerNotes" name="sellerNotes" placeholder="Budget range, timeline, access constraints, or anything our design team should know."></textarea>
                   </div>
                 </div>
               </div>
 
               <div class="submit-row">
-                <p class="privacy-note">By submitting, you confirm that the information provided is accurate and that Hope Architects may contact you to verify the project details.</p>
+                <p class="privacy-note">By submitting, you confirm the information is accurate and that Hope Architects may contact you to discuss your design project.</p>
                 <button type="submit" class="submit-btn">
-                  Submit Property <ion-icon name="send-outline"></ion-icon>
+                  Submit Project Brief <ion-icon name="send-outline"></ion-icon>
                 </button>
               </div>
               <div class="form-message" id="formMessage" role="status"></div>
@@ -285,28 +284,28 @@
       </div>
     </section>
 
-    <section class="marketing-section" aria-label="How Hope Architects handles project submissions">
+    <section class="marketing-section" aria-label="How Hope Architects handles project briefs">
       <div class="container">
         <div class="section-heading">
-          <p class="section-kicker">World-class presentation</p>
-          <h2>We Position Your Project for Success</h2>
-          <p>From media review to qualified enquiry handling, our intake process is designed to make your build brief credible, premium, and ready for consultation.</p>
+          <p class="section-kicker">Studio process</p>
+          <h2>From Brief to Design Direction</h2>
+          <p>We treat every submission as a design conversation — not a sales listing. Your media and notes help us prepare a credible, premium consultation.</p>
         </div>
         <div class="marketing-grid">
           <article class="marketing-card">
             <ion-icon name="camera-outline"></ion-icon>
-            <h3>Media-led listings</h3>
-            <p>Quality images and videos help clients understand the value of your property before they request inspection.</p>
+            <h3>Context-led design</h3>
+            <p>Site photos and videos help our architects understand light, access, neighbours, and spatial opportunities before the first meeting.</p>
           </article>
           <article class="marketing-card">
             <ion-icon name="shield-checkmark-outline"></ion-icon>
-            <h3>Verified confidence</h3>
-            <p>We review property details, contact information, and ownership context before moving a listing forward.</p>
+            <h3>Reviewed with care</h3>
+            <p>We review your brief, contact details, and project scope before responding — so next steps stay clear and professional.</p>
           </article>
           <article class="marketing-card">
-            <ion-icon name="megaphone-outline"></ion-icon>
-            <h3>Premium promotion</h3>
-            <p>Your property can be presented across listing channels and matched with buyers or tenants seeking that location.</p>
+            <ion-icon name="compass-outline"></ion-icon>
+            <h3>Clear next steps</h3>
+            <p>After review, we schedule a consultation and outline how architecture, interiors, or renovation can move your project forward.</p>
           </article>
         </div>
       </div>
@@ -329,7 +328,7 @@
     const formMessage = document.getElementById('formMessage');
 
     if (!form || !imageInput || !formMessage) {
-      console.error('List Your Property form could not initialize.');
+      console.error('Project brief form could not initialize.');
     } else {
 
     function showFormMessage(text, isError) {
@@ -498,7 +497,7 @@
       }
 
       if (!imageInput.files.length) {
-        showFormMessage('Please upload at least one property image before submitting.', true);
+        showFormMessage('Please upload at least one site or space photo before submitting.', true);
         return;
       }
 
@@ -524,11 +523,11 @@
           throw new Error(data.message || 'Submission failed.');
         }
 
-        showFormMessage(data.message || 'Listing sent successfully. Waiting for admin approval.', false);
+        showFormMessage(data.message || 'Project brief received. Our studio will review and contact you shortly.', false);
         form.reset();
         resetUploadLists();
       } catch (error) {
-        showFormMessage(error.message || 'Unable to submit your listing. Please try again.', true);
+        showFormMessage(error.message || 'Unable to submit your project brief. Please try again.', true);
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;

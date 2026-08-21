@@ -50,7 +50,7 @@
 .email-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
 .queue-progress { display: none; margin-top: 16px; padding: 16px; background: #f0faf0; border-radius: 16px; border: 1px solid #c3e6cb; }
 .queue-progress.visible { display: block; }
-.progress-bar { height: 8px; background: #dce8e0; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+.progress-bar { height: 8px; background: #d5e4e6; border-radius: 8px; overflow: hidden; margin: 10px 0; }
 .progress-bar-fill { height: 100%; background: var(--gold-gradient); transition: width 0.3s; width: 0; }
 
 .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }

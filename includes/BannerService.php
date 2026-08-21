@@ -17,7 +17,7 @@ final class BannerService
             'enabled'       => true,
             'flierDesktop'  => 'assets/images/promo/flier-desktop.jpg',
             'flierMobile'   => 'assets/images/promo/flier-mobile.jpg',
-            'altText'       => 'Exclusive property listings — explore premium homes with Biver Royalty Homes',
+            'altText'       => 'Exclusive property listings — explore premium homes with Hope Architects',
             'linkPage'      => 'property',
             'headline'      => 'New Listings Just Dropped',
             'subheadline'   => 'Discover hand-picked premium projects in Lagos & beyond',

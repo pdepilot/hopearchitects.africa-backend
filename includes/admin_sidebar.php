@@ -13,7 +13,7 @@ $activeNav = $activeNav ?? '';
 
 $navItems = [
     'dashboard'    => ['href' => 'admin-dashboard.php', 'icon' => 'speedometer-outline', 'label' => 'Overview'],
-    'properties'   => ['href' => 'admin-property.php',  'icon' => 'home-outline',        'label' => 'Properties'],
+    'properties'   => ['href' => 'admin-projects.php',  'icon' => 'images-outline',      'label' => 'Projects'],
     'analytics'    => ['href' => 'admin-analytics.php', 'icon' => 'people-outline',      'label' => 'Analytics'],
     'testimonials' => ['href' => 'admin-testimonial.php','icon' => 'chatbubbles-outline','label' => 'Testimonials'],
     'locations'    => ['href' => 'admin-locations.php', 'icon' => 'map-outline',         'label' => 'Service Areas'],
@@ -21,7 +21,7 @@ $navItems = [
     'about'        => ['href' => 'admin-about-us.php', 'icon' => 'information-circle-outline', 'label' => 'About Page'],
     'pages'        => ['href' => 'admin-pages.php',    'icon' => 'document-text-outline','label' => 'Services Page'],
     'faqs'         => ['href' => 'admin-faqs.php',     'icon' => 'help-circle-outline', 'label' => 'FAQs'],
-    'listings'     => ['href' => 'admin-list-your-property.php', 'icon' => 'clipboard-outline', 'label' => 'List Submissions'],
+    'listings'     => ['href' => 'admin-list-your-property.php', 'icon' => 'clipboard-outline', 'label' => 'Project Briefs'],
     'contacts'     => ['href' => 'admin-contact.php',   'icon' => 'mail-outline',        'label' => 'Inquiries'],
     'email'        => ['href' => 'admin-email-center.php', 'icon' => 'paper-plane-outline', 'label' => 'Email Center'],
     'smtp'         => ['href' => 'admin-smtp-settings.php', 'icon' => 'server-outline', 'label' => 'SMTP Settings'],

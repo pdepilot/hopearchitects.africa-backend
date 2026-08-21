@@ -280,7 +280,7 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      background: rgba(15, 36, 24, 0.92);
+      background: rgba(11, 78, 86, 0.92);
       backdrop-filter: blur(8px);
       padding: 8px 16px;
       font-size: 11px;
@@ -505,8 +505,8 @@
       border-radius: 20px;
       overflow: hidden;
       background: #fff;
-      border: 1px solid rgba(26, 92, 40, 0.1);
-      box-shadow: 0 12px 32px rgba(26, 92, 40, 0.08);
+      border: 1px solid rgba(11, 78, 86, 0.1);
+      box-shadow: 0 12px 32px rgba(11, 78, 86, 0.08);
       transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
                   box-shadow 0.45s ease,
                   border-color 0.35s ease;
@@ -521,14 +521,14 @@
     }
 
     .team-card:focus-visible {
-      box-shadow: 0 0 0 3px rgba(45, 155, 60, 0.35), 0 12px 32px rgba(26, 92, 40, 0.1);
+      box-shadow: 0 0 0 3px rgba(18, 112, 122, 0.35), 0 12px 32px rgba(11, 78, 86, 0.1);
     }
 
     .team-card__media {
       position: relative;
       overflow: hidden;
       aspect-ratio: 1;
-      background: var(--surface-dark, #0f2418);
+      background: var(--surface-dark, #0b4e56);
     }
 
     .team-image {
@@ -551,7 +551,7 @@
       justify-content: center;
       gap: 14px;
       padding: 20px;
-      background: linear-gradient(180deg, rgba(15, 36, 24, 0.15) 0%, rgba(15, 36, 24, 0.82) 100%);
+      background: linear-gradient(180deg, rgba(11, 78, 86, 0.15) 0%, rgba(11, 78, 86, 0.82) 100%);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s ease;
@@ -562,7 +562,7 @@
       font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--gold-light, #ffd700);
+      color: var(--gold-light, #fff6b8);
       margin: 0;
     }
 
@@ -740,8 +740,8 @@
     @media (hover: hover) and (pointer: fine) {
       .team-card--has-social:is(:hover, :focus-within) {
         transform: translateY(-10px);
-        border-color: rgba(212, 175, 55, 0.45);
-        box-shadow: 0 22px 48px rgba(26, 92, 40, 0.14);
+        border-color: rgba(254, 238, 144, 0.45);
+        box-shadow: 0 22px 48px rgba(11, 78, 86, 0.14);
         cursor: default;
       }
 
@@ -780,8 +780,8 @@
     @media (hover: none), (pointer: coarse) {
       .team-card--has-social.is-active {
         transform: translateY(-6px);
-        border-color: rgba(212, 175, 55, 0.45);
-        box-shadow: 0 18px 40px rgba(26, 92, 40, 0.12);
+        border-color: rgba(254, 238, 144, 0.45);
+        box-shadow: 0 18px 40px rgba(11, 78, 86, 0.12);
       }
 
       .team-card--has-social.is-active .team-image {
@@ -820,7 +820,7 @@
         font-size: 9px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(26, 92, 40, 0.45);
+        color: rgba(11, 78, 86, 0.45);
         padding-bottom: 14px;
         margin-top: -6px;
       }

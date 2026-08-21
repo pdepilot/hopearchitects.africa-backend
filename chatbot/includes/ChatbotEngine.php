@@ -319,18 +319,19 @@ class ChatbotEngine
      */
     private function buildPropertyListResponse(array $properties, string $intentKey): array
     {
-        $lines = ["Here are available properties:\n"];
+        $lines = ["Here are featured projects from our portfolio:\n"];
         foreach ($properties as $prop) {
-            $rentSuffix = ($prop['type'] ?? '') === 'rent' ? '/month' : '';
-            $beds = ($prop['bedrooms'] ?? 0) > 0 ? ' — ' . (int) $prop['bedrooms'] . ' bed' : '';
+            $discipline = ($prop['type'] ?? '') === 'rent' ? 'Interior Design' : 'Architecture';
+            $beds = ($prop['bedrooms'] ?? 0) > 0 ? ' — ' . (int) $prop['bedrooms'] . ' spaces' : '';
             $lines[] = sprintf(
-                '• %s%s — %s',
+                '• %s%s — %s · %s',
                 $prop['title'],
                 $beds,
-                chatbot_format_naira((int) $prop['price']) . $rentSuffix
+                $prop['location'] ?? 'Lagos',
+                $discipline
             );
         }
-        $lines[] = "\nWould you like more information on any of these properties?";
+        $lines[] = "\nWould you like more information on any of these projects?";
         $detailUrl = function_exists('pageUrl') ? pageUrl('property.php') : '/property.php';
 
         return $this->buildIntentResponse(
@@ -556,8 +557,8 @@ class ChatbotEngine
     private function handleSellIntent(): array
     {
         return $this->buildIntentResponse(
-            "If you'd like to **sell or list** your property with us, we'd love to hear from you.\n\n" .
-            "Visit our **List Your Property** page on the website, or share your property details here (location, type, and your phone number). Our team will review it and contact you to discuss listing, marketing, and the sales process.\n\n" .
+            "If you'd like to **start an architecture or interior design project** with us, we'd love to hear from you.\n\n" .
+            "Visit our **Start a Project** page on the website, or share your brief here (location, project type, and your phone number). Our studio will review it and contact you to discuss design direction and next steps.\n\n" .
             "You can also call us at {$this->siteConfig['contactPhone']}.",
             'sell_property',
             0.9
@@ -602,22 +603,21 @@ class ChatbotEngine
         $properties = PropertyRepository::getPublic(5, 'sale', $this->extractLocationFromText($text));
 
         if ($properties !== []) {
-            $lines = ["Here are some premium listings that may interest you:\n"];
+            $lines = ["Here are some signature architecture projects that may interest you:\n"];
             foreach ($properties as $prop) {
                 $lines[] = sprintf(
-                    '• %s — %s, %s',
+                    '• %s — %s · Architecture',
                     $prop['title'],
-                    $prop['location'],
-                    chatbot_format_naira((int) $prop['price'])
+                    $prop['location']
                 );
             }
-            $lines[] = "\nI can arrange a private viewing if any of these appeal to you.";
+            $lines[] = "\nI can arrange a design consultation if any of these appeal to you.";
             return $this->buildIntentResponse(implode("\n", $lines), 'luxury_homes', 0.9);
         }
 
         return $this->buildIntentResponse(
-            "Hope Architects specialises in **premium and luxury properties** — executive homes, upscale estates, and high-value land.\n\n" .
-            "Tell me your preferred location and budget, and our consultants will curate options for you. We can also arrange private inspections at your convenience.",
+            "Hope Architects specialises in **premium architecture and interior design** — landmark residences, commercial spaces, and bespoke interiors.\n\n" .
+            "Tell me your preferred location and project type, and our consultants will curate concepts for you. We can also arrange a studio consultation at your convenience.",
             'luxury_homes',
             0.88
         );
@@ -628,28 +628,28 @@ class ChatbotEngine
         $search = $this->extractLocationFromText($text);
         $properties = PropertyRepository::getPublic(5, $type, $search);
 
-        $typeLabel = $type === 'rent' ? 'rental' : 'sale';
+        $typeLabel = $type === 'rent' ? 'interior design' : 'architecture';
 
         if ($properties === []) {
             $msg = $type === 'rent'
-                ? "I've checked our current listings — we have limited rentals showing online right now, but our team often has additional options available.\n\nPlease share your preferred location, number of bedrooms, and budget, and we'll match you with suitable rental properties. You can also call {$this->siteConfig['contactPhone']}."
-                : "I'd love to help you find the right property.\n\nBrowse our **Properties** page on the website, or tell me your preferred location, budget, and property type (e.g. duplex, flat, land). Our consultants will recommend options and can arrange inspections.\n\nCall us anytime at {$this->siteConfig['contactPhone']}.";
+                ? "I've checked our current portfolio — we have limited interior design projects showing online right now, but our studio often has additional concepts available.\n\nPlease share your preferred location and space type, and we'll match you with suitable design options. You can also call {$this->siteConfig['contactPhone']}."
+                : "I'd love to help you explore our architecture portfolio.\n\nBrowse our **Projects** page on the website, or tell me your preferred location and project type (e.g. residence, commercial, renovation). Our consultants will recommend options and can arrange a consultation.\n\nCall us anytime at {$this->siteConfig['contactPhone']}.";
 
             return $this->buildIntentResponse($msg, $type === 'rent' ? 'rental_properties' : 'property_purchase', 0.85);
         }
 
-        $lines = ["Here are some properties we currently have available for {$typeLabel}:\n"];
+        $discipline = $type === 'rent' ? 'Interior Design' : 'Architecture';
+        $lines = ["Here are some {$typeLabel} projects from our portfolio:\n"];
         foreach ($properties as $prop) {
-            $rentSuffix = $type === 'rent' ? '/month' : '';
             $lines[] = sprintf(
-                '• %s — %s, %s%s',
+                '• %s — %s · %s%s',
                 $prop['title'],
                 $prop['location'],
-                chatbot_format_naira((int) $prop['price']) . $rentSuffix,
-                $prop['bedrooms'] > 0 ? " ({$prop['bedrooms']} bed)" : ''
+                $discipline,
+                ($prop['bedrooms'] ?? 0) > 0 ? " ({$prop['bedrooms']} spaces)" : ''
             );
         }
-        $lines[] = "\nWould you like to schedule a viewing or speak with a consultant about any of these?";
+        $lines[] = "\nWould you like to schedule a consultation or speak with our team about any of these?";
 
         return $this->buildIntentResponse(implode("\n", $lines), $type === 'rent' ? 'rental_properties' : 'property_purchase', 0.9);
     }
@@ -668,18 +668,18 @@ class ChatbotEngine
 
         if ($properties === []) {
             return $this->buildIntentResponse(
-                "We offer **verified land and plots** in strategic locations across Lagos.\n\n" .
-                "Our team handles title checks, survey coordination, and flexible acquisition options. Share your preferred area, plot size, and budget — or call {$this->siteConfig['contactPhone']} to speak with a land specialist.",
+                "We offer **site planning and architectural concepts** for land and estate developments across Lagos.\n\n" .
+                "Our team handles master planning, design guidelines, and construction documentation. Share your preferred area and project scope — or call {$this->siteConfig['contactPhone']} to speak with an architect.",
                 'land_purchase',
                 0.88
             );
         }
 
-        $lines = ["Here are some land and plot opportunities available now:\n"];
+        $lines = ["Here are related design projects from our portfolio:\n"];
         foreach ($properties as $prop) {
-            $lines[] = sprintf('• %s — %s, %s', $prop['title'], $prop['location'], chatbot_format_naira((int) $prop['price']));
+            $lines[] = sprintf('• %s — %s · Architecture', $prop['title'], $prop['location']);
         }
-        $lines[] = "\nWould you like to arrange a site visit?";
+        $lines[] = "\nWould you like to arrange a site consultation?";
 
         return $this->buildIntentResponse(implode("\n", $lines), 'land_purchase', 0.9);
     }
@@ -727,17 +727,18 @@ class ChatbotEngine
     {
         $properties = PropertyRepository::getPublic(3, null, $this->extractLocationFromText($text));
 
-        $msg = "Property prices depend on location, size, finishing, and property type — we have options from starter homes to luxury estates.\n\n";
+        $msg = "Hope Architects provides **architecture and interior design** services — project fees depend on scope, scale, materials, and delivery timeline.\n\n";
 
         if ($properties !== []) {
-            $msg .= "Here are a few current guide prices from our listings:\n";
+            $msg .= "Here are a few featured projects from our portfolio:\n";
             foreach ($properties as $prop) {
-                $msg .= sprintf("• %s — from %s\n", $prop['title'], chatbot_format_naira((int) $prop['price']));
+                $discipline = ($prop['type'] ?? '') === 'rent' ? 'Interior Design' : 'Architecture';
+                $msg .= sprintf("• %s — %s · %s\n", $prop['title'], $prop['location'] ?? 'Lagos', $discipline);
             }
             $msg .= "\n";
         }
 
-        $msg .= "Share your budget and what you're looking for (buy, rent, or land), and we'll recommend the best matches. Flexible payment plans may be available on selected properties.";
+        $msg .= "Share your project brief (architecture, interiors, or renovation), and we'll prepare a tailored proposal. Call {$this->siteConfig['contactPhone']} to discuss fees and timelines.";
 
         return $this->buildIntentResponse($msg, 'pricing', 0.88);
     }
@@ -748,7 +749,7 @@ class ChatbotEngine
         $name = $this->siteConfig['siteName'];
 
         return $this->buildIntentResponse(
-            "{$name} — {$about}\n\nWe help clients buy, sell, rent, and invest in property with honesty and professionalism. Whether you need a family home, land, a rental, or investment advice — we're here for you.",
+            "{$name} — {$about}\n\nWe help clients design and deliver architecture and interior projects with honesty and professionalism. Whether you need a residence, commercial space, renovation, or full design-and-build — we're here for you.",
             'company_info',
             0.9
         );

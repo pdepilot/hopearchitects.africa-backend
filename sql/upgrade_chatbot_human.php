@@ -129,9 +129,9 @@ try {
 
     $greetId = (int) $pdo->query("SELECT id FROM chatbot_intents WHERE intent_key='greetings'")->fetchColumn();
     addResponses($pdo, $greetId, [
-        'Hello! Welcome to Biver Royalty Homes — it\'s great to have you here. How may I assist you with your property needs today?',
+        'Hello! Welcome to Hope Architects — it\'s great to have you here. How may I assist you with your property needs today?',
         'Hi there! I\'m your property assistant. Feel free to ask about homes, land, rentals, prices, or inspections — I\'m happy to help.',
-        'Good day! Thanks for reaching out to Biver Royalty Homes. What can I help you find today?',
+        'Good day! Thanks for reaching out to Hope Architects. What can I help you find today?',
     ]);
 
     $thanksId = (int) $pdo->query("SELECT id FROM chatbot_intents WHERE intent_key='thanks'")->fetchColumn();
@@ -161,10 +161,10 @@ try {
     $kb = [
         ['Duplex vs Bungalow', 'A duplex is a two-floor residential unit, often semi-detached, popular for families needing space. A bungalow is single-level — easier access, lower maintenance. We build both across Lagos and Abuja. Tell us your preference and budget.', ['duplex', 'bungalow', 'difference', 'which is better'], 'purchase', 85],
         ['Renting in Lagos — What to Expect', 'Rental prices in Lagos vary by neighbourhood, bedrooms, and finishing. Expect to provide ID, references, and a deposit plus advance rent. We help tenants find verified listings and sign fair lease agreements.', ['renting lagos', 'tenant', 'rent price lagos'], 'rental', 86],
-        ['Land Buying Tips', 'Before buying land: verify title, confirm survey, visit the site, check access road and neighbourhood growth, and use a trusted agent. Biver Royalty Homes provides full due diligence support.', ['land tips', 'buy land safely', 'plot advice'], 'land', 88],
+        ['Land Buying Tips', 'Before buying land: verify title, confirm survey, visit the site, check access road and neighbourhood growth, and use a trusted agent. Hope Architects provides full due diligence support.', ['land tips', 'buy land safely', 'plot advice'], 'land', 88],
         ['Property Investment in Lagos & Abuja', 'Lagos and Abuja have seen steady demand from residents and diaspora investors. Land and residential property remain popular. We identify assets with strong documentation and growth corridors.', ['invest lagos', 'investment abuja', 'lagos property'], 'investment', 87],
         ['Amenities to Consider', 'When choosing a home, consider security, water supply, road access, parking, power backup, proximity to schools and markets, and estate management fees. Share your priorities and we\'ll shortlist suitable properties.', ['amenities', 'what to look for', 'facilities', 'estate features'], 'purchase', 84],
-        ['Selling Your Property Through an Agent', 'Listing with Biver Royalty Homes includes professional marketing, qualified buyer screening, viewings, and negotiation support. We aim for transparent, timely sales at fair market value.', ['selling tips', 'how to sell', 'agent commission'], 'sell', 83],
+        ['Selling Your Property Through an Agent', 'Listing with Hope Architects includes professional marketing, qualified buyer screening, viewings, and negotiation support. We aim for transparent, timely sales at fair market value.', ['selling tips', 'how to sell', 'agent commission'], 'sell', 83],
     ];
 
     foreach ($kb as [$title, $content, $kw, $cat, $pri]) {

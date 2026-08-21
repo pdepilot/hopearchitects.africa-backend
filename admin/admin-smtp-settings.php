@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/admin_guard.php';
 
 $activeNav = 'smtp';
-$pageTitle = 'SMTP Settings | Biver Royalty Homes Admin';
+$pageTitle = 'SMTP Settings | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $pageStylesheet = '../assets/css/admin-smtp-settings.css';
 $csrfToken = AuthSecurity::generateCsrfToken();
@@ -94,7 +94,7 @@ $csrfToken = AuthSecurity::generateCsrfToken();
             </div>
             <div class="form-field">
               <label for="mailFromName">From Name</label>
-              <input type="text" id="mailFromName" value="biverroyaltyhomesltd">
+              <input type="text" id="mailFromName" value="Hope Architects">
             </div>
           </div>
 
@@ -160,7 +160,7 @@ $csrfToken = AuthSecurity::generateCsrfToken();
     document.getElementById('mailEncryption').value = mail.encryption || 'tls';
     document.getElementById('mailUsername').value = mail.username || '';
     document.getElementById('mailFromEmail').value = mail.fromEmail || '';
-    document.getElementById('mailFromName').value = mail.fromName || 'biverroyaltyhomesltd';
+    document.getElementById('mailFromName').value = mail.fromName || 'Hope Architects';
     document.getElementById('mailReplyTo').value = mail.replyTo || '';
     document.getElementById('mailNotifyEmail').value = mail.notifyEmail || '';
     document.getElementById('mailNotifyOnContact').checked = !!mail.notifyOnContact;

@@ -74,7 +74,9 @@ try {
 
     jsonError('Method not allowed.', 405);
 } catch (Throwable $e) {
-    jsonError($e->getMessage(), 400);
+    error_log('Admin mail API: ' . $e->getMessage());
+    $code = $e instanceof InvalidArgumentException ? 400 : 500;
+    jsonError($e->getMessage() !== '' ? $e->getMessage() : 'Mail API error.', $code);
 }
 
 /** @param array<string, mixed> $data */

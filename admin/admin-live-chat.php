@@ -1,6 +1,6 @@
 <?php
 /**
- * Live Chat, Support & Lead CRM — Biver Royalty Homes
+ * Live Chat, Support & Lead CRM — Hope Architects
  */
 declare(strict_types=1);
 
@@ -8,7 +8,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
 require_once dirname(__DIR__) . '/chatbot/chatbot-config.php';
 
 $activeNav = 'chatbot';
-$pageTitle = 'Live Chat & Leads | Biver Royalty Homes Admin';
+$pageTitle = 'Live Chat & Leads | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $apiUrl = siteUrl('chatbot/chatbot-api.php');
 $csrfToken = AuthSecurity::generateCsrfToken();

@@ -47,8 +47,10 @@ body { background: var(--white); color: var(--dark-jungle-green); }
       padding: 8px 16px; border-radius: 40px; font-size: 0.72rem;
       font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
     }
-    .gallery-badge.sale { background: var(--gold-gradient); color: var(--prussian-blue); }
-    .gallery-badge.rent { background: rgba(255,255,255,0.92); color: #0d6efd; }
+    .gallery-badge.sale,
+    .gallery-badge.architecture { background: var(--gold-gradient); color: var(--prussian-blue); }
+    .gallery-badge.rent,
+    .gallery-badge.interior { background: rgba(255,255,255,0.92); color: #0d6efd; }
     .gallery-count {
       position: absolute; bottom: 20px; right: 20px; z-index: 2;
       background: rgba(0,0,0,0.65); color: white; padding: 8px 14px;
@@ -148,32 +150,42 @@ body { background: var(--white); color: var(--dark-jungle-green); }
       display: grid; place-items: center; color: rgba(255,255,255,0.7);
     }
 
-    .price-card {
+    .price-card,
+    .project-card-sidebar {
       background: linear-gradient(145deg, var(--prussian-blue) 0%, #2a1204 100%);
       color: white; border-radius: 28px; padding: 28px;
       box-shadow: var(--shadow-2); border: 1px solid rgba(212,175,55,0.25);
       position: relative; overflow: hidden;
     }
-    .price-card::after {
+    .price-card::after,
+    .project-card-sidebar::after {
       content: ''; position: absolute; top: -40%; right: -30%;
       width: 70%; height: 140%; background: radial-gradient(circle, rgba(212,175,55,0.12), transparent 70%);
       pointer-events: none;
     }
-    .price-card > * { position: relative; z-index: 1; }
-    .price-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-bottom: 8px; }
-    .price-value {
-      font-family: var(--ff-display); font-size: clamp(1.8rem, 4vw, 2.4rem);
-      font-weight: 700; margin-bottom: 6px;
+    .price-card > *,
+    .project-card-sidebar > * { position: relative; z-index: 1; }
+    .price-label,
+    .project-card-sidebar__label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-bottom: 8px; }
+    .price-value,
+    .project-card-sidebar__title {
+      font-family: var(--ff-display); font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 700; margin-bottom: 6px; line-height: 1.2;
       background: var(--gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .price-note { font-size: 0.85rem; opacity: 0.65; margin-bottom: 22px; }
-    .price-stats {
+    .price-note,
+    .project-card-sidebar__note { font-size: 0.85rem; opacity: 0.65; margin-bottom: 22px; }
+    .price-stats,
+    .project-card-sidebar__stats {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
       margin-bottom: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .price-stat { text-align: center; }
-    .price-stat strong { display: block; font-size: 1.1rem; }
-    .price-stat span { font-size: 0.72rem; opacity: 0.6; text-transform: uppercase; }
+    .price-stat,
+    .project-card-sidebar__stat { text-align: center; }
+    .price-stat strong,
+    .project-card-sidebar__stat strong { display: block; font-size: 1.1rem; }
+    .price-stat span,
+    .project-card-sidebar__stat span { font-size: 0.72rem; opacity: 0.6; text-transform: uppercase; }
 
     .cta-stack { display: grid; gap: 10px; }
     .cta-btn {
@@ -223,7 +235,8 @@ body { background: var(--white); color: var(--dark-jungle-green); }
       color: var(--prussian-blue);
     }
     .related-card-body p { font-size: 0.85rem; color: var(--cadet); margin-bottom: 8px; }
-    .related-price { font-weight: 700; color: var(--gold-dark); font-size: 0.95rem; }
+    .related-price,
+    .related-category { font-weight: 700; color: var(--gold-dark); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
 
     .lightbox {
       display: none; position: fixed; inset: 0; z-index: 9999;

@@ -4,7 +4,7 @@
   --ha-wa-green: #25d366;
   --ha-wa-green-deep: #128c7e;
   --ha-wa-green-dark: #075e54;
-  --ha-wa-gold: #d4af37;
+  --ha-wa-gold: #feee90;
   --ha-wa-size: 68px;
   --ha-wa-depth: 18px;
   --ha-wa-tilt-x: 0deg;
@@ -44,7 +44,7 @@
   border-radius: 50%;
   border: 1.5px solid transparent;
   border-top-color: rgba(37, 211, 102, 0.55);
-  border-right-color: rgba(212, 175, 55, 0.35);
+  border-right-color: rgba(254, 238, 144, 0.35);
   transform-style: preserve-3d;
   pointer-events: none;
 }
@@ -55,7 +55,7 @@
 
 .ha-wa-orbit--b {
   inset: -34px;
-  border-top-color: rgba(212, 175, 55, 0.4);
+  border-top-color: rgba(254, 238, 144, 0.4);
   border-left-color: rgba(37, 211, 102, 0.25);
   animation: ha-wa-orbit-spin-rev 11s linear infinite;
   transform: rotateX(62deg);
@@ -317,7 +317,7 @@
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  border: 1.5px solid rgba(212, 175, 55, 0.55);
+  border: 1.5px solid rgba(254, 238, 144, 0.55);
   animation: ha-wa-avatar-ring 3s ease-in-out infinite;
 }
 

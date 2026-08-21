@@ -43,7 +43,7 @@ final class AdminDashboardService
             'recentContacts' => array_slice(ContactRepository::getAllInquiries(null, null), 0, 5),
             'monthlyListings' => PropertyRepository::getMonthlyListingCounts(12),
             'links' => [
-                'properties'  => 'admin-property.php',
+                'properties'  => 'admin-projects.php',
                 'submissions' => 'admin-list-your-property.php',
                 'contacts'    => 'admin-contact.php',
                 'promo'       => 'admin-promo-banner.php',

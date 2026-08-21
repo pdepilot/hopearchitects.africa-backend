@@ -70,16 +70,15 @@
     }[m]));
   }
 
-  function resolveMediaUrl(url) {
-    if (!url) return '';
+  function resolveMediaUrl(url, fallbackIndex) {
+    const portfolio = window.HOPE_PORTFOLIO || {};
+    if (portfolio.resolveMediaUrl) {
+      return portfolio.resolveMediaUrl(url, typeof fallbackIndex === 'number' ? fallbackIndex : 0);
+    }
+    if (!url) return portfolio.imageAt ? portfolio.imageAt(0) : '';
     if (url.startsWith('http') || url.startsWith('/')) return url;
     if (url.startsWith('assets/')) return './' + url;
     return url;
-  }
-
-  function formatPrice(price, type) {
-    const formatted = '\u20A6' + Number(price).toLocaleString();
-    return type === 'rent' ? formatted + '/month' : formatted;
   }
 
   function formatDate(value) {
@@ -93,20 +92,24 @@
     if (property.listingPurpose) {
       return String(property.listingPurpose).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     }
-    return property.type === 'rent' ? 'For Rent' : 'For Sale';
+    if (window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.categoryBadge) {
+      return window.HOPE_PORTFOLIO.categoryBadge(property.type).label;
+    }
+    return property.type === 'rent' ? 'Interior Design' : 'Architecture';
   }
 
   function getAllImages(property) {
+    const portfolio = window.HOPE_PORTFOLIO || {};
     if (Array.isArray(property.images) && property.images.length) {
-      return property.images.map(resolveMediaUrl);
+      return property.images.map((url, i) => resolveMediaUrl(url, i));
     }
     const urls = [];
-    if (property.imageUrl) urls.push(resolveMediaUrl(property.imageUrl));
+    if (property.imageUrl) urls.push(resolveMediaUrl(property.imageUrl, 0));
     if (Array.isArray(property.galleryUrls)) {
-      property.galleryUrls.forEach((url) => urls.push(resolveMediaUrl(url)));
+      property.galleryUrls.forEach((url, i) => urls.push(resolveMediaUrl(url, i + 1)));
     }
     if (!urls.length) {
-      urls.push('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=800&fit=crop');
+      urls.push(portfolio.imageAt ? portfolio.imageAt(property.id || 0) : './assets/images/Scene 10_1.png');
     }
     return urls;
   }
@@ -153,7 +156,10 @@
   });
 
   function renderGallery(images, property) {
-    const badgeClass = property.type === 'rent' ? 'rent' : 'sale';
+    const badgeMeta = window.HOPE_PORTFOLIO && window.HOPE_PORTFOLIO.categoryBadge
+      ? window.HOPE_PORTFOLIO.categoryBadge(property.type)
+      : { className: property.type === 'rent' ? 'interior' : 'architecture' };
+    const badgeClass = badgeMeta.className;
     const singleClass = images.length <= 1 ? 'gallery-single' : '';
     const side = images.slice(1, 3);
     const moreCount = Math.max(0, images.length - 3);
@@ -291,14 +297,14 @@
         </div>
 
         <aside class="detail-sidebar">
-          <div class="price-card">
-            <p class="price-label">${escapeHtml(listingLabel(property))}</p>
-            <p class="price-value">${formatPrice(property.price, property.type)}</p>
-            <p class="price-note">Verified project by Hope Architects</p>
-            <div class="price-stats">
-              <div class="price-stat"><strong>${property.bedrooms || 0}</strong><span>Beds</span></div>
-              <div class="price-stat"><strong>${property.bathrooms || 0}</strong><span>Baths</span></div>
-              <div class="price-stat"><strong>${property.area || '—'}</strong><span>${property.area ? 'Sqm' : 'Size'}</span></div>
+          <div class="project-card-sidebar">
+            <p class="project-card-sidebar__label">${escapeHtml(listingLabel(property))}</p>
+            <p class="project-card-sidebar__title">${escapeHtml(property.title)}</p>
+            <p class="project-card-sidebar__note">Verified project by Hope Architects</p>
+            <div class="project-card-sidebar__stats">
+              <div class="project-card-sidebar__stat"><strong>${property.bedrooms || 0}</strong><span>Spaces</span></div>
+              <div class="project-card-sidebar__stat"><strong>${property.bathrooms || 0}</strong><span>Zones</span></div>
+              <div class="project-card-sidebar__stat"><strong>${property.area || '—'}</strong><span>${property.area ? 'Sqm' : 'Scale'}</span></div>
             </div>
             <div class="cta-stack">
               <a href="${contactUrl}" class="cta-btn cta-btn-primary"><ion-icon name="calendar-outline"></ion-icon>Schedule Viewing</a>
@@ -356,7 +362,7 @@
             <div class="related-card-body">
               <h3>${escapeHtml(p.title)}</h3>
               <p>${escapeHtml(p.location || '')}</p>
-              <span class="related-price">${formatPrice(p.price, p.type)}</span>
+              <span class="related-category">${escapeHtml(listingLabel(p))}</span>
             </div>
           </a>`;
       }).join('');

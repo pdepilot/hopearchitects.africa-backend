@@ -160,8 +160,8 @@ $csrfToken = AuthSecurity::generateCsrfToken();
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.green
-                    ? `rgba(45, 155, 60, ${this.opacity})`
-                    : `rgba(212, 175, 55, ${this.opacity})`;
+                    ? `rgba(18, 112, 122, ${this.opacity})`
+                    : `rgba(254, 238, 144, ${this.opacity})`;
                 ctx.fill();
             }
         }

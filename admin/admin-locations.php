@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/admin_guard.php';
 
 $activeNav = 'locations';
-$pageTitle = 'Service Areas | Biver Royalty Homes Admin';
+$pageTitle = 'Service Areas | Hope Architects Admin';
 $adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator', ENT_QUOTES, 'UTF-8');
 $pageStylesheet = '../assets/css/admin-locations.css';
 

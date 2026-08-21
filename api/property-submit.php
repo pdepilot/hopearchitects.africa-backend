@@ -1,6 +1,6 @@
 <?php
 /**
- * Public API: submit a property listing for admin approval.
+ * Public API: submit a design project brief for studio review.
  */
 
 declare(strict_types=1);
@@ -27,31 +27,26 @@ try {
     $address = trim((string) ($_POST['propertyAddress'] ?? ''));
     $description = trim((string) ($_POST['propertyDescription'] ?? ''));
     $listingPurpose = trim((string) ($_POST['listingType'] ?? ''));
-    $price = PropertyUploadService::parsePrice((string) ($_POST['propertyPrice'] ?? '0'));
 
     if ($ownerName === '' || $ownerEmail === '' || $ownerPhone === '' || $title === '' || $location === '' || $address === '' || $description === '') {
         throw new InvalidArgumentException('Please complete all required fields.');
     }
 
     if (!filter_var($ownerEmail, FILTER_VALIDATE_EMAIL)) {
-        throw new InvalidArgumentException('Please enter a valid owner email address.');
+        throw new InvalidArgumentException('Please enter a valid email address.');
     }
 
     if ($listingPurpose === '') {
-        throw new InvalidArgumentException('Please select a listing purpose.');
-    }
-
-    if ($price <= 0) {
-        throw new InvalidArgumentException('Please enter a valid asking price.');
+        throw new InvalidArgumentException('Please select a project discipline.');
     }
 
     if (empty($_FILES['propertyImages'])) {
-        throw new InvalidArgumentException('Please upload at least one property image.');
+        throw new InvalidArgumentException('Please upload at least one site or space photo.');
     }
 
     $property = PropertyRepository::createPublicSubmission([
         'title'            => $title,
-        'price'            => $price,
+        'price'            => 0,
         'type'             => PropertyUploadService::mapListingType($listingPurpose),
         'location'         => $location,
         'bedrooms'         => (int) ($_POST['bedrooms'] ?? 0),
@@ -90,7 +85,7 @@ try {
 
     echo json_encode([
         'success'  => true,
-        'message'  => 'Listing sent successfully. Waiting for admin approval.',
+        'message'  => 'Project brief received. Our studio will review and contact you shortly.',
         'property' => $property,
     ]);
 } catch (InvalidArgumentException $e) {
