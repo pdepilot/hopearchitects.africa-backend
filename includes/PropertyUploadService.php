@@ -11,8 +11,54 @@ class PropertyUploadService
 {
     private const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
     private const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'avi', 'mkv'];
-    private const MAX_IMAGE_BYTES = 5_242_880;
-    private const MAX_VIDEO_BYTES = 52_428_800;
+    /** 5 MB per gallery photo */
+    private const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    private const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+    private const MAX_GALLERY_IMAGES = 24;
+
+    public static function maxImageBytes(): int
+    {
+        return self::MAX_IMAGE_BYTES;
+    }
+
+    public static function maxImageMb(): int
+    {
+        return (int) (self::MAX_IMAGE_BYTES / (1024 * 1024));
+    }
+
+    public static function maxGalleryImages(): int
+    {
+        return self::MAX_GALLERY_IMAGES;
+    }
+
+    public static function maxVideoBytes(): int
+    {
+        return self::MAX_VIDEO_BYTES;
+    }
+
+    /**
+     * Validate a list of uploaded gallery images (size, type, count).
+     *
+     * @param array<string, mixed> $fileInput $_FILES['propertyImages'] style payload
+     * @return list<array<string, mixed>>
+     */
+    public static function validateGalleryUploads(array $fileInput, int $alreadyKept = 0): array
+    {
+        $images = self::normalizeFiles($fileInput);
+        $total = $alreadyKept + count($images);
+        if ($total > self::MAX_GALLERY_IMAGES) {
+            throw new RuntimeException(
+                'You can upload up to ' . self::MAX_GALLERY_IMAGES . ' gallery photos (max '
+                . self::maxImageMb() . 'MB each).'
+            );
+        }
+
+        foreach ($images as $file) {
+            self::validateImage($file);
+        }
+
+        return $images;
+    }
 
     /**
      * @return array{imageUrl:?string,videoUrl:?string,extraImages:list<string>}
@@ -29,13 +75,12 @@ class PropertyUploadService
         $extraImages = [];
 
         if (!empty($files['propertyImages'])) {
-            $images = self::normalizeFiles($files['propertyImages']);
+            $images = self::validateGalleryUploads($files['propertyImages']);
             if ($images === []) {
                 throw new RuntimeException('Please upload at least one valid property image.');
             }
 
             foreach ($images as $index => $file) {
-                self::validateImage($file);
                 $name = self::saveFile($file, $baseDir, 'img_' . ($index + 1));
                 $url = self::storagePath($propertyId, $name);
                 if ($imageUrl === null) {
@@ -106,9 +151,9 @@ class PropertyUploadService
         $newPaths = [];
         if (!empty($files['propertyImages'])) {
             $baseDir = self::uploadDirectory($propertyId);
-            foreach (self::normalizeFiles($files['propertyImages']) as $index => $file) {
-                self::validateImage($file);
-                $name = self::saveFile($file, $baseDir, 'img_' . ($index + 1));
+            $images = self::validateGalleryUploads($files['propertyImages'], count($validatedKeep));
+            foreach ($images as $index => $file) {
+                $name = self::saveFile($file, $baseDir, 'img_' . ($index + 1) . '_' . time());
                 $newPaths[] = self::storagePath($propertyId, $name);
             }
         }
@@ -202,7 +247,11 @@ class PropertyUploadService
     {
         self::assertUploadOk($file, 'Image upload failed.');
         if (($file['size'] ?? 0) > self::MAX_IMAGE_BYTES) {
-            throw new RuntimeException('Each image must be 5MB or less.');
+            $name = basename((string) ($file['name'] ?? 'photo'));
+            throw new RuntimeException(
+                '"' . $name . '" is too large. Each gallery photo must be '
+                . self::maxImageMb() . 'MB or less.'
+            );
         }
         if (!self::isAllowedImage($file)) {
             throw new RuntimeException('Unsupported image format. Use JPG, PNG, WEBP, or GIF.');

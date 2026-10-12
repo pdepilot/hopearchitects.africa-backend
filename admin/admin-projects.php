@@ -64,13 +64,12 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
           <input type="number" id="area" placeholder="Area (sq ft)" min="0" value="0">
         </div>
         <div class="project-upload-field">
-          <label for="projectImage">Project image</label>
-          <input type="file" id="projectImage" accept="image/*">
-          <div class="project-upload-meta" id="projectImageMeta">Choose an image to upload.</div>
-          <div class="project-upload-preview" id="projectImagePreview" hidden>
-            <img id="projectImagePreviewImg" src="" alt="Project preview">
-            <button type="button" class="btn-outline btn-outline--small" id="removeProjectImageBtn">Remove selected image</button>
-          </div>
+          <label for="projectGallery">Project gallery photos</label>
+          <p class="project-upload-hint">Upload up to 24 photos · JPG/PNG/WEBP/GIF · max <strong>5MB</strong> each. First photo is the cover.</p>
+          <input type="file" id="projectGallery" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+          <div class="project-upload-meta" id="projectGalleryMeta">Choose gallery photos to upload.</div>
+          <div class="project-gallery-grid" id="projectGalleryKeep" aria-live="polite"></div>
+          <div class="project-gallery-grid project-gallery-grid--new" id="projectGalleryNew" aria-live="polite"></div>
         </div>
         <textarea id="description" placeholder="Project description..."></textarea>
         <select id="approvalStatus">
@@ -90,10 +89,13 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
 <script>
   const API_URL = 'api/properties.php';
   const ITEMS_PER_PAGE = 6;
+  const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+  const MAX_GALLERY_IMAGES = 24;
   let projects = [];
   let currentPage = 1;
-  let selectedImageFile = null;
-  let existingImageUrl = '';
+  let keepImages = [];
+  let keepImageUrls = [];
+  let newGalleryFiles = new DataTransfer();
 
   function buildApiUrl(path, method = 'GET') {
     const match = path.match(/^\/properties(?:\/([^/?]+))?(?:\?(.*))?$/);
@@ -236,11 +238,18 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     }
   }
 
+  function formatBytes(bytes) {
+    if (!bytes) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+  }
+
   function openEditModal(id = null) {
     const modal = document.getElementById('projectModal');
     const form = document.getElementById('projectForm');
     form.reset();
-    resetProjectImageField();
+    resetGalleryField();
     document.getElementById('projectId').value = '';
     document.getElementById('bedrooms').value = 2;
     document.getElementById('bathrooms').value = 2;
@@ -260,8 +269,13 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
         document.getElementById('area').value = project.area ?? 0;
         document.getElementById('description').value = project.description || '';
         document.getElementById('approvalStatus').value = project.approvalStatus || 'approved';
-        existingImageUrl = project.imageUrl || '';
-        showExistingImagePreview(existingImageUrl);
+        const stored = Array.isArray(project.storedImages) ? project.storedImages.filter(Boolean) : [];
+        const urls = Array.isArray(project.images) && project.images.length
+          ? project.images
+          : [project.imageUrl, ...(project.galleryUrls || [])].filter(Boolean);
+        keepImages = [...stored];
+        keepImageUrls = urls.length ? [...urls] : stored.map((path) => path);
+        renderGalleryPreviews();
       }
     }
 
@@ -278,51 +292,104 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     document.body.classList.remove('modal-open');
   }
 
-  function showExistingImagePreview(url) {
-    if (!url) return;
-    const preview = document.getElementById('projectImagePreview');
-    const img = document.getElementById('projectImagePreviewImg');
-    const meta = document.getElementById('projectImageMeta');
-    if (preview && img && meta) {
-      img.src = url;
-      preview.hidden = false;
-      meta.textContent = 'Current project image.';
-    }
-  }
-
-  function resetProjectImageField() {
-    selectedImageFile = null;
-    existingImageUrl = '';
-    const input = document.getElementById('projectImage');
-    const preview = document.getElementById('projectImagePreview');
-    const img = document.getElementById('projectImagePreviewImg');
-    const meta = document.getElementById('projectImageMeta');
+  function resetGalleryField() {
+    keepImages = [];
+    keepImageUrls = [];
+    newGalleryFiles = new DataTransfer();
+    const input = document.getElementById('projectGallery');
     if (input) input.value = '';
-    if (img) img.src = '';
-    if (preview) preview.hidden = true;
-    if (meta) meta.textContent = 'Choose an image to upload.';
+    renderGalleryPreviews();
   }
 
-  function handleProjectImageChange(event) {
-    const file = event.target.files?.[0] || null;
-    const preview = document.getElementById('projectImagePreview');
-    const img = document.getElementById('projectImagePreviewImg');
-    const meta = document.getElementById('projectImageMeta');
-    selectedImageFile = file;
-    if (!file) {
-      if (existingImageUrl) showExistingImagePreview(existingImageUrl);
-      return;
+  function validateGalleryFile(file) {
+    if (!file.type.startsWith('image/')) {
+      return `"${file.name}" is not an image.`;
     }
-    if (img) img.src = URL.createObjectURL(file);
-    if (preview) preview.hidden = false;
-    if (meta) meta.textContent = `Selected: ${file.name}`;
+    if (file.size > MAX_IMAGE_BYTES) {
+      return `"${file.name}" is ${formatBytes(file.size)}. Each photo must be 5MB or less.`;
+    }
+    return null;
+  }
+
+  function handleGalleryChange(event) {
+    const incoming = Array.from(event.target.files || []);
+    const errors = [];
+    incoming.forEach((file) => {
+      const err = validateGalleryFile(file);
+      if (err) {
+        errors.push(err);
+        return;
+      }
+      if (keepImages.length + newGalleryFiles.files.length >= MAX_GALLERY_IMAGES) {
+        errors.push(`You can upload up to ${MAX_GALLERY_IMAGES} gallery photos.`);
+        return;
+      }
+      newGalleryFiles.items.add(file);
+    });
+    event.target.value = '';
+    if (errors.length) showToast(errors[0], true);
+    renderGalleryPreviews();
+  }
+
+  function renderGalleryPreviews() {
+    const keepEl = document.getElementById('projectGalleryKeep');
+    const newEl = document.getElementById('projectGalleryNew');
+    const meta = document.getElementById('projectGalleryMeta');
+    if (!keepEl || !newEl || !meta) return;
+
+    keepEl.innerHTML = keepImages.map((path, index) => `
+      <div class="project-gallery-tile">
+        <img src="${escapeHtml(keepImageUrls[index] || path)}" alt="Gallery photo ${index + 1}">
+        ${index === 0 ? '<span class="project-gallery-badge">Cover</span>' : ''}
+        <button type="button" class="project-gallery-remove" data-remove-keep="${index}" aria-label="Remove photo">&times;</button>
+      </div>
+    `).join('');
+
+    newEl.innerHTML = Array.from(newGalleryFiles.files).map((file, index) => `
+      <div class="project-gallery-tile project-gallery-tile--new">
+        <img src="${URL.createObjectURL(file)}" alt="${escapeHtml(file.name)}">
+        <span class="project-gallery-badge">New · ${formatBytes(file.size)}</span>
+        <button type="button" class="project-gallery-remove" data-remove-new="${index}" aria-label="Remove photo">&times;</button>
+      </div>
+    `).join('');
+
+    keepEl.querySelectorAll('[data-remove-keep]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.removeKeep);
+        keepImages.splice(i, 1);
+        keepImageUrls.splice(i, 1);
+        renderGalleryPreviews();
+      });
+    });
+
+    newEl.querySelectorAll('[data-remove-new]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const removeIndex = Number(btn.dataset.removeNew);
+        const next = new DataTransfer();
+        Array.from(newGalleryFiles.files).forEach((file, i) => {
+          if (i !== removeIndex) next.items.add(file);
+        });
+        newGalleryFiles = next;
+        renderGalleryPreviews();
+      });
+    });
+
+    const total = keepImages.length + newGalleryFiles.files.length;
+    meta.textContent = total
+      ? `${total} photo${total === 1 ? '' : 's'} selected (max 5MB each).`
+      : 'Choose gallery photos to upload.';
   }
 
   async function saveProject(event) {
     event.preventDefault();
     const id = document.getElementById('projectId').value;
-    if (!id && !selectedImageFile) {
-      showToast('Please upload a project image', true);
+    const totalPhotos = keepImages.length + newGalleryFiles.files.length;
+    if (!id && totalPhotos === 0) {
+      showToast('Please upload at least one gallery photo (max 5MB each)', true);
+      return;
+    }
+    if (id && totalPhotos === 0) {
+      showToast('Keep or upload at least one gallery photo', true);
       return;
     }
 
@@ -338,9 +405,8 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
     formData.append('area', String(Number(document.getElementById('area').value)));
     formData.append('description', document.getElementById('description').value);
     formData.append('approvalStatus', document.getElementById('approvalStatus').value);
-    if (selectedImageFile) {
-      formData.append('propertyImages[]', selectedImageFile);
-    }
+    keepImages.forEach((path) => formData.append('keepImages[]', path));
+    Array.from(newGalleryFiles.files).forEach((file) => formData.append('propertyImages[]', file));
 
     try {
       const res = await fetch(API_URL, { method: 'POST', credentials: 'same-origin', body: formData });
@@ -376,8 +442,7 @@ require_once dirname(__DIR__) . '/includes/admin_guard.php';
   });
 
   document.getElementById('addProjectBtn')?.addEventListener('click', () => openEditModal());
-  document.getElementById('projectImage')?.addEventListener('change', handleProjectImageChange);
-  document.getElementById('removeProjectImageBtn')?.addEventListener('click', resetProjectImageField);
+  document.getElementById('projectGallery')?.addEventListener('change', handleGalleryChange);
   document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
   document.getElementById('cancelModalBtn')?.addEventListener('click', closeModal);
   document.getElementById('projectModal')?.addEventListener('click', (e) => {

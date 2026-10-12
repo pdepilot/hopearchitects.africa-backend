@@ -302,8 +302,21 @@ $pageStylesheet = '../assets/css/admin-list-your-property.css';
     updateVideoSection(item);
 
     document.getElementById('editAddImages')?.addEventListener('change', (event) => {
-      Array.from(event.target.files || []).forEach((file) => editNewImages.items.add(file));
+      const maxBytes = 5 * 1024 * 1024;
+      const rejected = [];
+      Array.from(event.target.files || []).forEach((file) => {
+        if (!file.type.startsWith('image/')) {
+          rejected.push(`"${file.name}" is not an image.`);
+          return;
+        }
+        if (file.size > maxBytes) {
+          rejected.push(`"${file.name}" exceeds 5MB.`);
+          return;
+        }
+        editNewImages.items.add(file);
+      });
       event.target.value = '';
+      if (rejected.length) toast(rejected[0], true);
       renderNewMediaPreview();
     });
 

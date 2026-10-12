@@ -151,13 +151,32 @@ function handleMultipartPost(): void
 
         $updates = normalizeMultipartPayload($_POST);
 
-        if (!empty($_FILES['propertyImages']) && hasUploadedFiles($_FILES['propertyImages'])) {
+        $keepImages = $_POST['keepImages'] ?? [];
+        if (!is_array($keepImages)) {
+            $keepImages = $keepImages !== '' ? [(string) $keepImages] : [];
+        }
+        $keepImages = array_values(array_filter(array_map(
+            static fn ($path): string => trim((string) $path),
+            $keepImages
+        )));
+
+        $hasNewImages = !empty($_FILES['propertyImages']) && hasUploadedFiles($_FILES['propertyImages']);
+        $mediaTouched = $hasNewImages || array_key_exists('keepImages', $_POST);
+
+        if ($mediaTouched) {
+            // If keepImages omitted, preserve existing stored gallery when only adding files.
+            if (!array_key_exists('keepImages', $_POST)) {
+                $keepImages = is_array($oldProject['storedImages'] ?? null)
+                    ? array_values(array_filter($oldProject['storedImages']))
+                    : [];
+            }
+
             $media = PropertyUploadService::updateSubmissionMedia(
                 $id,
-                [],
-                $_FILES,
+                $keepImages,
+                $hasNewImages ? $_FILES : [],
                 false,
-                null
+                is_string($oldProject['storedVideo'] ?? null) ? $oldProject['storedVideo'] : null
             );
             $updates['imageUrl'] = $media['imageUrl'];
             $updates['galleryUrls'] = $media['galleryUrls'];

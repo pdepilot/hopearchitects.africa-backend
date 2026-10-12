@@ -227,7 +227,7 @@
                       <span class="upload-content">
                         <ion-icon name="image-outline"></ion-icon>
                         <strong>Upload site / space photos <span class="required">*</span></strong>
-                        <span>Add clear exterior, interior, plot, access road, and context photos.</span>
+                        <span>Up to 24 photos · JPG/PNG/WEBP/GIF · max 5MB each. First photo is the cover.</span>
                       </span>
                     </label>
                     <div class="preview-list" id="imagePreview" aria-live="polite"></div>
@@ -420,12 +420,32 @@
       });
     }
 
-    function addFilesToList(fileList, incoming, filterFn) {
+    const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    const MAX_GALLERY_IMAGES = 24;
+    const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+
+    function addFilesToList(fileList, incoming, filterFn, options = {}) {
+      const maxBytes = options.maxBytes || 0;
+      const maxCount = options.maxCount || 0;
+      const label = options.label || 'file';
+      const errors = [];
+
       Array.from(incoming || []).forEach((file) => {
-        if (!filterFn || filterFn(file)) {
-          fileList.items.add(file);
+        if (filterFn && !filterFn(file)) return;
+        if (maxCount > 0 && fileList.files.length >= maxCount) {
+          errors.push(`You can upload up to ${maxCount} ${label}s.`);
+          return;
         }
+        if (maxBytes > 0 && file.size > maxBytes) {
+          errors.push(`"${file.name}" is too large (${formatFileSize(file.size)}). Max ${formatFileSize(maxBytes)} per ${label}.`);
+          return;
+        }
+        fileList.items.add(file);
       });
+
+      if (errors.length) {
+        showFormMessage(errors[0], true);
+      }
     }
 
     function resetUploadLists() {
@@ -467,23 +487,39 @@
         if (!event.dataTransfer.files.length) return;
 
         if (isImageBox) {
-          addFilesToList(imageFileList, event.dataTransfer.files, (file) => file.type.startsWith('image/'));
+          addFilesToList(imageFileList, event.dataTransfer.files, (file) => file.type.startsWith('image/'), {
+            maxBytes: MAX_IMAGE_BYTES,
+            maxCount: MAX_GALLERY_IMAGES,
+            label: 'photo',
+          });
           syncImageUpload();
         } else if (isVideoBox) {
-          addFilesToList(videoFileList, event.dataTransfer.files, (file) => file.type.startsWith('video/'));
+          addFilesToList(videoFileList, event.dataTransfer.files, (file) => file.type.startsWith('video/'), {
+            maxBytes: MAX_VIDEO_BYTES,
+            maxCount: 3,
+            label: 'video',
+          });
           syncVideoUpload();
         }
       });
     });
 
     imageInput.addEventListener('change', () => {
-      addFilesToList(imageFileList, imageInput.files, (file) => file.type.startsWith('image/'));
+      addFilesToList(imageFileList, imageInput.files, (file) => file.type.startsWith('image/'), {
+        maxBytes: MAX_IMAGE_BYTES,
+        maxCount: MAX_GALLERY_IMAGES,
+        label: 'photo',
+      });
       syncImageUpload();
     });
 
     if (videoInput && videoPreview) {
       videoInput.addEventListener('change', () => {
-        addFilesToList(videoFileList, videoInput.files, (file) => file.type.startsWith('video/'));
+        addFilesToList(videoFileList, videoInput.files, (file) => file.type.startsWith('video/'), {
+          maxBytes: MAX_VIDEO_BYTES,
+          maxCount: 3,
+          label: 'video',
+        });
         syncVideoUpload();
       });
     }

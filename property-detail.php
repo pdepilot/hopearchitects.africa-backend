@@ -81,13 +81,6 @@
     return url;
   }
 
-  function formatDate(value) {
-    if (!value) return 'Recently listed';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return 'Recently listed';
-    return date.toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
   function listingLabel(property) {
     if (property.listingPurpose) {
       return String(property.listingPurpose).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -224,7 +217,6 @@
       ['Full address', property.propertyAddress],
       ['Plot / size', property.propertySize || (property.area ? property.area + ' sqm' : null)],
       ['Ownership', property.ownershipStatus],
-      ['Listed on', formatDate(property.createdAt)],
       ['Reference ID', 'HA-' + property.id]
     ].filter(([, value]) => value);
 
@@ -258,7 +250,6 @@
             <div class="title-meta">
               <span><ion-icon name="location-outline"></ion-icon>${escapeHtml(property.location)}</span>
               ${property.propertyAddress ? `<span><ion-icon name="navigate-outline"></ion-icon>${escapeHtml(property.propertyAddress)}</span>` : ''}
-              <span><ion-icon name="calendar-outline"></ion-icon>${formatDate(property.createdAt)}</span>
             </div>
           </div>
 
