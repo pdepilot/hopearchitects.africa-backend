@@ -2,7 +2,7 @@
 /**
  * Shared admin sidebar — same markup/classes as admin-dashboard.php
  *
- * @var string $activeNav dashboard|properties|analytics|testimonials|contacts|listings|email|smtp|subscribers|promo|locations|settings|admins|chatbot
+ * @var string $activeNav dashboard|properties|analytics|testimonials|gallery|contacts|listings|email|smtp|subscribers|promo|locations|settings|admins|chatbot
  */
 declare(strict_types=1);
 
@@ -14,6 +14,7 @@ $activeNav = $activeNav ?? '';
 $navItems = [
     'dashboard'    => ['href' => 'admin-dashboard.php', 'icon' => 'speedometer-outline', 'label' => 'Overview'],
     'properties'   => ['href' => 'admin-projects.php',  'icon' => 'images-outline',      'label' => 'Projects'],
+    'gallery'      => ['href' => 'admin-gallery.php',   'icon' => 'images-outline',      'label' => 'Gallery'],
     'analytics'    => ['href' => 'admin-analytics.php', 'icon' => 'people-outline',      'label' => 'Analytics'],
     'testimonials' => ['href' => 'admin-testimonial.php','icon' => 'chatbubbles-outline','label' => 'Testimonials'],
     'locations'    => ['href' => 'admin-locations.php', 'icon' => 'map-outline',         'label' => 'Service Areas'],

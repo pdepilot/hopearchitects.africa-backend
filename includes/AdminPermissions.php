@@ -183,6 +183,7 @@ final class AdminPermissions
             'promo'        => self::PERM_PROMO,
             'homepage'     => self::PERM_CONTENT,
             'about'        => self::PERM_CONTENT,
+            'gallery'      => self::PERM_CONTENT,
             'pages'        => self::PERM_CONTENT,
             'faqs'         => self::PERM_FAQS,
             'chatbot-content' => self::PERM_CHATBOT,

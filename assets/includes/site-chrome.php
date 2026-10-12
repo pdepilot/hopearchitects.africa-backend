@@ -92,6 +92,7 @@ require_once dirname(__DIR__, 2) . '/includes/site_helpers.php';
                 <li role="none"><a href="<?= siteEscape(pageUrl('about')) ?>" class="navbar-link" data-nav-link role="menuitem">About</a></li>
                 <li role="none"><a href="<?= siteEscape(pageUrl('services')) ?>" class="navbar-link" data-nav-link role="menuitem">Services</a></li>
                 <li role="none"><a href="<?= siteEscape(pageUrl('property')) ?>" class="navbar-link" data-nav-link role="menuitem">Projects</a></li>
+                <li role="none"><a href="<?= siteEscape(pageUrl('gallery')) ?>" class="navbar-link" data-nav-link role="menuitem">Gallery</a></li>
                 <li role="none"><a href="<?= siteEscape(pageUrl('contact')) ?>" class="navbar-link" data-nav-link role="menuitem">Contact</a></li>
               </ul>
             </div>

@@ -92,6 +92,7 @@ $footerJs = siteUrl('assets/js/site-footer.js');
         <li><a href="<?= pageHref('about') ?>" class="footer-link">About Us</a></li>
         <li><a href="https://hopearchitects.ng/blog/" class="footer-link" target="_blank" rel="noopener noreferrer">Blog</a></li>
         <li><a href="<?= pageHref('property') ?>" class="footer-link">All Projects</a></li>
+        <li><a href="<?= pageHref('gallery') ?>" class="footer-link">Gallery</a></li>
         <li><a href="<?= pageHref('contact') ?>" class="footer-link">Contact Us</a></li>
       </ul>
       <ul class="footer-list">
